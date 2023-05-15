@@ -15,46 +15,59 @@ namespace ResellHub.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Offer> Offers { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Offer>(eb =>
-            {
-                eb.HasKey(o => o.Id);
-                eb.HasOne(o => o.User)
-                    .WithMany(o => o.Offers)
-                    .HasForeignKey(o => o.UserId);
-            });
-
             modelBuilder.Entity<User>(entity =>
             {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Name).IsRequired();
-                entity.Property(e => e.PhoneNumber).IsRequired();
-                entity.Property(e => e.City).IsRequired();
-                entity.Property(e => e.Email).IsRequired();
-                entity.Property(e => e.PasswordHash).IsRequired();
-                entity.Property(e => e.VeryficationToken).HasMaxLength(255);
-                entity.Property(e => e.PasswordResetToken).HasMaxLength(255);
-                entity.HasMany(e => e.Offers).WithOne(e => e.User);
-                entity.HasMany(e => e.SentMessages).WithOne(e => e.FromUser);
-                entity.HasMany(e => e.ReceivedMessages).WithOne(e => e.ToUser);
+                entity.HasKey(u => u.Id);
+                entity.Property(u => u.Name).IsRequired();
+                entity.Property(u => u.PhoneNumber).IsRequired();
+                entity.Property(u => u.City).IsRequired();
+                entity.Property(u => u.Email).IsRequired();
+                entity.Property(u => u.PasswordHash).IsRequired();
+                entity.HasMany(u=> u.Offers).WithOne(e => e.User);
+                entity.HasMany(u=> u.SentMessages).WithOne(e => e.FromUser);
+                entity.HasMany(u=> u.ReceivedMessages).WithOne(e => e.ToUser);
+            });
+
+            modelBuilder.Entity<Offer>(entity =>
+            {
+                entity.HasKey(o => o.Id);
+                entity.HasOne(o => o.User)
+                    .WithMany(u => u.Offers)
+                    .HasForeignKey(o => o.UserId);
+                entity.Property(o => o.Title).IsRequired().HasMaxLength(40);
+                entity.Property(o => o.Description).HasMaxLength(200);
+                entity.Property(o => o.ProductionYear).HasAnnotation("Range", new[] { 1950, DateTime.Now.Year });
             });
 
             modelBuilder.Entity<Message>(entity =>
             {
-                entity.HasKey(e => e.Id);
-                entity.Property(e => e.Content).IsRequired();
+                entity.HasKey(m => m.Id);
+                entity.Property(m => m.Content).IsRequired();
 
-                entity.HasOne(e => e.FromUser)
-                .WithMany(e => e.SentMessages)
-                .HasForeignKey(e => e.FromUserId)
+                entity.HasOne(m => m.FromUser)
+                .WithMany(u => u.SentMessages)
+                .HasForeignKey(m => m.FromUserId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
 
-                entity.HasOne(e => e.ToUser)
-                .WithMany(e => e.ReceivedMessages)
-                .HasForeignKey(e => e.ToUserId)
+                entity.HasOne(m => m.ToUser)
+                .WithMany(u => u.ReceivedMessages)
+                .HasForeignKey(m => m.ToUserId)
                 .OnDelete(DeleteBehavior.ClientSetNull);
+            });
+
+            modelBuilder.Entity<Role>(entity =>
+            {
+                entity.HasKey(r => r.Id);
+                entity.HasOne(r => r.RoleOwner)
+                .WithMany(u => u.Roles)
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+                entity.Property(e => e.UserId).IsRequired();
             });
 
             base.OnModelCreating(modelBuilder);

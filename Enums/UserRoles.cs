@@ -1,6 +1,6 @@
 ﻿namespace ResellHub.Enums
 {
-    public enum UserPermissions
+    public enum UserRoles
     {
         User = 1,
         Administrator = 2
