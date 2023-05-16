@@ -15,6 +15,8 @@
         public string EncodedName { get; set; }
 
         public User User { get; set; }
+        public List<FollowOffer> FollowingOffers { get; set; }
+
 
         public void EncodeName() => EncodedName = Title.ToLower().Replace(" ", "-");
 

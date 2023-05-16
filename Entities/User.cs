@@ -21,5 +21,6 @@ namespace ResellHub.Entities
         public List<Offer> Offers { get; set; }
         public List<Message> SentMessages { get; set; }
         public List<Message> ReceivedMessages { get; set; }
+        public List<FollowOffer> FollowingOffers { get; set; }
     }
 }

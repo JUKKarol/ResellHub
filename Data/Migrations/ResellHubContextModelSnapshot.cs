@@ -22,6 +22,27 @@ namespace ResellHub.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("ResellHub.Entities.FollowOffer", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("OfferId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OfferId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("FollowingOffers");
+                });
+
             modelBuilder.Entity("ResellHub.Entities.Message", b =>
                 {
                     b.Property<Guid>("Id")
@@ -164,6 +185,25 @@ namespace ResellHub.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("ResellHub.Entities.FollowOffer", b =>
+                {
+                    b.HasOne("ResellHub.Entities.Offer", "Offer")
+                        .WithMany("FollowingOffers")
+                        .HasForeignKey("OfferId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
+                    b.HasOne("ResellHub.Entities.User", "User")
+                        .WithMany("FollowingOffers")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
+
+                    b.Navigation("Offer");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("ResellHub.Entities.Message", b =>
                 {
                     b.HasOne("ResellHub.Entities.User", "FromUser")
@@ -203,8 +243,15 @@ namespace ResellHub.Migrations
                     b.Navigation("RoleOwner");
                 });
 
+            modelBuilder.Entity("ResellHub.Entities.Offer", b =>
+                {
+                    b.Navigation("FollowingOffers");
+                });
+
             modelBuilder.Entity("ResellHub.Entities.User", b =>
                 {
+                    b.Navigation("FollowingOffers");
+
                     b.Navigation("Offers");
 
                     b.Navigation("ReceivedMessages");
