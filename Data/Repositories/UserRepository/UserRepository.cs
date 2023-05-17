@@ -7,9 +7,9 @@ namespace ResellHub.Data.Repositories.UserRepository
     {
         private readonly ResellHubContext _dbContext;
 
-        public UserRepository(ResellHubContext resellHub)
+        public UserRepository(ResellHubContext dbContext)
         {
-            _dbContext = resellHub;
+            _dbContext = dbContext;
         }
 
         //User
@@ -78,7 +78,6 @@ namespace ResellHub.Data.Repositories.UserRepository
         }
 
         //Messages
-
         public async Task<List<Message>> GetMessagesBetweenTwoUsers(Guid firstUserId, Guid secondUserId)
         {
             var usersMessages = await _dbContext.Messages
@@ -97,7 +96,6 @@ namespace ResellHub.Data.Repositories.UserRepository
         }
 
         //FollowingOffers
-
         public async Task<List<FollowOffer>> GetUserFollowingOffers(Guid userId)
         {
             var userFolowingOffers = await _dbContext.FollowingOffers.Where(fo => fo.UserId == userId) .ToListAsync();
