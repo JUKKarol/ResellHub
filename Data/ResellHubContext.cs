@@ -65,8 +65,6 @@ namespace ResellHub.Data
             modelBuilder.Entity<FollowOffer>(entity =>
             {
                 entity.HasKey(fo => fo.Id);
-                entity.Property(fo => fo.UserId).IsRequired();
-                entity.Property(fo => fo.Offer).IsRequired();
 
                 entity.HasOne(fo => fo.User)
                     .WithMany(u => u.FollowingOffers)
