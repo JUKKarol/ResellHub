@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using ResellHub.Data.Repositories.UserRepository;
 using ResellHub.DTOs;
 using ResellHub.Entities;
+using ResellHub.Enums;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -43,6 +44,37 @@ namespace ResellHub.Services.UserServices
             }
         }
 
-        
+        public async Task<string> CreateToken(UserLoginDto userDto)
+        {
+            var user = await _userRepository.GetUserByEmail(userDto.Email);
+            var userRoles = await _userRepository.GetUserRoles(user.Id);
+
+
+            List<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Email, userDto.Email),
+            };
+
+            foreach (var role in userRoles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role.ToString()));
+
+            }
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                _configuration.GetSection("AppSettings:Token").Value!));
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var token = new JwtSecurityToken(
+                    claims: claims,
+                    expires: DateTime.Now.AddDays(1),
+                    signingCredentials: creds
+                );
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return jwt;
+        }
     }
 }
