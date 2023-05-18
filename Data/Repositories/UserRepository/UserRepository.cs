@@ -25,6 +25,13 @@ namespace ResellHub.Data.Repositories.UserRepository
             return existUser;
         }
 
+        public async Task<User> GetUserByEmail(string userEmail)
+        {
+            var existUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
+
+            return existUser;
+        }
+
         public async Task<User> AddUser(User user)
         {
             await _dbContext.Users.AddAsync(user);

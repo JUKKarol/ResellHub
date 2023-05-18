@@ -7,6 +7,7 @@ namespace ResellHub.Data.Repositories.UserRepository
         //User
         Task<List<User>> GetUsers();
         Task<User> GetUserById(Guid userId);
+        Task<User> GetUserByEmail(string userEmail);
         Task<User> AddUser(User user);
         Task<User> UpdateUser(Guid userId, User user);
         Task<User> DeleteUser(Guid userId);
