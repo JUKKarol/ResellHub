@@ -1,4 +1,5 @@
 ﻿using ResellHub.DTOs.UserDTOs;
+using ResellHub.Entities;
 
 namespace ResellHub.Services.UserServices
 {
@@ -9,5 +10,6 @@ namespace ResellHub.Services.UserServices
         string CreateRandomToken();
         Task<string> CreateToken(UserLoginDto userDto);
         Task CreateUser(UserRegistrationDto user);
+        Task<List<UserPublicDto>> GetUsers();
     }
 }

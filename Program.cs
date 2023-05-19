@@ -29,11 +29,6 @@ namespace ResellHub
 
             builder.Services.AddDbContext<ResellHubContext>();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            builder.Services.AddScoped(provider => new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(new UserMappingProfile(provider.CreateScope().ServiceProvider.GetService<IUserService>()));
-                cfg.AddProfile<OfferMappingProfile>();
-            }).CreateMapper());
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IOfferRepository, OfferRepository>();

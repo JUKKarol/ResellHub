@@ -88,8 +88,25 @@ namespace ResellHub.Services.UserServices
         public async Task CreateUser(UserRegistrationDto userDto)
         {
             var user = _mapper.Map<User>(userDto);
+            user.EncodeName();
+
+            byte[] passwordHash;
+            byte[] passwordSalt;
+            CreatePasswordHash(userDto.Password, out passwordHash, out passwordSalt);
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+
+            user.VeryficationToken = CreateRandomToken();
+
             await _userRepository.AddUser(user);
         }
 
+        public async Task<List<UserPublicDto>> GetUsers()
+        {
+            var users = await _userRepository.GetUsers();
+            var usersDto = _mapper.Map<List<UserPublicDto>>(users);
+
+            return usersDto;
+        }
     }
 }
