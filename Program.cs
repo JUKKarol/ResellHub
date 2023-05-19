@@ -3,6 +3,8 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using ResellHub.Data;
+using ResellHub.Data.Repositories.OfferRepository;
+using ResellHub.Data.Repositories.UserRepository;
 using ResellHub.Services.OfferServices;
 using ResellHub.Services.UserServices;
 using ResellHub.Utilities.Mapings;
@@ -33,6 +35,8 @@ namespace ResellHub
                 cfg.AddProfile<OfferMappingProfile>();
             }).CreateMapper());
 
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
+            builder.Services.AddScoped<IOfferRepository, OfferRepository>();
 
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IOfferService, OfferService>();
