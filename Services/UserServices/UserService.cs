@@ -85,8 +85,13 @@ namespace ResellHub.Services.UserServices
             return jwt;
         }
 
-        public async Task CreateUser(UserRegistrationDto userDto)
+        public async Task<string> CreateUser(UserRegistrationDto userDto)
         {
+            if(!(await _userRepository.GetUserByEmail(userDto.Email) == null))
+            {
+                return "User already exists";
+            }
+
             var user = _mapper.Map<User>(userDto);
             user.EncodeName();
 
@@ -95,10 +100,14 @@ namespace ResellHub.Services.UserServices
             CreatePasswordHash(userDto.Password, out passwordHash, out passwordSalt);
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
-
             user.VeryficationToken = CreateRandomToken();
 
             await _userRepository.AddUser(user);
+
+            var userBasicRole = new Role { UserId = user.Id };
+            await _userRepository.CreateRole(userBasicRole);
+
+            return "User ceated successful";
         }
 
         public async Task<List<UserPublicDto>> GetUsers()

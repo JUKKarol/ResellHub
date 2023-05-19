@@ -64,6 +64,7 @@ namespace ResellHub.Data.Repositories.UserRepository
         public async Task<Role> CreateRole(Role role)
         {
             await _dbContext.Roles.AddAsync(role);
+            await _dbContext.SaveChangesAsync();
 
             return role;
         }
@@ -71,6 +72,7 @@ namespace ResellHub.Data.Repositories.UserRepository
         public async Task<List<Role>> GetUserRoles(Guid userId)
         {
             var userRoles = await _dbContext.Roles.Where(r => r.UserId == userId).ToListAsync();
+
 
             return userRoles;
         }
@@ -80,6 +82,7 @@ namespace ResellHub.Data.Repositories.UserRepository
             var roleToDelete = await _dbContext.Roles.FirstOrDefaultAsync(r => r.Id == roleId);
 
             _dbContext.Roles.Remove(roleToDelete);
+            await _dbContext.SaveChangesAsync();
 
             return roleToDelete;
         }

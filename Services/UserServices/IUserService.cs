@@ -9,7 +9,7 @@ namespace ResellHub.Services.UserServices
         bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt);
         string CreateRandomToken();
         Task<string> CreateToken(UserLoginDto userDto);
-        Task CreateUser(UserRegistrationDto user);
+        Task<string> CreateUser(UserRegistrationDto user);
         Task<List<UserPublicDto>> GetUsers();
     }
 }

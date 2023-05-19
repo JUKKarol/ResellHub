@@ -30,9 +30,9 @@ namespace ResellHub.Controllers
         [HttpPost("users")]
         public async Task<IActionResult> CreateUser(UserRegistrationDto userDto)
         {
-            await _userService.CreateUser(userDto);
+            var actionInfo = await _userService.CreateUser(userDto);
 
-            return Ok(userDto);
+            return Ok(actionInfo);
         }
     }
 }
