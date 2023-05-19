@@ -1,7 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using AutoMapper;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using ResellHub.Data.Repositories.UserRepository;
-using ResellHub.DTOs;
+using ResellHub.DTOs.UserDTOs;
 using ResellHub.Entities;
 using ResellHub.Enums;
 using System.IdentityModel.Tokens.Jwt;
@@ -11,15 +12,17 @@ using System.Text;
 
 namespace ResellHub.Services.UserServices
 {
-    public class UserService
+    public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
 
-        public UserService(IUserRepository userRepository, IConfiguration configuration)
+        public UserService(IUserRepository userRepository, IConfiguration configuration, IMapper mapper)
         {
             _userRepository = userRepository;
             _configuration = configuration;
+            _mapper = mapper;
         }
 
         //User
@@ -42,6 +45,11 @@ namespace ResellHub.Services.UserServices
 
                 return computedHash.SequenceEqual(passwordHash);
             }
+        }
+
+        public string CreateRandomToken()
+        {
+            return Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
         }
 
         public async Task<string> CreateToken(UserLoginDto userDto)
@@ -76,5 +84,12 @@ namespace ResellHub.Services.UserServices
 
             return jwt;
         }
+
+        public async Task CreateUser(UserRegistrationDto userDto)
+        {
+            var user = _mapper.Map<User>(userDto);
+            await _userRepository.AddUser(user);
+        }
+
     }
 }

@@ -1,6 +1,8 @@
-﻿namespace ResellHub.Utilities.Mapings
+﻿using AutoMapper;
+
+namespace ResellHub.Utilities.Mapings
 {
-    public class OfferMappingProfile
+    public class OfferMappingProfile : Profile
     {
     }
 }

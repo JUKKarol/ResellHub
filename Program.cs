@@ -1,7 +1,11 @@
 
+using AutoMapper;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using ResellHub.Data;
+using ResellHub.Services.OfferServices;
+using ResellHub.Services.UserServices;
+using ResellHub.Utilities.Mapings;
 using System.Text.Json.Serialization;
 
 namespace ResellHub
@@ -12,10 +16,7 @@ namespace ResellHub
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
@@ -25,6 +26,16 @@ namespace ResellHub
             });
 
             builder.Services.AddDbContext<ResellHubContext>();
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            builder.Services.AddScoped(provider => new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new UserMappingProfile(provider.CreateScope().ServiceProvider.GetService<IUserService>()));
+                cfg.AddProfile<OfferMappingProfile>();
+            }).CreateMapper());
+
+
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IOfferService, OfferService>();
 
             var app = builder.Build();
             var scope = app.Services.CreateScope();
@@ -36,7 +47,6 @@ namespace ResellHub
                 dbContext.Database.Migrate();
             }
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();

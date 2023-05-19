@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ResellHub.DTOs
+namespace ResellHub.DTOs.UserDTOs
 {
     public class UserLoginDto
     {
