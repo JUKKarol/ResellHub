@@ -8,6 +8,7 @@ using ResellHub.Data.Repositories.UserRepository;
 using ResellHub.Services.OfferServices;
 using ResellHub.Services.UserServices;
 using ResellHub.Utilities.Mapings;
+using ResellHub.Utilities.UserUtilities;
 using System.Text.Json.Serialization;
 
 namespace ResellHub
@@ -35,6 +36,8 @@ namespace ResellHub
 
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IOfferService, OfferService>();
+
+            builder.Services.AddScoped<IUserUtilities, UserUtilities>();
 
             var app = builder.Build();
             var scope = app.Services.CreateScope();
