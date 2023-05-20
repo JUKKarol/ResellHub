@@ -57,11 +57,20 @@ namespace ResellHub.Services.UserServices
             var user = await _userRepository.GetUserByEmail(userDto.Email);
             var userRoles = await _userRepository.GetUserRoles(user.Id);
 
-
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Email, userDto.Email),
             };
+
+            if (userRoles.FirstOrDefault(ur => ur.UserRole == UserRoles.Moderator || ur.UserRole == UserRoles.Administrator) != null)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, UserRoles.User.ToString()));
+            }
+
+            if (userRoles.FirstOrDefault(ur => ur.UserRole == UserRoles.Administrator) != null)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, UserRoles.Moderator.ToString()));
+            }
 
             foreach (var role in userRoles)
             {

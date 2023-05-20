@@ -7,6 +7,6 @@ namespace ResellHub.Entities
         public Guid Id { get; set; } = Guid.NewGuid();
         public Guid UserId { get; set; }
         public User RoleOwner { get; set; }
-        public UserRoles Permissions { get; set; } = UserRoles.User;
+        public UserRoles UserRole { get; set; } = UserRoles.User;
     }
 }
