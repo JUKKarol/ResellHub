@@ -29,17 +29,36 @@ namespace ResellHub.Services.UserServices
         }
 
         //User
-        
+        public async Task<List<UserPublicDto>> GetUsers()
+        {
+            var users = await _userRepository.GetUsers();
+            var usersDto = _mapper.Map<List<UserPublicDto>>(users);
+
+            return usersDto;
+        }
+
+        public async Task<UserPublicDto> GetUserById(Guid userId)
+        {
+            var user = await _userRepository.GetUserById(userId);
+            var userDto = _mapper.Map<UserPublicDto>(user);
+            return userDto;
+        }
 
         public async Task<string> CreateUser(UserRegistrationDto userDto)
         {
             if(await _userRepository.GetUserByEmail(userDto.Email) != null)
             {
-                return "User already exists";
+                return "User already exist";
             }
 
             var user = _mapper.Map<User>(userDto);
             user.EncodeName();
+
+            if (await _userRepository.GetUserByEncodedName(user.EncodedName) != null)
+            {
+                int randomNumber = new Random().Next(1, 10000);
+                user.EncodedName = $"{user.EncodedName}-{randomNumber}";
+            }
 
             byte[] passwordHash;
             byte[] passwordSalt;
@@ -56,12 +75,45 @@ namespace ResellHub.Services.UserServices
             return "User ceated successful";
         }
 
-        public async Task<List<UserPublicDto>> GetUsers()
+        public async Task<string> UpdatePhoneNumber(Guid userId, string phoneNumber)
         {
-            var users = await _userRepository.GetUsers();
-            var usersDto = _mapper.Map<List<UserPublicDto>>(users);
+            var user = await _userRepository.GetUserById(userId);
 
-            return usersDto;
+            if (user == null)
+            {
+                return "User didn't exist";
+            }
+
+            user.PhoneNumber = phoneNumber;
+
+            await _userRepository.UpdateUser(userId, user);
+            return "User updated successful";
+        }
+
+        public async Task<string> UpdateCity(Guid userId, string city)
+        {
+            var user = await _userRepository.GetUserById(userId);
+
+            if (user == null)
+            {
+                return "User didn't exist";
+            }
+
+            user.City = city;
+
+            await _userRepository.UpdateUser(userId, user);
+            return "User updated successful";
+        }
+
+        public async Task<string> DeleteUser(Guid userId)
+        {
+            if (await _userRepository.GetUserById(userId) == null)
+            {
+                return "User didn't exist";
+            }
+
+            await _userRepository.DeleteUser(userId);
+            return "User deleted successful";
         }
     }
 }

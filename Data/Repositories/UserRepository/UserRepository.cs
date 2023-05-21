@@ -32,6 +32,13 @@ namespace ResellHub.Data.Repositories.UserRepository
             return existUser;
         }
 
+        public async Task<User> GetUserByEncodedName(string userEncodedName)
+        {
+            var existUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.EncodedName == userEncodedName);
+
+            return existUser;
+        }
+
         public async Task<User> AddUser(User user)
         {
             await _dbContext.Users.AddAsync(user);
