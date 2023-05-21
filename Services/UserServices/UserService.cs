@@ -151,7 +151,53 @@ namespace ResellHub.Services.UserServices
             var messages = await _userRepository.GetMessagesBetweenTwoUsers(firstUser, secondUser);
             return messages;
         }
+
         //Role
+        public async Task<List<Role>> GetUserRoles(Guid userId)
+        {
+           var roles = await _userRepository.GetUserRoles(userId);
+
+            return roles;
+        }
+
+        public async Task<string> AddRole(Guid userId, UserRoles userRole)
+        {
+            if (await _userRepository.GetUserById(userId) == null)
+            {
+                return "User didn't exist";
+            }
+
+            var role = new Role { UserId = userId, UserRole = userRole };
+
+            await _userRepository.CreateRole(role);
+
+            return "Role created successfuly";
+        }
+
+        public async Task<string> UpdateRole(Guid roleId, UserRoles userNewRole)
+        {
+            var existRole = await _userRepository.GetRoleById(roleId);
+
+            if (existRole == null)
+            {
+                return "Role didn't exist";
+            }
+
+            await _userRepository.ChangeRole(roleId, userNewRole);
+
+            return "Role changed successful";
+        }
+
+        public async Task<string> DeleteRole(Guid roleId)
+        {
+            if (await _userRepository.GetRoleById(roleId) == null)
+            {
+                return "Role didn't exist";
+            }
+
+            await _userRepository.DeleteRole(roleId);
+            return "Role deleted successful";
+        }
         //FollowOffer
     }
 }

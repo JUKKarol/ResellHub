@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ResellHub.DTOs.UserDTOs;
 using ResellHub.Entities;
+using ResellHub.Enums;
 using ResellHub.Services.UserServices;
 
 namespace ResellHub.Controllers
@@ -79,6 +80,15 @@ namespace ResellHub.Controllers
         }
 
         //Message
+
+        [HttpGet("messages/{firstUser}/{secondUser}")]
+        public async Task<IActionResult> GetUsersMessages(Guid firstUser, Guid secondUser)
+        {
+            var messages = await _userService.ShowUsersMessages(firstUser, secondUser);
+
+            return Ok(messages);
+        }
+
         [HttpPost("messages/{fromUserId}/{toUserId}")]
         public async Task<IActionResult> SendMessage(Guid fromUserId, Guid toUserId, string content)
         {
@@ -87,15 +97,40 @@ namespace ResellHub.Controllers
             return Ok(actionInfo);
         }
 
-        [HttpGet("users/{firstUser}/{secondUser}")]
-        public async Task<IActionResult> GetUsersMessages(Guid firstUser, Guid secondUser)
+        //Role
+        [HttpGet("roles/{userId}")]
+        public async Task<IActionResult> GetUserRoles(Guid userId)
         {
-            var messages = await _userService.ShowUsersMessages(firstUser, secondUser);
+            var actionInfo = await _userService.GetUserRoles(userId);
 
-            return Ok(messages);
+            return Ok(actionInfo);
         }
 
-        //Role
+        [HttpPost("roles/{userId}")]
+        public async Task<IActionResult> CreateRole(Guid userId, UserRoles userRole)
+        {
+            var actionInfo = await _userService.AddRole(userId, userRole);
+
+            return Ok(actionInfo);
+        }
+
+        [HttpPut("roles/{roleId}")]
+        public async Task<IActionResult> ChangeRole(Guid roleId, UserRoles userNewRole)
+        {
+            var actionInfo = await _userService.UpdateRole(roleId, userNewRole);
+
+            return Ok(actionInfo);
+        }
+
+        [HttpDelete("roles/{roleId}")]
+        public async Task<IActionResult> DeleteRole(Guid roleId)
+        {
+            var actionInfo = await _userService.DeleteRole(roleId);
+
+            return Ok(actionInfo);
+        }
+
+
         //FollowOffer
     }
 }

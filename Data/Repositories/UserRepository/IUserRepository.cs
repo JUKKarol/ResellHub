@@ -1,4 +1,5 @@
 ﻿using ResellHub.Entities;
+using ResellHub.Enums;
 
 namespace ResellHub.Data.Repositories.UserRepository
 {
@@ -15,6 +16,8 @@ namespace ResellHub.Data.Repositories.UserRepository
         //Roles
         Task<Role> CreateRole(Role role);
         Task<List<Role>> GetUserRoles(Guid userId);
+        Task<Role> GetRoleById(Guid roleId);
+        Task<Role> ChangeRole(Guid roleId, UserRoles role);
         Task<Role> DeleteRole(Guid roleId);
         //Messages
         Task<List<Message>> GetMessagesBetweenTwoUsers(Guid firstUserId, Guid secondUserId);

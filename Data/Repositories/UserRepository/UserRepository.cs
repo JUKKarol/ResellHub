@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ResellHub.Entities;
+using ResellHub.Enums;
 
 namespace ResellHub.Data.Repositories.UserRepository
 {
@@ -80,8 +81,24 @@ namespace ResellHub.Data.Repositories.UserRepository
         {
             var userRoles = await _dbContext.Roles.Where(r => r.UserId == userId).ToListAsync();
 
-
             return userRoles;
+        }
+
+        public async Task<Role> GetRoleById(Guid roleId)
+        {
+            var role = await _dbContext.Roles.FirstOrDefaultAsync(r => r.Id == roleId);
+
+            return role;
+        }
+
+        public async Task<Role> ChangeRole(Guid roleId, UserRoles role)
+        {
+            var existRole = await _dbContext.Roles.FirstOrDefaultAsync(r => r.Id == roleId);
+
+            existRole.UserRole = role;
+            await _dbContext.SaveChangesAsync();
+
+            return existRole;
         }
 
         public async Task<Role> DeleteRole(Guid roleId)
