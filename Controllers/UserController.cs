@@ -130,7 +130,30 @@ namespace ResellHub.Controllers
             return Ok(actionInfo);
         }
 
-
         //FollowOffer
+        [HttpGet("followingoffers/{userId}")]
+        public async Task<IActionResult> GetUserFollowingOffers(Guid userId)
+        {
+            var actionInfo = await _userService.GetUserFollowingOffers(userId);
+
+            return Ok(actionInfo);
+        }
+
+        [HttpPost("followingoffers/{userId}/{offerId}")]
+        public async Task<IActionResult> AddOfferToFollowing(Guid userId, Guid offerId)
+        {
+            var actionInfo = await _userService.AddOfferToFollowing(userId, offerId);
+
+            return Ok(actionInfo);
+        }
+
+        [HttpDelete("followingoffers/{followingOfferId}")]
+        public async Task<IActionResult> RemoveOfferFromFollowing(Guid followingOfferId)
+        {
+            var actionInfo = await _userService.RemoveOfferFromFollowing(followingOfferId);
+
+            return Ok(actionInfo);
+        }
+
     }
 }

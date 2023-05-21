@@ -24,6 +24,7 @@ namespace ResellHub.Data.Repositories.UserRepository
         Task<Message> AddMessage(Message message);
         //FollowingOffers
         Task<List<FollowOffer>> GetUserFollowingOffers(Guid userId);
+        Task<FollowOffer> GetUserFollowingOfferById(Guid followingOfferId);
         Task<FollowOffer> AddFollowingOffer(FollowOffer followOffer);
         Task<FollowOffer> DeleteFollowingOffer(Guid followOfferId);
     }

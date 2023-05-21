@@ -137,6 +137,13 @@ namespace ResellHub.Data.Repositories.UserRepository
             return userFolowingOffers;
         }
 
+        public async Task<FollowOffer> GetUserFollowingOfferById(Guid followingOfferId)
+        {
+            var followingOffer = await _dbContext.FollowingOffers.FirstOrDefaultAsync(fo => fo.Id == followingOfferId);
+
+            return followingOffer;
+        }
+
         public async Task<FollowOffer> AddFollowingOffer(FollowOffer followOffer)
         {
             await _dbContext.FollowingOffers.AddAsync(followOffer);

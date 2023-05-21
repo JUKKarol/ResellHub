@@ -22,5 +22,8 @@ namespace ResellHub.Services.UserServices
         Task<string> UpdateRole(Guid roleId, UserRoles userNewRole);
         Task<string> DeleteRole(Guid roleId);
         //FollowOffer
+        Task<dynamic> GetUserFollowingOffers(Guid userId);
+        Task<string> AddOfferToFollowing(Guid userId, Guid offerId);
+        Task<string> RemoveOfferFromFollowing(Guid followingOfferId);
     }
 }

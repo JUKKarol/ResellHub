@@ -198,6 +198,46 @@ namespace ResellHub.Services.UserServices
             await _userRepository.DeleteRole(roleId);
             return "Role deleted successful";
         }
+
         //FollowOffer
+        public async Task<dynamic> GetUserFollowingOffers(Guid userId)
+        {
+            if (_userRepository.GetUserById(userId) == null)
+            {
+                return "User didn't exist";
+            }
+
+            var userFollowingOffers = await _userRepository.GetUserFollowingOffers(userId);
+
+            return userFollowingOffers;
+        }
+
+        public async Task<string> AddOfferToFollowing(Guid userId, Guid offerId)
+        {
+            if (_userRepository.GetUserById(userId) == null)
+            {
+                return "User didn't exist";
+            }
+
+            //Check is offer eixst
+
+            var followingOffer = new FollowOffer { UserId = userId, OfferId = offerId };
+            await _userRepository.AddFollowingOffer(followingOffer);
+
+            return "Offer is following from now";
+        }
+
+        public async Task<string> RemoveOfferFromFollowing(Guid followingOfferId)
+        {
+            var followingOffer = _userRepository.GetUserFollowingOfferById(followingOfferId);
+
+            if (followingOffer == null)
+            {
+                return "Following Offer didn't exist";
+            }
+
+            await _userRepository.DeleteFollowingOffer(followingOfferId);
+            return "Offer is not following anymore";
+        }
     }
 }
