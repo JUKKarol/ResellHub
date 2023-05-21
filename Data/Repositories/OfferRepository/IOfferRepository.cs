@@ -4,7 +4,8 @@ namespace ResellHub.Data.Repositories.OfferRepository
 {
     public interface IOfferRepository
     {
-        Task<List<Offer>> GetOffer();
+        Task<List<Offer>> GetOffers();
+        Task<List<Offer>> GetUserOffers(Guid userId);
         Task<Offer> GetOfferById(Guid offerId);
         Task<Offer> GetOfferByEncodedName(string offerEncodedName);
         Task<Offer> AddOffer(Offer offer);

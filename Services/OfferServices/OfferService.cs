@@ -1,5 +1,9 @@
 ﻿using AutoMapper;
+using ResellHub.Data.Repositories.OfferRepository;
 using ResellHub.Data.Repositories.UserRepository;
+using ResellHub.DTOs.OfferDTOs;
+using ResellHub.DTOs.UserDTOs;
+using ResellHub.Entities;
 using ResellHub.Utilities.UserUtilities;
 
 namespace ResellHub.Services.OfferServices
@@ -7,19 +11,96 @@ namespace ResellHub.Services.OfferServices
     public class OfferService : IOfferService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IOfferRepository _offerRepository;
         private readonly IUserUtilities _userService;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
-        public OfferService(IUserRepository userRepository, IUserUtilities userService, IConfiguration configuration, IMapper mapper)
+        public OfferService(IUserRepository userRepository, IOfferRepository offerRepository, IUserUtilities userUtilities, IConfiguration configuration, IMapper mapper)
         {
             _userRepository = userRepository;
-            _userService = userService;
+            _offerRepository = offerRepository;
+            _userService = userUtilities;
             _configuration = configuration;
             _mapper = mapper;
         }
 
+        public async Task<List<OfferPublicDto>> GetOffers()
+        {
+            var offers = await _offerRepository.GetOffers();
+            var offersDto = _mapper.Map<List<OfferPublicDto>>(offers);
 
+            return offersDto;
+        }
+
+        public async Task<dynamic> GetUserOffers(Guid userId)
+        {
+            if (_userRepository.GetUserById(userId) == null)
+            {
+                return "User didn't exist";
+            }
+
+            var offers = await _offerRepository.GetUserOffers(userId);
+            var offersDto = _mapper.Map<List<OfferPublicDto>>(offers);
+
+            return offersDto;
+        }
+
+        public async Task<dynamic> GetOfferById(Guid offerId)
+        {
+            var offer = await _offerRepository.GetOfferById(offerId);
+
+            if (offer == null)
+            {
+                return "Offer didn't exist";
+            }
+
+            var offerDto = _mapper.Map<OfferPublicDto>(offer);
+
+            return offerDto;
+        }
+
+        public async Task<string> AddOffer(OfferCreateDto offerDto)
+        {
+            var offer = _mapper.Map<Offer>(offerDto);
+            offer.EncodeName();
+
+            if (await _offerRepository.GetOfferByEncodedName(offer.EncodedName) != null)
+            {
+                int randomNumber = new Random().Next(1, 10000);
+                offer.EncodedName = $"{offer.EncodedName}-{randomNumber}";
+            }
+
+            await _offerRepository.AddOffer(offer);
+
+            return "Offer ceated successful";
+        }
+
+        public async Task<string> UpdateOffer(Guid offerId, OfferCreateDto offerDto)
+        {
+            var offfer = await _offerRepository.GetOfferById(offerId);
+
+            if (offfer == null)
+            {
+                return "Offer didn't exist";
+            }
+
+            var updatedOffer = _mapper.Map<Offer>(offerDto);
+
+            await _offerRepository.UpdateOffer(offerId, updatedOffer);
+            return "User updated successful";
+        }
+
+        public async Task<string> DeleteOffer(Guid offerId)
+        {
+            if (await _offerRepository.GetOfferById(offerId) == null)
+            {
+                return "Offer didn't exist";
+            }
+
+            await _offerRepository.DeleteOffer(offerId);
+            return "Offer deleted successful";
+        }
 
 
     }

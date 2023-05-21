@@ -12,9 +12,14 @@ namespace ResellHub.Data.Repositories.OfferRepository
             _dbContext = dbContext;
         }
 
-        public async Task<List<Offer>> GetOffer()
+        public async Task<List<Offer>> GetOffers()
         {
             return await _dbContext.Offers.ToListAsync();
+        }
+
+        public async Task<List<Offer>> GetUserOffers(Guid userId)
+        {
+            return await _dbContext.Offers.Where(o => o.UserId == userId).ToListAsync();
         }
 
         public async Task<Offer> GetOfferById(Guid offerId)

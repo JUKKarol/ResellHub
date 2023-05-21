@@ -41,6 +41,7 @@ namespace ResellHub.Services.UserServices
         {
             var user = await _userRepository.GetUserById(userId);
             var userDto = _mapper.Map<UserPublicDto>(user);
+
             return userDto;
         }
 
