@@ -24,6 +24,13 @@ namespace ResellHub.Data.Repositories.OfferRepository
             return existOffer;
         }
 
+        public async Task<Offer> GetOfferByEncodedName(string offerEncodedName)
+        {
+            var existOffer = await _dbContext.Offers.FirstOrDefaultAsync(o => o.EncodedName == offerEncodedName);
+
+            return existOffer;
+        }
+
         public async Task<Offer> AddOffer(Offer offer)
         {
             await _dbContext.Offers.AddAsync(offer);
