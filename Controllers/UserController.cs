@@ -19,6 +19,7 @@ namespace ResellHub.Controllers
             _userService = userService;
         }
 
+        //User CRUD
         [HttpGet("users")]
         public async Task<IActionResult> GetUsers()
         {
@@ -76,5 +77,25 @@ namespace ResellHub.Controllers
 
             return Ok(actionInfo);
         }
+
+        //Message
+        [HttpPost("messages/{fromUserId}/{toUserId}")]
+        public async Task<IActionResult> SendMessage(Guid fromUserId, Guid toUserId, string content)
+        {
+            var actionInfo = await _userService.SendMessage(fromUserId, toUserId, content);
+
+            return Ok(actionInfo);
+        }
+
+        [HttpGet("users/{firstUser}/{secondUser}")]
+        public async Task<IActionResult> GetUsersMessages(Guid firstUser, Guid secondUser)
+        {
+            var messages = await _userService.ShowUsersMessages(firstUser, secondUser);
+
+            return Ok(messages);
+        }
+
+        //Role
+        //FollowOffer
     }
 }

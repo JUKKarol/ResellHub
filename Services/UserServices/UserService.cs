@@ -115,5 +115,43 @@ namespace ResellHub.Services.UserServices
             await _userRepository.DeleteUser(userId);
             return "User deleted successful";
         }
+
+        //Message
+        public async Task<string> SendMessage(Guid fromUserId, Guid ToUserId, string content)
+        {
+            if (await _userRepository.GetUserById(ToUserId) == null)
+            {
+                return "Sender didn't exist";
+            }
+
+            if (await _userRepository.GetUserById(ToUserId) == null)
+            {
+                return "Reciver didn't exist";
+            }
+
+            var message = new Message { FromUserId = fromUserId, ToUserId = ToUserId, Content = content };
+
+            await _userRepository.AddMessage(message);
+
+            return "Message send successful";
+        }
+
+        public async Task<dynamic> ShowUsersMessages(Guid firstUser, Guid secondUser)
+        {
+            if (await _userRepository.GetUserById(firstUser) == null)
+            {
+                return "First user didn't exist";
+            }
+
+            if (await _userRepository.GetUserById(secondUser) == null)
+            {
+                return "Second user didn't exist";
+            }
+
+            var messages = await _userRepository.GetMessagesBetweenTwoUsers(firstUser, secondUser);
+            return messages;
+        }
+        //Role
+        //FollowOffer
     }
 }
