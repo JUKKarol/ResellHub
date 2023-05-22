@@ -1,10 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using ResellHub.DTOs.UserDTOs;
-using ResellHub.Entities;
-using ResellHub.Enums;
 using ResellHub.Services.UserServices;
 
 namespace ResellHub.Controllers
@@ -20,7 +15,6 @@ namespace ResellHub.Controllers
             _userService = userService;
         }
 
-        //User CRUD
         [HttpGet("users")]
         public async Task<IActionResult> GetUsers()
         {
