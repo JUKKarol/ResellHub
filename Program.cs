@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using ResellHub.Data;
 using ResellHub.Data.Repositories.OfferRepository;
 using ResellHub.Data.Repositories.UserRepository;
+using ResellHub.Data.Seeders;
 using ResellHub.Services.OfferServices;
 using ResellHub.Services.UserServices;
 using ResellHub.Utilities.Mapings;
@@ -42,12 +43,16 @@ namespace ResellHub
             var app = builder.Build();
             var scope = app.Services.CreateScope();
             var dbContext = scope.ServiceProvider.GetService<ResellHubContext>();
+            var userUtilities = scope.ServiceProvider.GetService<IUserUtilities>();
 
             var pendingMigrations = dbContext.Database.GetPendingMigrations();
             if (pendingMigrations.Any())
             {
                 dbContext.Database.Migrate();
             }
+
+            var seeder = new Seeder(dbContext, userUtilities);
+            seeder.Seed();
 
             if (app.Environment.IsDevelopment())
             {
