@@ -33,6 +33,13 @@ namespace ResellHub.Data.Repositories.UserRepository
             return existUser;
         }
 
+        public async Task<User> GetUserByVeryficationToken(string userToken)
+        {
+            var existUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.VeryficationToken == userToken);
+
+            return existUser;
+        }
+
         public async Task<User> GetUserByEncodedName(string userEncodedName)
         {
             var existUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.EncodedName == userEncodedName);

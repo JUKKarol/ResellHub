@@ -1,15 +1,16 @@
-
-using AutoMapper;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using ResellHub.Data;
 using ResellHub.Data.Repositories.OfferRepository;
 using ResellHub.Data.Repositories.UserRepository;
 using ResellHub.Data.Seeders;
 using ResellHub.Services.OfferServices;
 using ResellHub.Services.UserServices;
-using ResellHub.Utilities.Mapings;
 using ResellHub.Utilities.UserUtilities;
+using Swashbuckle.AspNetCore.Filters;
+using System.Text;
 using System.Text.Json.Serialization;
 
 namespace ResellHub
@@ -22,7 +23,29 @@ namespace ResellHub
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                });
+
+                options.OperationFilter<SecurityRequirementsOperationFilter>();
+            });
+
+            builder.Services.AddAuthentication().AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    ValidateAudience = false,
+                    ValidateIssuer = false,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                            builder.Configuration.GetSection("AppSettings:Token").Value!))
+                };
+            });
 
             builder.Services.Configure<JsonOptions>(options =>
             {

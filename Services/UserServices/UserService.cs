@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using ResellHub.Data.Repositories.UserRepository;
 using ResellHub.DTOs.UserDTOs;
 using ResellHub.Entities;
@@ -10,14 +11,14 @@ namespace ResellHub.Services.UserServices
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        private readonly IUserUtilities _userService;
+        private readonly IUserUtilities _userUtilities;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
         public UserService(IUserRepository userRepository, IUserUtilities userService, IConfiguration configuration, IMapper mapper)
         {
             _userRepository = userRepository;
-            _userService = userService;
+            _userUtilities = userService;
             _configuration = configuration;
             _mapper = mapper;
         }
@@ -57,10 +58,10 @@ namespace ResellHub.Services.UserServices
 
             byte[] passwordHash;
             byte[] passwordSalt;
-            _userService.CreatePasswordHash(userDto.Password, out passwordHash, out passwordSalt);
+            _userUtilities.CreatePasswordHash(userDto.Password, out passwordHash, out passwordSalt);
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
-            user.VeryficationToken = _userService.CreateRandomToken();
+            user.VeryficationToken = _userUtilities.CreateRandomToken();
 
             await _userRepository.AddUser(user);
 
@@ -68,6 +69,53 @@ namespace ResellHub.Services.UserServices
             await _userRepository.CreateRole(userBasicRole);
 
             return "User ceated successful";
+        }
+
+        public async Task<string> LoginUser(UserLoginDto userDto)
+        {
+            var user = await _userRepository.GetUserByEmail(userDto.Email);
+
+            if (user == null)
+            {
+                return "User not found";
+            }
+
+            if (!_userUtilities.VerifyPasswordHash(userDto.Password, user.PasswordHash, user.PasswordSalt))
+            {
+                return "Password incorect";
+            }
+
+            if (user.VerifiedAt == null)
+            {
+                return "Not verified";
+            }
+
+            string token = await _userUtilities.CreateToken(userDto);
+
+            return token;
+        }
+
+        public async Task<string> VerifyUser(string token)
+        {
+            var user = await _userRepository.GetUserByVeryficationToken(token);
+            if (user == null)
+            {
+                return "Invalid token";
+            }
+
+            user.VerifiedAt = DateTime.Now;
+
+            return "User verified";
+        }
+
+        public async Task<string> ForgotPassword(string token)
+        {
+            return "";
+        }
+
+        public async Task<string> ResetPassword(string token)
+        {
+            return "";
         }
 
         public async Task<string> UpdatePhoneNumber(Guid userId, string phoneNumber)

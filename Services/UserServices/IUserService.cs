@@ -10,6 +10,10 @@ namespace ResellHub.Services.UserServices
         Task<List<UserPublicDto>> GetUsers();
         Task<UserPublicDto> GetUserById(Guid userId);
         Task<string> CreateUser(UserRegistrationDto user);
+        Task<string> LoginUser(UserLoginDto userDto);
+        Task<string> VerifyUser(string token);
+        Task<string> ForgotPassword(string token);
+        Task<string> ResetPassword(string token);
         Task<string> UpdatePhoneNumber(Guid userId, string phoneNumber);
         Task<string> UpdateCity(Guid userId, string city);
         Task<string> DeleteUser(Guid userId);
