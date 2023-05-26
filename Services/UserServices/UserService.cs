@@ -43,6 +43,20 @@ namespace ResellHub.Services.UserServices
             return userDto;
         }
 
+        public async Task<bool> CheckIsUserExistById(Guid userId)
+        {
+            var user = await _userRepository.GetUserById(userId);
+
+            if (user == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
         public async Task<string> CreateUser(UserRegistrationDto userDto)
         {
             if(await _userRepository.GetUserByEmail(userDto.Email) != null)
@@ -73,7 +87,7 @@ namespace ResellHub.Services.UserServices
 
             _emailService.SendVeryficationToken(userDto.Email, user.VeryficationToken);
 
-            return "User ceated successful";
+            return "User ceated successful, email with conformation token was sent";
         }
 
         public async Task<string> LoginUser(UserLoginDto userDto)
@@ -196,16 +210,6 @@ namespace ResellHub.Services.UserServices
         //Message
         public async Task<string> SendMessage(Guid fromUserId, Guid ToUserId, string content)
         {
-            if (await _userRepository.GetUserById(ToUserId) == null)
-            {
-                return "Sender didn't exist";
-            }
-
-            if (await _userRepository.GetUserById(ToUserId) == null)
-            {
-                return "Reciver didn't exist";
-            }
-
             var message = new Message { FromUserId = fromUserId, ToUserId = ToUserId, Content = content };
 
             await _userRepository.AddMessage(message);

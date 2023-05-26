@@ -9,6 +9,7 @@ namespace ResellHub.Services.UserServices
         //User
         Task<List<UserPublicDto>> GetUsers();
         Task<UserPublicDto> GetUserById(Guid userId);
+        Task<bool> CheckIsUserExistById(Guid userId);
         Task<string> CreateUser(UserRegistrationDto user);
         Task<string> LoginUser(UserLoginDto userDto);
         Task<string> VerifyUser(string token);

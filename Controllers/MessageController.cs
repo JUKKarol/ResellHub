@@ -16,10 +16,15 @@ namespace ResellHub.Controllers
             _userService = userService;
         }
 
-        [HttpGet("messages/{firstUser}/{secondUser}"), Authorize(Roles = "User")]
-        public async Task<IActionResult> GetUsersMessages(Guid firstUser, Guid secondUser)
+        [HttpGet("messages/{firstUserId}/{secondUserId}"), Authorize(Roles = "User")]
+        public async Task<IActionResult> GetUsersMessages(Guid firstUserId, Guid secondUserId)
         {
-            var messages = await _userService.ShowUsersMessages(firstUser, secondUser);
+            if (!await _userService.CheckIsUserExistById(firstUserId) || !await _userService.CheckIsUserExistById(secondUserId))
+            {
+                return BadRequest("sender or receiver doesn't exist");
+            }
+
+            var messages = await _userService.ShowUsersMessages(firstUserId, secondUserId);
 
             return Ok(messages);
         }
@@ -27,9 +32,12 @@ namespace ResellHub.Controllers
         [HttpPost("messages/{fromUserId}/{toUserId}"), Authorize(Roles = "User")]
         public async Task<IActionResult> SendMessage(Guid fromUserId, Guid toUserId, string content)
         {
-            var actionInfo = await _userService.SendMessage(fromUserId, toUserId, content);
+            if (!await _userService.CheckIsUserExistById(fromUserId) || !await _userService.CheckIsUserExistById(toUserId))
+            {
+                return BadRequest("sender or receiver doesn't exist");
+            }
 
-            return Ok(actionInfo);
+            return Ok(await _userService.SendMessage(fromUserId, toUserId, content));
         }
     }
 }
