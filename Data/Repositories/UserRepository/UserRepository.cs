@@ -40,6 +40,13 @@ namespace ResellHub.Data.Repositories.UserRepository
             return existUser;
         }
 
+        public async Task<User> GetUserByResetToken(string userToken)
+        {
+            var existUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.PasswordResetToken == userToken);
+
+            return existUser;
+        }
+
         public async Task<User> GetUserByEncodedName(string userEncodedName)
         {
             var existUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.EncodedName == userEncodedName);

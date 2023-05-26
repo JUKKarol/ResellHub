@@ -10,6 +10,7 @@ namespace ResellHub.Data.Repositories.UserRepository
         Task<User> GetUserById(Guid userId);
         Task<User> GetUserByEmail(string userEmail);
         Task<User> GetUserByVeryficationToken(string userToken);
+        Task<User> GetUserByResetToken(string userToken);
         Task<User> GetUserByEncodedName(string userEncodedName);
         Task<User> AddUser(User user);
         Task<User> UpdateUser(Guid userId, User user);

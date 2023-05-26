@@ -109,18 +109,47 @@ namespace ResellHub.Services.UserServices
             }
 
             user.VerifiedAt = DateTime.Now;
+            await _userRepository.UpdateUser(user.Id, user);
 
             return "User verified";
         }
 
-        public async Task<string> ForgotPassword(string token)
+        public async Task<string> ForgotPassword(string userEmail)
         {
-            return "";
+            var user = await _userRepository.GetUserByEmail(userEmail);
+            if (user == null)
+            {
+                return "User not found";
+            }
+
+            user.PasswordResetToken = _userUtilities.CreateRandomToken();
+            user.ResetTokenExpires = DateTime.Now.AddDays(1);
+
+            _emailService.SendPasswordResetToken(userEmail, user.PasswordResetToken);
+
+            await _userRepository.UpdateUser(user.Id, user);
+
+            return "Reset code was sent to your email";
         }
 
-        public async Task<string> ResetPassword(string token)
+        public async Task<string> ResetPassword(UserResetPasswordDto userDto)
         {
-            return "";
+            var user = await _userRepository.GetUserByResetToken(userDto.Token);
+            if (user == null || user.ResetTokenExpires < DateTime.Now)
+            {
+                return "Invalid Token.";
+            }
+
+            _userUtilities.CreatePasswordHash(userDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
+
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+            user.PasswordResetToken = null;
+            user.ResetTokenExpires = null;
+
+            await _userRepository.UpdateUser(user.Id, user);
+
+            return "Password successfully reset.";
         }
 
         public async Task<string> UpdatePhoneNumber(Guid userId, string phoneNumber)

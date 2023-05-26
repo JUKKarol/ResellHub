@@ -12,8 +12,8 @@ namespace ResellHub.Services.UserServices
         Task<string> CreateUser(UserRegistrationDto user);
         Task<string> LoginUser(UserLoginDto userDto);
         Task<string> VerifyUser(string token);
-        Task<string> ForgotPassword(string token);
-        Task<string> ResetPassword(string token);
+        Task<string> ForgotPassword(string userEmail);
+        Task<string> ResetPassword(UserResetPasswordDto userDto);
         Task<string> UpdatePhoneNumber(Guid userId, string phoneNumber);
         Task<string> UpdateCity(Guid userId, string city);
         Task<string> DeleteUser(Guid userId);

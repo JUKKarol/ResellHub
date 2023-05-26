@@ -38,13 +38,13 @@ namespace ResellHub.Controllers
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword(string userEmail)
         {
-            return BadRequest();
+            return Ok(await _userService.ForgotPassword(userEmail));
         }
 
         [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword(UserResetPasswordDto ownerDto)
+        public async Task<IActionResult> ResetPassword(UserResetPasswordDto userDto)
         {
-            return BadRequest();
+            return Ok(await _userService.ResetPassword(userDto));
         }
     }
 }

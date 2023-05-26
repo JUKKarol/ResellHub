@@ -6,6 +6,7 @@ using ResellHub.Data;
 using ResellHub.Data.Repositories.OfferRepository;
 using ResellHub.Data.Repositories.UserRepository;
 using ResellHub.Data.Seeders;
+using ResellHub.Services.EmailService;
 using ResellHub.Services.OfferServices;
 using ResellHub.Services.UserServices;
 using ResellHub.Utilities.UserUtilities;
@@ -60,6 +61,7 @@ namespace ResellHub
 
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IOfferService, OfferService>();
+            builder.Services.AddScoped<IEmailService, EmailService>();
 
             builder.Services.AddScoped<IUserUtilities, UserUtilities>();
 
