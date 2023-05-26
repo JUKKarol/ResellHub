@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ResellHub.Services.UserServices;
 
@@ -15,7 +16,7 @@ namespace ResellHub.Controllers
             _userService = userService;
         }
 
-        [HttpGet("followingoffers/{userId}")]
+        [HttpGet("followingoffers/{userId}"), Authorize(Roles = "User")]
         public async Task<IActionResult> GetUserFollowingOffers(Guid userId)
         {
             var actionInfo = await _userService.GetUserFollowingOffers(userId);
@@ -23,7 +24,7 @@ namespace ResellHub.Controllers
             return Ok(actionInfo);
         }
 
-        [HttpPost("followingoffers/{userId}/{offerId}")]
+        [HttpPost("followingoffers/{userId}/{offerId}"), Authorize(Roles = "User")]
         public async Task<IActionResult> AddOfferToFollowing(Guid userId, Guid offerId)
         {
             var actionInfo = await _userService.AddOfferToFollowing(userId, offerId);
@@ -31,7 +32,7 @@ namespace ResellHub.Controllers
             return Ok(actionInfo);
         }
 
-        [HttpDelete("followingoffers/{followingOfferId}")]
+        [HttpDelete("followingoffers/{followingOfferId}"), Authorize(Roles = "User")]
         public async Task<IActionResult> RemoveOfferFromFollowing(Guid followingOfferId)
         {
             var actionInfo = await _userService.RemoveOfferFromFollowing(followingOfferId);

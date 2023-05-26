@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ResellHub.DTOs.UserDTOs;
 using ResellHub.Services.UserServices;
 
@@ -15,7 +16,7 @@ namespace ResellHub.Controllers
             _userService = userService;
         }
 
-        [HttpGet("users")]
+        [HttpGet("users"), Authorize(Roles = "User")]
         public async Task<IActionResult> GetUsers()
         {
             var users = await _userService.GetUsers();
@@ -28,7 +29,7 @@ namespace ResellHub.Controllers
             return Ok(users);
         }
 
-        [HttpGet("users/{userId}")]
+        [HttpGet("users/{userId}"), Authorize(Roles = "User")]
         public async Task<IActionResult> GetUserById(Guid userId)
         {
             var user = await _userService.GetUserById(userId);
@@ -41,7 +42,7 @@ namespace ResellHub.Controllers
             return Ok(user);
         }
 
-        [HttpPost("users")]
+        [HttpPost("users"), Authorize(Roles = "Moderator")]
         public async Task<IActionResult> CreateUser(UserRegistrationDto userDto)
         {
             var actionInfo = await _userService.CreateUser(userDto);
@@ -49,7 +50,7 @@ namespace ResellHub.Controllers
             return Ok(actionInfo);
         }
 
-        [HttpPut("users/{userId}/phonenumber")]
+        [HttpPut("users/{userId}/phonenumber"), Authorize(Roles = "User")]
         public async Task<IActionResult> UpdateUserPhoneNumber(Guid userId, string newPhoneNumber)
         {
             var actionInfo = await _userService.UpdatePhoneNumber(userId, newPhoneNumber);
@@ -57,7 +58,7 @@ namespace ResellHub.Controllers
             return Ok(actionInfo);
         }
 
-        [HttpPut("users/{userId}/city")]
+        [HttpPut("users/{userId}/city"), Authorize(Roles = "User")]
         public async Task<IActionResult> UpdateUserCity(Guid userId, string newCity)
         {
             var actionInfo = await _userService.UpdateCity(userId, newCity);
@@ -65,7 +66,7 @@ namespace ResellHub.Controllers
             return Ok(actionInfo);
         }
 
-        [HttpDelete("users/{userId}")]
+        [HttpDelete("users/{userId}"), Authorize(Roles = "User")]
         public async Task<IActionResult> DeleteUser(Guid userId)
         {
             var actionInfo = await _userService.DeleteUser(userId);

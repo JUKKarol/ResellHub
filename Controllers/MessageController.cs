@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ResellHub.Services.UserServices;
 
@@ -15,7 +16,7 @@ namespace ResellHub.Controllers
             _userService = userService;
         }
 
-        [HttpGet("messages/{firstUser}/{secondUser}")]
+        [HttpGet("messages/{firstUser}/{secondUser}"), Authorize(Roles = "User")]
         public async Task<IActionResult> GetUsersMessages(Guid firstUser, Guid secondUser)
         {
             var messages = await _userService.ShowUsersMessages(firstUser, secondUser);
@@ -23,7 +24,7 @@ namespace ResellHub.Controllers
             return Ok(messages);
         }
 
-        [HttpPost("messages/{fromUserId}/{toUserId}")]
+        [HttpPost("messages/{fromUserId}/{toUserId}"), Authorize(Roles = "User")]
         public async Task<IActionResult> SendMessage(Guid fromUserId, Guid toUserId, string content)
         {
             var actionInfo = await _userService.SendMessage(fromUserId, toUserId, content);

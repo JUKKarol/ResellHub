@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ResellHub.DTOs.OfferDTOs;
 using ResellHub.DTOs.UserDTOs;
@@ -24,13 +25,13 @@ namespace ResellHub.Controllers
             return Ok(await _offerService.GetOffers());
         }
 
-        [HttpGet("offers/{userId}")]
+        [HttpGet("offers/{userId}"), Authorize(Roles = "User")]
         public async Task<IActionResult> GetUserOffers(Guid userId)
         {
             return Ok(await _offerService.GetUserOffers(userId));
         }
 
-        [HttpPost("offers")]
+        [HttpPost("offers"), Authorize(Roles = "User")]
         public async Task<IActionResult> CreateOffer(OfferCreateDto offerDto)
         {
             var actionInfo = await _offerService.AddOffer(offerDto);
@@ -38,7 +39,7 @@ namespace ResellHub.Controllers
             return Ok(actionInfo);
         }
 
-        [HttpPut("offers/{offerId}")]
+        [HttpPut("offers/{offerId}"), Authorize(Roles = "User")]
         public async Task<IActionResult> UpdateOffer(Guid offerId, OfferCreateDto offerDto)
         {
             var actionInfo = await _offerService.UpdateOffer(offerId, offerDto);
@@ -46,7 +47,7 @@ namespace ResellHub.Controllers
             return Ok(actionInfo);
         }
 
-        [HttpDelete("offers/{offerId}")]
+        [HttpDelete("offers/{offerId}"), Authorize(Roles = "User")]
         public async Task<IActionResult> DeleteOffer(Guid offerId)
         {
             var actionInfo = await _offerService.DeleteOffer(offerId);
