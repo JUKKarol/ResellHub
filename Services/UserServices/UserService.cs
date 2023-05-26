@@ -4,6 +4,7 @@ using ResellHub.Data.Repositories.UserRepository;
 using ResellHub.DTOs.UserDTOs;
 using ResellHub.Entities;
 using ResellHub.Enums;
+using ResellHub.Services.EmailService;
 using ResellHub.Utilities.UserUtilities;
 
 namespace ResellHub.Services.UserServices
@@ -12,13 +13,15 @@ namespace ResellHub.Services.UserServices
     {
         private readonly IUserRepository _userRepository;
         private readonly IUserUtilities _userUtilities;
+        private readonly IEmailService _emailService;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
-        public UserService(IUserRepository userRepository, IUserUtilities userService, IConfiguration configuration, IMapper mapper)
+        public UserService(IUserRepository userRepository, IUserUtilities userUtilities, IEmailService emailService, IConfiguration configuration, IMapper mapper)
         {
             _userRepository = userRepository;
-            _userUtilities = userService;
+            _userUtilities = userUtilities;
+            _emailService = emailService;
             _configuration = configuration;
             _mapper = mapper;
         }
@@ -67,6 +70,8 @@ namespace ResellHub.Services.UserServices
 
             var userBasicRole = new Role { UserId = user.Id };
             await _userRepository.CreateRole(userBasicRole);
+
+            _emailService.SendVeryficationToken(userDto.Email, user.VeryficationToken);
 
             return "User ceated successful";
         }
