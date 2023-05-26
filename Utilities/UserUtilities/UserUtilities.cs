@@ -58,19 +58,20 @@ namespace ResellHub.Utilities.UserUtilities
                 new Claim(ClaimTypes.Email, userDto.Email),
             };
 
-            if (userRoles.FirstOrDefault(ur => ur.UserRole == UserRoles.Moderator || ur.UserRole == UserRoles.Administrator) != null)
+            if (userRoles.Any(ur => ur.UserRole == UserRoles.Moderator || ur.UserRole == UserRoles.Administrator || ur.UserRole == UserRoles.User))
             {
                 claims.Add(new Claim(ClaimTypes.Role, UserRoles.User.ToString()));
             }
 
-            if (userRoles.FirstOrDefault(ur => ur.UserRole == UserRoles.Administrator) != null)
+            if (userRoles.Any(ur => ur.UserRole == UserRoles.Moderator))
             {
                 claims.Add(new Claim(ClaimTypes.Role, UserRoles.Moderator.ToString()));
             }
 
-            foreach (var role in userRoles)
+            if (userRoles.Any(ur => ur.UserRole == UserRoles.Administrator))
             {
-                claims.Add(new Claim(ClaimTypes.Role, role.ToString()));
+                claims.Add(new Claim(ClaimTypes.Role, UserRoles.Moderator.ToString()));
+                claims.Add(new Claim(ClaimTypes.Role, UserRoles.Administrator.ToString()));
             }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(

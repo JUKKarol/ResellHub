@@ -130,6 +130,7 @@ namespace ResellHub.Data.Repositories.UserRepository
         {
             var usersMessages = await _dbContext.Messages
                 .Where(m => (m.ToUserId == firstUserId && m.FromUserId == secondUserId) || (m.ToUserId == secondUserId && m.FromUserId == firstUserId))
+                .OrderBy(m => m.CreatedDate)
                 .ToListAsync();
 
             return usersMessages;
