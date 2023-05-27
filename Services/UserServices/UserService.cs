@@ -57,6 +57,20 @@ namespace ResellHub.Services.UserServices
             }
         }
 
+        public async Task<bool> CheckIsUserExistByEmail(string userEmail)
+        {
+            var user = await _userRepository.GetUserByEmail(userEmail);
+
+            if (user == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
         public async Task<string> CreateUser(UserRegistrationDto userDto)
         {
             if(await _userRepository.GetUserByEmail(userDto.Email) != null)

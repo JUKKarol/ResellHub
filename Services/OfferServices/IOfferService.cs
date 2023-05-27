@@ -5,8 +5,8 @@ namespace ResellHub.Services.OfferServices
     public interface IOfferService
     {
         Task<List<OfferPublicDto>> GetOffers();
-        Task<dynamic> GetUserOffers(Guid userId);
-        Task<dynamic> GetOfferById(Guid offerId);
+        Task<List<OfferPublicDto>> GetUserOffers(Guid userId);
+        Task<OfferPublicDto> GetOfferById(Guid offerId);
         Task<bool> CheckIsOfferExistById(Guid offerId);
         Task<string> AddOffer(OfferCreateDto offerDto);
         Task<string> UpdateOffer(Guid offerId, OfferCreateDto offerDto);

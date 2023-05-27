@@ -10,6 +10,7 @@ namespace ResellHub.Services.UserServices
         Task<List<UserPublicDto>> GetUsers();
         Task<UserPublicDto> GetUserById(Guid userId);
         Task<bool> CheckIsUserExistById(Guid userId);
+        Task<bool> CheckIsUserExistByEmail(string userEmail);
         Task<string> CreateUser(UserRegistrationDto user);
         Task<string> LoginUser(UserLoginDto userDto);
         Task<string> VerifyUser(string token);
@@ -20,7 +21,7 @@ namespace ResellHub.Services.UserServices
         Task<string> DeleteUser(Guid userId);
         //Message
         Task<string> SendMessage(Guid fromUserId, Guid ToUserId, string content);
-        Task<dynamic> ShowUsersMessages(Guid firstUser, Guid secondUser);
+        Task<List<Message>> ShowUsersMessages(Guid firstUser, Guid secondUser);
         //Role
         Task<List<Role>> GetUserRoles(Guid userId);
         Task<bool> CheckIsRoleExistById(Guid roleId);
@@ -28,7 +29,7 @@ namespace ResellHub.Services.UserServices
         Task<string> UpdateRole(Guid roleId, UserRoles userNewRole);
         Task<string> DeleteRole(Guid roleId);
         //FollowOffer
-        Task<dynamic> GetUserFollowingOffers(Guid userId);
+        Task<List<FollowOffer>> GetUserFollowingOffers(Guid userId);
         Task<bool> CheckIsFollowingExistById(Guid followingOfferId);
         Task<string> AddOfferToFollowing(Guid userId, Guid offerId);
         Task<string> RemoveOfferFromFollowing(Guid followingOfferId);

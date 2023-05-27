@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ResellHub.DTOs.UserDTOs;
+using ResellHub.Entities;
 using ResellHub.Services.UserServices;
 
 namespace ResellHub.Controllers
@@ -19,59 +20,62 @@ namespace ResellHub.Controllers
         [HttpGet("users"), Authorize(Roles = "User")]
         public async Task<IActionResult> GetUsers()
         {
-            var users = await _userService.GetUsers();
-
-            if (users.Count == 0)
-            {
-                return NotFound("User didn't exist");
-            }
-
-            return Ok(users);
+            return Ok(await _userService.GetUsers());
         }
 
         [HttpGet("users/{userId}"), Authorize(Roles = "User")]
         public async Task<IActionResult> GetUserById(Guid userId)
         {
-            var user = await _userService.GetUserById(userId);
-
-            if (user == null)
+            if (!await _userService.CheckIsUserExistById(userId))
             {
-                return NotFound("User didn't exist");
+                return BadRequest("user doesn't exist");
             }
 
-            return Ok(user);
+            return Ok(await _userService.GetUserById(userId));
         }
 
         [HttpPost("users"), Authorize(Roles = "Moderator")]
         public async Task<IActionResult> CreateUser(UserRegistrationDto userDto)
         {
-            var actionInfo = await _userService.CreateUser(userDto);
+            if (!await _userService.CheckIsUserExistByEmail(userDto.Email))
+            {
+                return BadRequest("email is already in use");
+            }
 
-            return Ok(actionInfo);
+            return Ok(_userService.CreateUser(userDto));
         }
 
         [HttpPut("users/{userId}/phonenumber"), Authorize(Roles = "User")]
         public async Task<IActionResult> UpdateUserPhoneNumber(Guid userId, string newPhoneNumber)
         {
-            var actionInfo = await _userService.UpdatePhoneNumber(userId, newPhoneNumber);
+            if (!await _userService.CheckIsUserExistById(userId))
+            {
+                return BadRequest("user doesn't exist");
+            }
 
-            return Ok(actionInfo);
+            return Ok(await _userService.UpdatePhoneNumber(userId, newPhoneNumber));
         }
 
         [HttpPut("users/{userId}/city"), Authorize(Roles = "User")]
         public async Task<IActionResult> UpdateUserCity(Guid userId, string newCity)
         {
-            var actionInfo = await _userService.UpdateCity(userId, newCity);
+            if (!await _userService.CheckIsUserExistById(userId))
+            {
+                return BadRequest("user doesn't exist");
+            }
 
-            return Ok(actionInfo);
+            return Ok(await _userService.UpdateCity(userId, newCity));
         }
 
         [HttpDelete("users/{userId}"), Authorize(Roles = "User")]
         public async Task<IActionResult> DeleteUser(Guid userId)
         {
-            var actionInfo = await _userService.DeleteUser(userId);
+            if (!await _userService.CheckIsUserExistById(userId))
+            {
+                return BadRequest("user doesn't exist");
+            }
 
-            return Ok(actionInfo);
+            return Ok(await _userService.DeleteUser(userId));
         }
     }
 }
