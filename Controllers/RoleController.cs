@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ResellHub.Entities;
 using ResellHub.Enums;
 using ResellHub.Services.UserServices;
 
@@ -20,33 +21,45 @@ namespace ResellHub.Controllers
         [HttpGet("roles/{userId}"), Authorize(Roles = "Moderator")]
         public async Task<IActionResult> GetUserRoles(Guid userId)
         {
-            var actionInfo = await _userService.GetUserRoles(userId);
+            if (!await _userService.CheckIsUserExistById(userId))
+            {
+                return BadRequest("user doesn't exist");
+            }
 
-            return Ok(actionInfo);
+            return Ok(await _userService.GetUserRoles(userId));
         }
 
         [HttpPost("roles/{userId}"), Authorize(Roles = "Administrator")]
         public async Task<IActionResult> CreateRole(Guid userId, UserRoles userRole)
         {
-            var actionInfo = await _userService.AddRole(userId, userRole);
+            if (!await _userService.CheckIsUserExistById(userId))
+            {
+                return BadRequest("user doesn't exist");
+            }
 
-            return Ok(actionInfo);
+            return Ok(await _userService.AddRole(userId, userRole));
         }
 
         [HttpPut("roles/{roleId}"), Authorize(Roles = "Administrator")]
         public async Task<IActionResult> ChangeRole(Guid roleId, UserRoles userNewRole)
         {
-            var actionInfo = await _userService.UpdateRole(roleId, userNewRole);
+            if (!await _userService.CheckIsRoleExistById(roleId))
+            {
+                return BadRequest("role doesn't exist");
+            }
 
-            return Ok(actionInfo);
+            return Ok(await _userService.UpdateRole(roleId, userNewRole));
         }
 
         [HttpDelete("roles/{roleId}"), Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteRole(Guid roleId)
         {
-            var actionInfo = await _userService.DeleteRole(roleId);
+            if (!await _userService.CheckIsRoleExistById(roleId))
+            {
+                return BadRequest("role doesn't exist");
+            }
 
-            return Ok(actionInfo);
+            return Ok(await _userService.DeleteRole(roleId));
         }
     }
 }

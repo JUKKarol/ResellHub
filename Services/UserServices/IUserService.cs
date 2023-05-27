@@ -23,11 +23,13 @@ namespace ResellHub.Services.UserServices
         Task<dynamic> ShowUsersMessages(Guid firstUser, Guid secondUser);
         //Role
         Task<List<Role>> GetUserRoles(Guid userId);
+        Task<bool> CheckIsRoleExistById(Guid roleId);
         Task<string> AddRole(Guid userId, UserRoles userRole);
         Task<string> UpdateRole(Guid roleId, UserRoles userNewRole);
         Task<string> DeleteRole(Guid roleId);
         //FollowOffer
         Task<dynamic> GetUserFollowingOffers(Guid userId);
+        Task<bool> CheckIsFollowingExistById(Guid followingOfferId);
         Task<string> AddOfferToFollowing(Guid userId, Guid offerId);
         Task<string> RemoveOfferFromFollowing(Guid followingOfferId);
     }

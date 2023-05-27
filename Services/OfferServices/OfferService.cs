@@ -33,31 +33,34 @@ namespace ResellHub.Services.OfferServices
             return offersDto;
         }
 
-        public async Task<dynamic> GetUserOffers(Guid userId)
+        public async Task<List<OfferPublicDto>> GetUserOffers(Guid userId)
         {
-            if (_userRepository.GetUserById(userId) == null)
-            {
-                return "User didn't exist";
-            }
-
             var offers = await _offerRepository.GetUserOffers(userId);
             var offersDto = _mapper.Map<List<OfferPublicDto>>(offers);
 
             return offersDto;
         }
 
-        public async Task<dynamic> GetOfferById(Guid offerId)
+        public async Task<OfferPublicDto> GetOfferById(Guid offerId)
+        {
+            var offer = await _offerRepository.GetOfferById(offerId);
+            var offerDto = _mapper.Map<OfferPublicDto>(offer);
+
+            return offerDto;
+        }
+
+        public async Task<bool> CheckIsOfferExistById(Guid offerId)
         {
             var offer = await _offerRepository.GetOfferById(offerId);
 
             if (offer == null)
             {
-                return "Offer didn't exist";
+                return false;
             }
-
-            var offerDto = _mapper.Map<OfferPublicDto>(offer);
-
-            return offerDto;
+            else
+            {
+                return true;
+            }
         }
 
         public async Task<string> AddOffer(OfferCreateDto offerDto)
@@ -80,11 +83,6 @@ namespace ResellHub.Services.OfferServices
         {
             var offfer = await _offerRepository.GetOfferById(offerId);
 
-            if (offfer == null)
-            {
-                return "Offer didn't exist";
-            }
-
             var updatedOffer = _mapper.Map<Offer>(offerDto);
 
             await _offerRepository.UpdateOffer(offerId, updatedOffer);
@@ -93,11 +91,6 @@ namespace ResellHub.Services.OfferServices
 
         public async Task<string> DeleteOffer(Guid offerId)
         {
-            if (await _offerRepository.GetOfferById(offerId) == null)
-            {
-                return "Offer didn't exist";
-            }
-
             await _offerRepository.DeleteOffer(offerId);
             return "Offer deleted successful";
         }

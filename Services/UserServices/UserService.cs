@@ -217,37 +217,33 @@ namespace ResellHub.Services.UserServices
             return "Message send successful";
         }
 
-        public async Task<dynamic> ShowUsersMessages(Guid firstUser, Guid secondUser)
+        public async Task<List<Message>> ShowUsersMessages(Guid firstUser, Guid secondUser)
         {
-            if (await _userRepository.GetUserById(firstUser) == null)
-            {
-                return "First user didn't exist";
-            }
-
-            if (await _userRepository.GetUserById(secondUser) == null)
-            {
-                return "Second user didn't exist";
-            }
-
-            var messages = await _userRepository.GetMessagesBetweenTwoUsers(firstUser, secondUser);
-            return messages;
+            return await _userRepository.GetMessagesBetweenTwoUsers(firstUser, secondUser);
         }
 
         //Role
         public async Task<List<Role>> GetUserRoles(Guid userId)
         {
-           var roles = await _userRepository.GetUserRoles(userId);
+            return await _userRepository.GetUserRoles(userId);
+        }
 
-            return roles;
+        public async Task<bool> CheckIsRoleExistById(Guid roleId)
+        {
+            var role = await _userRepository.GetRoleById(roleId);
+
+            if (role == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         public async Task<string> AddRole(Guid userId, UserRoles userRole)
         {
-            if (await _userRepository.GetUserById(userId) == null)
-            {
-                return "User didn't exist";
-            }
-
             var role = new Role { UserId = userId, UserRole = userRole };
 
             await _userRepository.CreateRole(role);
@@ -257,13 +253,6 @@ namespace ResellHub.Services.UserServices
 
         public async Task<string> UpdateRole(Guid roleId, UserRoles userNewRole)
         {
-            var existRole = await _userRepository.GetRoleById(roleId);
-
-            if (existRole == null)
-            {
-                return "Role didn't exist";
-            }
-
             await _userRepository.ChangeRole(roleId, userNewRole);
 
             return "Role changed successful";
@@ -271,37 +260,32 @@ namespace ResellHub.Services.UserServices
 
         public async Task<string> DeleteRole(Guid roleId)
         {
-            if (await _userRepository.GetRoleById(roleId) == null)
-            {
-                return "Role didn't exist";
-            }
-
             await _userRepository.DeleteRole(roleId);
             return "Role deleted successful";
         }
 
         //FollowOffer
-        public async Task<dynamic> GetUserFollowingOffers(Guid userId)
+        public async Task<List<FollowOffer>> GetUserFollowingOffers(Guid userId)
         {
-            if (_userRepository.GetUserById(userId) == null)
+            return await _userRepository.GetUserFollowingOffers(userId);
+        }
+
+        public async Task<bool> CheckIsFollowingExistById(Guid followingOfferId)
+        {
+            var followOffer = await _userRepository.GetUserFollowingOfferById(followingOfferId);
+
+            if (followOffer == null)
             {
-                return "User didn't exist";
+                return false;
             }
-
-            var userFollowingOffers = await _userRepository.GetUserFollowingOffers(userId);
-
-            return userFollowingOffers;
+            else
+            {
+                return true;
+            }
         }
 
         public async Task<string> AddOfferToFollowing(Guid userId, Guid offerId)
         {
-            if (_userRepository.GetUserById(userId) == null)
-            {
-                return "User didn't exist";
-            }
-
-            //Check is offer eixst
-
             var followingOffer = new FollowOffer { UserId = userId, OfferId = offerId };
             await _userRepository.AddFollowingOffer(followingOffer);
 
@@ -310,13 +294,6 @@ namespace ResellHub.Services.UserServices
 
         public async Task<string> RemoveOfferFromFollowing(Guid followingOfferId)
         {
-            var followingOffer = _userRepository.GetUserFollowingOfferById(followingOfferId);
-
-            if (followingOffer == null)
-            {
-                return "Following Offer didn't exist";
-            }
-
             await _userRepository.DeleteFollowingOffer(followingOfferId);
             return "Offer is not following anymore";
         }

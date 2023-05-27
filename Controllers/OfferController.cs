@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ResellHub.DTOs.OfferDTOs;
 using ResellHub.DTOs.UserDTOs;
+using ResellHub.Entities;
 using ResellHub.Services.OfferServices;
 using ResellHub.Services.UserServices;
 
@@ -13,10 +14,12 @@ namespace ResellHub.Controllers
     public class OfferController : ControllerBase
     {
         private readonly IOfferService _offerService;
+        private readonly IUserService _userService;
 
-        public OfferController(IOfferService offerService)
+        public OfferController(IOfferService offerService, IUserService userService)
         {
             _offerService = offerService;
+            _userService = userService;
         }
 
         [HttpGet("offers")]
@@ -28,31 +31,40 @@ namespace ResellHub.Controllers
         [HttpGet("offers/{userId}"), Authorize(Roles = "User")]
         public async Task<IActionResult> GetUserOffers(Guid userId)
         {
+            if (!await _userService.CheckIsUserExistById(userId))
+            {
+                return BadRequest("user doesn't exist");
+            }
+
             return Ok(await _offerService.GetUserOffers(userId));
         }
 
         [HttpPost("offers"), Authorize(Roles = "User")]
         public async Task<IActionResult> CreateOffer(OfferCreateDto offerDto)
         {
-            var actionInfo = await _offerService.AddOffer(offerDto);
-
-            return Ok(actionInfo);
+            return Ok(await _offerService.AddOffer(offerDto));
         }
 
         [HttpPut("offers/{offerId}"), Authorize(Roles = "User")]
         public async Task<IActionResult> UpdateOffer(Guid offerId, OfferCreateDto offerDto)
         {
-            var actionInfo = await _offerService.UpdateOffer(offerId, offerDto);
+            if (!await _offerService.CheckIsOfferExistById(offerId))
+            {
+                return BadRequest("offer doesn't exist");
+            }
 
-            return Ok(actionInfo);
+            return Ok(await _offerService.UpdateOffer(offerId, offerDto));
         }
 
         [HttpDelete("offers/{offerId}"), Authorize(Roles = "User")]
         public async Task<IActionResult> DeleteOffer(Guid offerId)
         {
-            var actionInfo = await _offerService.DeleteOffer(offerId);
+            if (!await _offerService.CheckIsOfferExistById(offerId))
+            {
+                return BadRequest("offer doesn't exist");
+            }
 
-            return Ok(actionInfo);
+            return Ok(await _offerService.DeleteOffer(offerId));
         }
     }
 }
