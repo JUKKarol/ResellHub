@@ -73,11 +73,6 @@ namespace ResellHub.Services.UserServices
 
         public async Task<string> CreateUser(UserRegistrationDto userDto)
         {
-            if(await _userRepository.GetUserByEmail(userDto.Email) != null)
-            {
-                return "User already exist";
-            }
-
             var user = _mapper.Map<User>(userDto);
             user.EncodeName();
 
