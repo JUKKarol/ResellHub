@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using ResellHub.Data.Repositories.UserRepository;
+using ResellHub.DTOs.OfferDTOs;
 using ResellHub.DTOs.UserDTOs;
 using ResellHub.Entities;
 using ResellHub.Enums;
@@ -16,14 +18,16 @@ namespace ResellHub.Services.UserServices
         private readonly IEmailService _emailService;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
+        private readonly IValidator<UserRegistrationDto> _userValidator;
 
-        public UserService(IUserRepository userRepository, IUserUtilities userUtilities, IEmailService emailService, IConfiguration configuration, IMapper mapper)
+        public UserService(IUserRepository userRepository, IUserUtilities userUtilities, IEmailService emailService, IConfiguration configuration, IMapper mapper, IValidator<UserRegistrationDto> userValidator)
         {
             _userRepository = userRepository;
             _userUtilities = userUtilities;
             _emailService = emailService;
             _configuration = configuration;
             _mapper = mapper;
+            _userValidator = userValidator;
         }
 
         //User
@@ -73,6 +77,13 @@ namespace ResellHub.Services.UserServices
 
         public async Task<string> CreateUser(UserRegistrationDto userDto)
         {
+            var validationResult = await _userValidator.ValidateAsync(userDto);
+            if (!validationResult.IsValid)
+            {
+                var validationErrors = validationResult.Errors.Select(error => error.ErrorMessage);
+                return string.Join(Environment.NewLine, validationErrors);
+            }
+
             var user = _mapper.Map<User>(userDto);
             user.EncodeName();
 

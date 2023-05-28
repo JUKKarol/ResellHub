@@ -8,11 +8,13 @@ using ResellHub.Data.Repositories.OfferRepository;
 using ResellHub.Data.Repositories.UserRepository;
 using ResellHub.Data.Seeders;
 using ResellHub.DTOs.OfferDTOs;
+using ResellHub.DTOs.UserDTOs;
 using ResellHub.Services.EmailService;
 using ResellHub.Services.OfferServices;
 using ResellHub.Services.UserServices;
 using ResellHub.Utilities.UserUtilities;
-using ResellHub.Utilities.Validation;
+using ResellHub.Utilities.Validation.Offer;
+using ResellHub.Utilities.Validation.UserValidation;
 using Swashbuckle.AspNetCore.Filters;
 using System;
 using System.Text;
@@ -60,7 +62,8 @@ namespace ResellHub
             builder.Services.AddDbContext<ResellHubContext>();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            builder.Services.AddScoped<IValidator<OfferCreateDto>, OfferValidator>();
+            builder.Services.AddScoped<IValidator<OfferCreateDto>, OfferCreateValidator>();
+            builder.Services.AddScoped<IValidator<UserRegistrationDto>, UserRegistrationValidation>();
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IOfferRepository, OfferRepository>();
