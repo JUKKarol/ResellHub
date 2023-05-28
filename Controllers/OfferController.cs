@@ -6,6 +6,7 @@ using ResellHub.DTOs.UserDTOs;
 using ResellHub.Entities;
 using ResellHub.Services.OfferServices;
 using ResellHub.Services.UserServices;
+using System.Security.Claims;
 
 namespace ResellHub.Controllers
 {
@@ -42,7 +43,7 @@ namespace ResellHub.Controllers
         [HttpPost("offers"), Authorize(Roles = "User")]
         public async Task<IActionResult> CreateOffer(OfferCreateDto offerDto)
         {
-            return Ok(await _offerService.AddOffer(offerDto));
+            return Ok(await _offerService.AddOffer(offerDto, HttpContext.User.FindFirstValue(ClaimTypes.Email)));
         }
 
         [HttpPut("offers/{offerId}"), Authorize(Roles = "User")]
@@ -51,6 +52,11 @@ namespace ResellHub.Controllers
             if (!await _offerService.CheckIsOfferExistById(offerId))
             {
                 return BadRequest("offer doesn't exist");
+            }
+
+            if (!await _offerService.CheckIsOfferOwnerCorrectByEmail(offerId, HttpContext.User.FindFirstValue(ClaimTypes.Email)))
+            {
+                return BadRequest("you aren't offer owner");
             }
 
             return Ok(await _offerService.UpdateOffer(offerId, offerDto));
@@ -62,6 +68,11 @@ namespace ResellHub.Controllers
             if (!await _offerService.CheckIsOfferExistById(offerId))
             {
                 return BadRequest("offer doesn't exist");
+            }
+
+            if (!await _offerService.CheckIsOfferOwnerCorrectByEmail(offerId, HttpContext.User.FindFirstValue(ClaimTypes.Email)))
+            {
+                return BadRequest("you aren't offer owner");
             }
 
             return Ok(await _offerService.DeleteOffer(offerId));

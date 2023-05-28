@@ -66,7 +66,22 @@ namespace ResellHub.Services.OfferServices
             }
         }
 
-        public async Task<string> AddOffer(OfferCreateDto offerDto)
+        public async Task<bool> CheckIsOfferOwnerCorrectByEmail(Guid offerId, string userEmail)
+        {
+            var offer = await _offerRepository.GetOfferById(offerId);
+            var user = await _userRepository.GetUserByEmail(userEmail);
+
+            if (offer.UserId == user.Id)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public async Task<string> AddOffer(OfferCreateDto offerDto, string userEmail)
         {
             var validationResult = await _offerValidator.ValidateAsync(offerDto);
             if (!validationResult.IsValid)
@@ -77,6 +92,8 @@ namespace ResellHub.Services.OfferServices
 
             var offer = _mapper.Map<Offer>(offerDto);
             offer.EncodeName();
+            var user = await _userRepository.GetUserByEmail(userEmail);
+            offer.UserId = user.Id;
 
             if (await _offerRepository.GetOfferByEncodedName(offer.EncodedName) != null)
             {
