@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -6,11 +7,14 @@ using ResellHub.Data;
 using ResellHub.Data.Repositories.OfferRepository;
 using ResellHub.Data.Repositories.UserRepository;
 using ResellHub.Data.Seeders;
+using ResellHub.DTOs.OfferDTOs;
 using ResellHub.Services.EmailService;
 using ResellHub.Services.OfferServices;
 using ResellHub.Services.UserServices;
 using ResellHub.Utilities.UserUtilities;
+using ResellHub.Utilities.Validation;
 using Swashbuckle.AspNetCore.Filters;
+using System;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -55,6 +59,8 @@ namespace ResellHub
 
             builder.Services.AddDbContext<ResellHubContext>();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            builder.Services.AddScoped<IValidator<OfferCreateDto>, OfferValidator>();
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IOfferRepository, OfferRepository>();

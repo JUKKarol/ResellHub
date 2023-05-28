@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using ResellHub.Data.Repositories.OfferRepository;
 using ResellHub.Data.Repositories.UserRepository;
 using ResellHub.DTOs.OfferDTOs;
@@ -15,14 +16,16 @@ namespace ResellHub.Services.OfferServices
         private readonly IUserUtilities _userService;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
+        private readonly IValidator<OfferCreateDto> _offerValidator;
 
-        public OfferService(IUserRepository userRepository, IOfferRepository offerRepository, IUserUtilities userUtilities, IConfiguration configuration, IMapper mapper)
+        public OfferService(IUserRepository userRepository, IOfferRepository offerRepository, IUserUtilities userUtilities, IConfiguration configuration, IMapper mapper, IValidator<OfferCreateDto> offerValidator)
         {
             _userRepository = userRepository;
             _offerRepository = offerRepository;
             _userService = userUtilities;
             _configuration = configuration;
             _mapper = mapper;
+            _offerValidator = offerValidator;
         }
 
         public async Task<List<OfferPublicDto>> GetOffers()
@@ -65,6 +68,13 @@ namespace ResellHub.Services.OfferServices
 
         public async Task<string> AddOffer(OfferCreateDto offerDto)
         {
+            var validationResult = await _offerValidator.ValidateAsync(offerDto);
+            if (!validationResult.IsValid)
+            {
+                var validationErrors = validationResult.Errors.Select(error => error.ErrorMessage);
+                return string.Join(Environment.NewLine, validationErrors);
+            }
+
             var offer = _mapper.Map<Offer>(offerDto);
             offer.EncodeName();
 
@@ -81,7 +91,12 @@ namespace ResellHub.Services.OfferServices
 
         public async Task<string> UpdateOffer(Guid offerId, OfferCreateDto offerDto)
         {
-            var offfer = await _offerRepository.GetOfferById(offerId);
+            var validationResult = await _offerValidator.ValidateAsync(offerDto);
+            if (!validationResult.IsValid)
+            {
+                var validationErrors = validationResult.Errors.Select(error => error.ErrorMessage);
+                return string.Join(Environment.NewLine, validationErrors);
+            }
 
             var updatedOffer = _mapper.Map<Offer>(offerDto);
 
@@ -94,7 +109,5 @@ namespace ResellHub.Services.OfferServices
             await _offerRepository.DeleteOffer(offerId);
             return "Offer deleted successful";
         }
-
-
     }
 }

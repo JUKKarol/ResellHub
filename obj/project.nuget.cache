@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "5LLwRYj3MO8d2zc742qwZML/knA9reYb91KTi04IsOqedJlatIXa4uR4h8h/KyN/iYU1sOBRbk96YiLpE6agIw==",
+  "dgSpecHash": "hZp+S1N66lgYvu90ALhIpVvMLSTG42f3Up8E9DRjD7LTxiTU+mCfngBeVDe+z54xmM9UvMlc8kqCMvBGLL0Nmg==",
   "success": true,
   "projectFilePath": "C:\\Users\\Admin\\source\\repos\\ResellHub\\ResellHub.csproj",
   "expectedPackageFiles": [
@@ -10,6 +10,7 @@
     "C:\\Users\\Admin\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\fluentemail.core\\3.0.2\\fluentemail.core.3.0.2.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\fluentemail.smtp\\3.0.2\\fluentemail.smtp.3.0.2.nupkg.sha512",
+    "C:\\Users\\Admin\\.nuget\\packages\\fluentvalidation\\11.5.2\\fluentvalidation.11.5.2.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\7.0.5\\microsoft.aspnetcore.authentication.jwtbearer.7.0.5.nupkg.sha512",
     "C:\\Users\\Admin\\.nuget\\packages\\microsoft.aspnetcore.openapi\\7.0.5\\microsoft.aspnetcore.openapi.7.0.5.nupkg.sha512",
