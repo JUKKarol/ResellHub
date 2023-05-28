@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ResellHub.Services.UserServices;
+using System.Security.Claims;
 
 namespace ResellHub.Controllers
 {
@@ -24,6 +25,13 @@ namespace ResellHub.Controllers
                 return BadRequest("sender or receiver doesn't exist");
             }
 
+            var loggedUserEmail = HttpContext.User.FindFirstValue(ClaimTypes.Email);
+
+            if (await _userService.GetUserEmailById(firstUserId) != loggedUserEmail && await _userService.GetUserEmailById(secondUserId) != loggedUserEmail)
+            {
+                return BadRequest("sender or receiver aren't logged");
+            }
+
             var messages = await _userService.ShowUsersMessages(firstUserId, secondUserId);
 
             return Ok(messages);
@@ -35,6 +43,11 @@ namespace ResellHub.Controllers
             if (!await _userService.CheckIsUserExistById(fromUserId) || !await _userService.CheckIsUserExistById(toUserId))
             {
                 return BadRequest("sender or receiver doesn't exist");
+            }
+
+            if (await _userService.GetUserEmailById(fromUserId) != HttpContext.User.FindFirstValue(ClaimTypes.Email))
+            {
+                return BadRequest("sender isn't logged");
             }
 
             return Ok(await _userService.SendMessage(fromUserId, toUserId, content));

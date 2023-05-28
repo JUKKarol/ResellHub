@@ -47,6 +47,14 @@ namespace ResellHub.Services.UserServices
             return userDto;
         }
 
+        public async Task<string> GetUserEmailById(Guid userId)
+        {
+            var user = await _userRepository.GetUserById(userId);
+            var userEmail = user.Email;
+
+            return userEmail;
+        }
+
         public async Task<bool> CheckIsUserExistById(Guid userId)
         {
             var user = await _userRepository.GetUserById(userId);
