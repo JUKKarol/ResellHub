@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using ResellHub.Entities;
 using ResellHub.Services.OfferServices;
 using ResellHub.Services.UserServices;
+using System.Security.Claims;
 
 namespace ResellHub.Controllers
 {
@@ -21,38 +22,29 @@ namespace ResellHub.Controllers
         }
 
         [HttpGet("followingoffers/{userId}"), Authorize(Roles = "User")]
-        public async Task<IActionResult> GetUserFollowingOffers(Guid userId)
+        public async Task<IActionResult> GetMyFollowingOffers()
         {
-            if (!await _userService.CheckIsUserExistById(userId))
-            {
-                return BadRequest("user doesn't exist");
-            }
-
-            await _userService.GetUserFollowingOffers(userId);
-
-            return Ok(await _userService.GetUserFollowingOffers(userId));
+            return Ok(await _userService.GetUserFollowingOffers(await _userService.GetUserIdByEmail(HttpContext.User.FindFirstValue(ClaimTypes.Email))));
         }
 
-        [HttpPost("followingoffers/{userId}/{offerId}"), Authorize(Roles = "User")]
-        public async Task<IActionResult> AddOfferToFollowing(Guid userId, Guid offerId)
+        [HttpPost("followingoffers/{offerId}"), Authorize(Roles = "User")]
+        public async Task<IActionResult> AddOfferToFollowing(Guid offerId)
         {
-            if (!await _userService.CheckIsUserExistById(userId) || !await _offerService.CheckIsOfferExistById(offerId))
-            {
-                return BadRequest("user or offer doesn't exist");
-            }
-
-            return Ok(await _userService.AddOfferToFollowing(userId, offerId));
+            return Ok(await _userService.AddOfferToFollowing(await _userService.GetUserIdByEmail(HttpContext.User.FindFirstValue(ClaimTypes.Email)), offerId));
         }
 
-        [HttpDelete("followingoffers/{followingOfferId}"), Authorize(Roles = "User")]
-        public async Task<IActionResult> RemoveOfferFromFollowing(Guid followingOfferId)
+        [HttpDelete("followingoffers/{offerId}"), Authorize(Roles = "User")]
+        public async Task<IActionResult> RemoveOfferFromFollowing(Guid offerId)
         {
-            if (!await _userService.CheckIsFollowingExistById(followingOfferId))
+            if (!await _offerService.CheckIsOfferExistById(offerId))
             {
                 return BadRequest("following offer doesn't exist");
             }
 
-            return Ok(await _userService.RemoveOfferFromFollowing(followingOfferId));
+            var followingOfferId = 
+                await _userService.GetFollowingOfferByUserAndOfferId(await _userService.GetUserIdByEmail(HttpContext.User.FindFirstValue(ClaimTypes.Email)), offerId);
+
+            return Ok(await _userService.RemoveOfferFromFollowing(followingOfferId.Id));
         }
     }
 }

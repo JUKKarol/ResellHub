@@ -12,6 +12,7 @@ namespace ResellHub.Services.UserServices
         Task<string> GetUserEmailById(Guid userId);
         Task<bool> CheckIsUserExistById(Guid userId);
         Task<bool> CheckIsUserExistByEmail(string userEmail);
+        Task<Guid> GetUserIdByEmail(string userEmail);
         Task<string> CreateUser(UserRegistrationDto user);
         Task<string> LoginUser(UserLoginDto userDto);
         Task<string> VerifyUser(string token);
@@ -31,6 +32,7 @@ namespace ResellHub.Services.UserServices
         Task<string> DeleteRole(Guid roleId);
         //FollowOffer
         Task<List<FollowOffer>> GetUserFollowingOffers(Guid userId);
+        Task<FollowOffer> GetFollowingOfferByUserAndOfferId(Guid userId, Guid offerId);
         Task<bool> CheckIsFollowingExistById(Guid followingOfferId);
         Task<string> AddOfferToFollowing(Guid userId, Guid offerId);
         Task<string> RemoveOfferFromFollowing(Guid followingOfferId);

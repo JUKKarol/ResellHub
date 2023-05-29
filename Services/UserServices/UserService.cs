@@ -55,6 +55,14 @@ namespace ResellHub.Services.UserServices
             return userEmail;
         }
 
+        public async Task<Guid> GetUserIdByEmail(string userEmail)
+        {
+            var user = await _userRepository.GetUserByEmail(userEmail);
+            var userId = user.Id;
+
+            return userId;
+        }
+
         public async Task<bool> CheckIsUserExistById(Guid userId)
         {
             var user = await _userRepository.GetUserById(userId);
@@ -296,6 +304,13 @@ namespace ResellHub.Services.UserServices
         public async Task<List<FollowOffer>> GetUserFollowingOffers(Guid userId)
         {
             return await _userRepository.GetUserFollowingOffers(userId);
+        }
+
+        public async Task<FollowOffer> GetFollowingOfferByUserAndOfferId(Guid userId, Guid offerId)
+        {
+            var userFollowingOffers = await _userRepository.GetUserFollowingOffers(userId);
+            
+            return userFollowingOffers.FirstOrDefault(fo => fo.OfferId == offerId);
         }
 
         public async Task<bool> CheckIsFollowingExistById(Guid followingOfferId)
