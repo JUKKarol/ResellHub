@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using ResellHub.DTOs.UserDTOs;
 using ResellHub.Entities;
+using ResellHub.Enums;
 using ResellHub.Services.UserServices;
+using System.Security.Claims;
 
 namespace ResellHub.Controllers
 {
@@ -46,8 +48,10 @@ namespace ResellHub.Controllers
         }
 
         [HttpPut("users/{userId}/phonenumber"), Authorize(Roles = "User")]
-        public async Task<IActionResult> UpdateUserPhoneNumber(Guid userId, string newPhoneNumber)
+        public async Task<IActionResult> UpdateUserPhoneNumber(string newPhoneNumber)
         {
+            var userId = await _userService.GetUserIdByEmail(HttpContext.User.FindFirstValue(ClaimTypes.Email));
+
             if (!await _userService.CheckIsUserExistById(userId))
             {
                 return BadRequest("user doesn't exist");
@@ -57,8 +61,10 @@ namespace ResellHub.Controllers
         }
 
         [HttpPut("users/{userId}/city"), Authorize(Roles = "User")]
-        public async Task<IActionResult> UpdateUserCity(Guid userId, string newCity)
+        public async Task<IActionResult> UpdateUserCity(string newCity)
         {
+            var userId = await _userService.GetUserIdByEmail(HttpContext.User.FindFirstValue(ClaimTypes.Email));
+
             if (!await _userService.CheckIsUserExistById(userId))
             {
                 return BadRequest("user doesn't exist");
@@ -67,7 +73,7 @@ namespace ResellHub.Controllers
             return Ok(await _userService.UpdateCity(userId, newCity));
         }
 
-        [HttpDelete("users/{userId}"), Authorize(Roles = "User")]
+        [HttpDelete("users/{userId}"), Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteUser(Guid userId)
         {
             if (!await _userService.CheckIsUserExistById(userId))
@@ -76,6 +82,12 @@ namespace ResellHub.Controllers
             }
 
             return Ok(await _userService.DeleteUser(userId));
+        }
+
+        [HttpDelete("users"), Authorize(Roles = "User")]
+        public async Task<IActionResult> DeleteAccount()
+        {
+            return Ok(await _userService.DeleteUser(await _userService.GetUserIdByEmail(HttpContext.User.FindFirstValue(ClaimTypes.Email))));
         }
     }
 }
