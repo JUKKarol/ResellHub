@@ -144,7 +144,7 @@ namespace ResellHub.Data.Seeders
                     ProductionYear = 2019,
                     UserId = Guid.Parse("98765432-1234-5678-9012-345678901234")
                 };
-                offer1.EncodeName();
+                offer2.EncodeName();
 
                 Offer offer3 = new Offer()
                 {
@@ -158,7 +158,7 @@ namespace ResellHub.Data.Seeders
                     ProductionYear = 2022,
                     UserId = Guid.Parse("87654321-4321-5678-9012-345678901234")
                 };
-                offer1.EncodeName();
+                offer3.EncodeName();
 
                 _context.AddRange(offer1, offer2, offer3);
                 _context.SaveChanges();
