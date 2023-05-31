@@ -3,10 +3,6 @@
     public class Offer
     {
         public Guid Id { get; set; } = Guid.NewGuid();
-        public byte[] Image1 { get; set; }
-        public byte[] Image2 { get; set; }
-        public byte[] Image3 { get; set; }
-
         public string Title { get; set; }
         public string Brand { get; set; }
         public string Category { get; set; }

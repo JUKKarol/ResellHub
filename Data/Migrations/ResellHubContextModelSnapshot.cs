@@ -40,7 +40,7 @@ namespace ResellHub.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("FollowingOffers");
+                    b.ToTable("FollowingOffers", (string)null);
                 });
 
             modelBuilder.Entity("ResellHub.Entities.Message", b =>
@@ -68,7 +68,7 @@ namespace ResellHub.Migrations
 
                     b.HasIndex("ToUserId");
 
-                    b.ToTable("Messages");
+                    b.ToTable("Messages", (string)null);
                 });
 
             modelBuilder.Entity("ResellHub.Entities.Offer", b =>
@@ -96,15 +96,6 @@ namespace ResellHub.Migrations
                     b.Property<string>("EncodedName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("Image1")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<byte[]>("Image2")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<byte[]>("Image3")
-                        .HasColumnType("varbinary(max)");
-
                     b.Property<int>("PricePLN")
                         .HasColumnType("int");
 
@@ -124,7 +115,7 @@ namespace ResellHub.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Offers");
+                    b.ToTable("Offers", (string)null);
                 });
 
             modelBuilder.Entity("ResellHub.Entities.Role", b =>
@@ -143,7 +134,7 @@ namespace ResellHub.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("ResellHub.Entities.User", b =>
@@ -195,7 +186,7 @@ namespace ResellHub.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("ResellHub.Entities.FollowOffer", b =>
