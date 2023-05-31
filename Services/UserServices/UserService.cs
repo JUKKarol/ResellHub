@@ -8,6 +8,7 @@ using ResellHub.Entities;
 using ResellHub.Enums;
 using ResellHub.Services.EmailService;
 using ResellHub.Utilities.UserUtilities;
+using System;
 
 namespace ResellHub.Services.UserServices
 {
@@ -107,6 +108,11 @@ namespace ResellHub.Services.UserServices
             {
                 int randomNumber = new Random().Next(1, 10000);
                 user.EncodedName = $"{user.EncodedName}-{randomNumber}";
+            }
+
+            if (await _userRepository.GetUserByEncodedName(user.EncodedName) != null)
+            {
+                return "Name is already in use";
             }
 
             byte[] passwordHash;

@@ -101,6 +101,11 @@ namespace ResellHub.Services.OfferServices
                 offer.EncodedName = $"{offer.EncodedName}-{randomNumber}";
             }
 
+            if (await _offerRepository.GetOfferByEncodedName(offer.EncodedName) != null)
+            {
+                return "Name is already in use";
+            }
+
             await _offerRepository.AddOffer(offer);
 
             return "Offer ceated successful";
