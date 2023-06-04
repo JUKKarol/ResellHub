@@ -164,7 +164,7 @@ namespace ResellHub.Services.UserServices
                 return "Invalid token";
             }
 
-            user.VerifiedAt = DateTime.Now;
+            user.VerifiedAt = DateTime.UtcNow;
             await _userRepository.UpdateUser(user.Id, user);
 
             return "User verified";
@@ -179,7 +179,7 @@ namespace ResellHub.Services.UserServices
             }
 
             user.PasswordResetToken = _userUtilities.CreateRandomToken();
-            user.ResetTokenExpires = DateTime.Now.AddDays(1);
+            user.ResetTokenExpires = DateTime.UtcNow.AddDays(1);
 
             _emailService.SendPasswordResetToken(userEmail, user.PasswordResetToken);
 
@@ -191,7 +191,7 @@ namespace ResellHub.Services.UserServices
         public async Task<string> ResetPassword(UserResetPasswordDto userDto)
         {
             var user = await _userRepository.GetUserByResetToken(userDto.Token);
-            if (user == null || user.ResetTokenExpires < DateTime.Now)
+            if (user == null || user.ResetTokenExpires < DateTime.UtcNow)
             {
                 return "Invalid Token.";
             }

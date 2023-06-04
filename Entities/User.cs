@@ -16,7 +16,7 @@ namespace ResellHub.Entities
         public DateTime? VerifiedAt { get; set; } = null;
         public string PasswordResetToken { get; set; }
         public DateTime? ResetTokenExpires { get; set; } = null;
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
         public List<Role> Roles { get; set; }
         public List<Offer> Offers { get; set; }

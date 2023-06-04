@@ -10,7 +10,7 @@
         public int Condition { get; set; }
         public int PricePLN { get; set; }
         public int ProductionYear { get; set; }
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         public Guid UserId { get; set; }
         public string EncodedName { get; set; }
 

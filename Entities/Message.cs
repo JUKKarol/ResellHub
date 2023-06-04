@@ -10,7 +10,7 @@ namespace ResellHub.Entities
         public Guid ToUserId { get; set; }
         
         public string Content { get; set; }
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
         [JsonIgnore]
         public User FromUser { get; set; }

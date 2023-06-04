@@ -32,7 +32,7 @@ namespace ResellHub.Utilities.Validation.Offer
                 .WithMessage("Price must be between 1 and 10,000.");
 
             RuleFor(o => o.ProductionYear)
-                .InclusiveBetween(1950, DateTime.Now.Year + 1)
+                .InclusiveBetween(1950, DateTime.UtcNow.Year + 1)
                 .WithMessage("Incorrect year.");
         }
     }

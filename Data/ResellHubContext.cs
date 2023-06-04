@@ -42,7 +42,7 @@ namespace ResellHub.Data
                     .HasForeignKey(o => o.UserId);
                 entity.Property(o => o.Title).IsRequired().HasMaxLength(40);
                 entity.Property(o => o.Description).HasMaxLength(200);
-                entity.Property(o => o.ProductionYear).HasAnnotation("Range", new[] { 1950, DateTime.Now.Year });
+                entity.Property(o => o.ProductionYear).HasAnnotation("Range", new[] { 1950, DateTime.UtcNow.Year });
                 entity.HasMany(u => u.FollowingOffers).WithOne(m => m.Offer);
             });
 
@@ -95,7 +95,7 @@ namespace ResellHub.Data
         {
             base.OnConfiguring(optionsBuilder);
             optionsBuilder
-                .UseSqlServer(_configuration.GetConnectionString("ResellHubConnectionString"));
+                .UseNpgsql(_configuration.GetConnectionString("ResellHubConnectionString"));
         }
     }
 }

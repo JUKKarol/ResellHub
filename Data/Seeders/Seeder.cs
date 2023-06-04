@@ -15,7 +15,6 @@ namespace ResellHub.Data.Seeders
         {
             _context = context;
             _userUtilities = userUtilities;
-
         }
 
         public void Seed()
