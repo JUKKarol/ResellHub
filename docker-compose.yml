@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+ app:
+  build:
+   context: .
+   dockerfile: Dockerfile
+  ports:
+   - "8080:80"
+  depends_on:
+   - db
+ db:
+  image: postgres
+  restart: always
+  environment:
+   - POSTGRES_USER=resellhub
+   - POSTGRES_PASSWORD=resellhub
+   - POSTGRES_DB=resellhub
+  ports:
+   - 5432:5432
