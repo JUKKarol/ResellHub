@@ -10,7 +10,7 @@ using System.Security.Claims;
 
 namespace ResellHub.Controllers
 {
-    [Route("api/")]
+    [Route("api/[controller]")]
     [ApiController]
     public class OfferController : ControllerBase
     {
@@ -23,13 +23,13 @@ namespace ResellHub.Controllers
             _userService = userService;
         }
 
-        [HttpGet("offers")]
+        [HttpGet("")]
         public async Task<IActionResult> GetOffers()
         {
             return Ok(await _offerService.GetOffers());
         }
 
-        [HttpGet("offers/{userId}"), Authorize(Roles = "User")]
+        [HttpGet("{userId}"), Authorize(Roles = "User")]
         public async Task<IActionResult> GetUserOffers(Guid userId)
         {
             if (!await _userService.CheckIsUserExistById(userId))
@@ -40,13 +40,13 @@ namespace ResellHub.Controllers
             return Ok(await _offerService.GetUserOffers(userId));
         }
 
-        [HttpPost("offers"), Authorize(Roles = "User")]
+        [HttpPost(""), Authorize(Roles = "User")]
         public async Task<IActionResult> CreateOffer(OfferCreateDto offerDto)
         {
             return Ok(await _offerService.AddOffer(offerDto, HttpContext.User.FindFirstValue(ClaimTypes.Email)));
         }
 
-        [HttpPut("offers/{offerId}"), Authorize(Roles = "User")]
+        [HttpPut("{offerId}"), Authorize(Roles = "User")]
         public async Task<IActionResult> UpdateOffer(Guid offerId, OfferCreateDto offerDto)
         {
             if (!await _offerService.CheckIsOfferExistById(offerId))
@@ -62,7 +62,7 @@ namespace ResellHub.Controllers
             return Ok(await _offerService.UpdateOffer(offerId, offerDto));
         }
 
-        [HttpDelete("offers/{offerId}"), Authorize(Roles = "User")]
+        [HttpDelete("{offerId}"), Authorize(Roles = "User")]
         public async Task<IActionResult> DeleteOffer(Guid offerId)
         {
             if (!await _offerService.CheckIsOfferExistById(offerId))
