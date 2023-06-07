@@ -7,7 +7,7 @@ using ResellHub.Services.UserServices;
 
 namespace ResellHub.Controllers
 {
-    [Route("api/")]
+    [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {

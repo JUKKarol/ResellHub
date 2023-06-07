@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace ResellHub.Controllers
 {
-    [Route("api/")]
+    [Route("api/[controller]")]
     [ApiController]
     public class MessageController : ControllerBase
     {
@@ -17,7 +17,7 @@ namespace ResellHub.Controllers
             _userService = userService;
         }
 
-        [HttpGet("messages/{firstUserId}/{secondUserId}"), Authorize(Roles = "User")]
+        [HttpGet("{firstUserId}/{secondUserId}"), Authorize(Roles = "User")]
         public async Task<IActionResult> GetUsersMessages(Guid firstUserId, Guid secondUserId)
         {
             if (!await _userService.CheckIsUserExistById(firstUserId) || !await _userService.CheckIsUserExistById(secondUserId))
@@ -37,7 +37,7 @@ namespace ResellHub.Controllers
             return Ok(messages);
         }
 
-        [HttpPost("messages/{fromUserId}/{toUserId}"), Authorize(Roles = "User")]
+        [HttpPost("{fromUserId}/{toUserId}"), Authorize(Roles = "User")]
         public async Task<IActionResult> SendMessage(Guid fromUserId, Guid toUserId, string content)
         {
             if (!await _userService.CheckIsUserExistById(fromUserId) || !await _userService.CheckIsUserExistById(toUserId))
