@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace ResellHub.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/")]
     [ApiController]
     public class UserController : ControllerBase
     {
