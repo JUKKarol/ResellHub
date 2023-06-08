@@ -19,7 +19,7 @@ namespace ResellHub.Controllers
             _userService = userService;
         }
 
-        [HttpGet(""), Authorize(Roles = "User")]
+        [HttpGet, Authorize(Roles = "User")]
         public async Task<IActionResult> GetUsers()
         {
             return Ok(await _userService.GetUsers());
@@ -36,7 +36,7 @@ namespace ResellHub.Controllers
             return Ok(await _userService.GetUserById(userId));
         }
 
-        [HttpPost(""), Authorize(Roles = "Moderator")]
+        [HttpPost, Authorize(Roles = "Moderator")]
         public async Task<IActionResult> CreateUser(UserRegistrationDto userDto)
         {
             if (!await _userService.CheckIsUserExistByEmail(userDto.Email))
@@ -47,7 +47,7 @@ namespace ResellHub.Controllers
             return Ok(_userService.CreateUser(userDto));
         }
 
-        [HttpPut("{userId}/phonenumber"), Authorize(Roles = "User")]
+        [HttpPut("{userId}/{phonenumber}"), Authorize(Roles = "User")]
         public async Task<IActionResult> UpdateUserPhoneNumber(string newPhoneNumber)
         {
             var userId = await _userService.GetUserIdByEmail(HttpContext.User.FindFirstValue(ClaimTypes.Email));
@@ -60,7 +60,7 @@ namespace ResellHub.Controllers
             return Ok(await _userService.UpdatePhoneNumber(userId, newPhoneNumber));
         }
 
-        [HttpPut("{userId}/city"), Authorize(Roles = "User")]
+        [HttpPut("{userId}/{city}"), Authorize(Roles = "User")]
         public async Task<IActionResult> UpdateUserCity(string newCity)
         {
             var userId = await _userService.GetUserIdByEmail(HttpContext.User.FindFirstValue(ClaimTypes.Email));
@@ -84,7 +84,7 @@ namespace ResellHub.Controllers
             return Ok(await _userService.DeleteUser(userId));
         }
 
-        [HttpDelete(""), Authorize(Roles = "User")]
+        [HttpDelete, Authorize(Roles = "User")]
         public async Task<IActionResult> DeleteAccount()
         {
             return Ok(await _userService.DeleteUser(await _userService.GetUserIdByEmail(HttpContext.User.FindFirstValue(ClaimTypes.Email))));

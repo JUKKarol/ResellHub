@@ -23,7 +23,7 @@ namespace ResellHub.Controllers
             _userService = userService;
         }
 
-        [HttpGet("")]
+        [HttpGet]
         public async Task<IActionResult> GetOffers()
         {
             return Ok(await _offerService.GetOffers());
@@ -40,7 +40,7 @@ namespace ResellHub.Controllers
             return Ok(await _offerService.GetUserOffers(userId));
         }
 
-        [HttpPost(""), Authorize(Roles = "User")]
+        [HttpPost, Authorize(Roles = "User")]
         public async Task<IActionResult> CreateOffer(OfferCreateDto offerDto)
         {
             return Ok(await _offerService.AddOffer(offerDto, HttpContext.User.FindFirstValue(ClaimTypes.Email)));
