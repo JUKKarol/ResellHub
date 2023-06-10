@@ -8,6 +8,6 @@ namespace ResellHub.Entities
         public Guid UserId { get; set; }
         public UserRoles UserRole { get; set; } = UserRoles.User;
 
-        public User RoleOwner { get; set; }
+        public virtual User RoleOwner { get; set; }
     }
 }

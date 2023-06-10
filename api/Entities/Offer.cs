@@ -14,8 +14,8 @@
         public Guid UserId { get; set; }
         public string EncodedName { get; set; }
 
-        public User User { get; set; }
-        public List<FollowOffer> FollowingOffers { get; set; }
+        public virtual User User { get; set; }
+        public virtual List<FollowOffer> FollowingOffers { get; set; }
 
 
         public void EncodeName() => EncodedName = Title.ToLower().Replace(" ", "-");

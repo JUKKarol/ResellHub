@@ -13,8 +13,8 @@ namespace ResellHub.Entities
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
         [JsonIgnore]
-        public User FromUser { get; set; }
+        public virtual User FromUser { get; set; }
         [JsonIgnore]
-        public User ToUser { get; set; }
+        public virtual User ToUser { get; set; }
     }
 }
