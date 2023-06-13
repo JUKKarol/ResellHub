@@ -18,7 +18,7 @@ namespace ResellHub.Controllers
             _userService = userService;
         }
 
-        [HttpGet("roles/{userId}"), Authorize(Roles = "Moderator")]
+        [HttpGet("{userId}"), Authorize(Roles = "Moderator")]
         public async Task<IActionResult> GetUserRoles(Guid userId)
         {
             if (!await _userService.CheckIsUserExistById(userId))
@@ -29,7 +29,7 @@ namespace ResellHub.Controllers
             return Ok(await _userService.GetUserRoles(userId));
         }
 
-        [HttpPost("roles/{userId}"), Authorize(Roles = "Administrator")]
+        [HttpPost("{userId}"), Authorize(Roles = "Administrator")]
         public async Task<IActionResult> CreateRole(Guid userId, UserRoles userRole)
         {
             if (!await _userService.CheckIsUserExistById(userId))
@@ -40,7 +40,7 @@ namespace ResellHub.Controllers
             return Ok(await _userService.AddRole(userId, userRole));
         }
 
-        [HttpPut("roles/{roleId}"), Authorize(Roles = "Administrator")]
+        [HttpPut("{roleId}"), Authorize(Roles = "Administrator")]
         public async Task<IActionResult> ChangeRole(Guid roleId, UserRoles userNewRole)
         {
             if (!await _userService.CheckIsRoleExistById(roleId))
@@ -51,7 +51,7 @@ namespace ResellHub.Controllers
             return Ok(await _userService.UpdateRole(roleId, userNewRole));
         }
 
-        [HttpDelete("roles/{roleId}"), Authorize(Roles = "Administrator")]
+        [HttpDelete("{roleId}"), Authorize(Roles = "Administrator")]
         public async Task<IActionResult> DeleteRole(Guid roleId)
         {
             if (!await _userService.CheckIsRoleExistById(roleId))
