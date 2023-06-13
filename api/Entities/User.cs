@@ -18,11 +18,11 @@ namespace ResellHub.Entities
         public DateTime? ResetTokenExpires { get; set; } = null;
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
-        public List<Role> Roles { get; set; }
-        public List<Offer> Offers { get; set; }
-        public List<Message> SentMessages { get; set; }
-        public List<Message> ReceivedMessages { get; set; }
-        public List<FollowOffer> FollowingOffers { get; set; }
+        public virtual List<Role> Roles { get; set; }
+        public virtual List<Offer> Offers { get; set; }
+        public virtual List<Message> SentMessages { get; set; }
+        public virtual List<Message> ReceivedMessages { get; set; }
+        public virtual List<FollowOffer> FollowingOffers { get; set; }
 
         public void EncodeName() => EncodedName = Name.ToLower().Replace(" ", "-");
     }
