@@ -56,6 +56,7 @@ namespace ResellHub.Utilities.UserUtilities
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Email, userDto.Email),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             };
 
             if (userRoles.Any(ur => ur.UserRole == UserRoles.Moderator || ur.UserRole == UserRoles.Administrator || ur.UserRole == UserRoles.User))
