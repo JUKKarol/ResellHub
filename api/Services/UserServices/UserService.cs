@@ -104,13 +104,13 @@ namespace ResellHub.Services.UserServices
             var user = _mapper.Map<User>(userDto);
             user.EncodeName();
 
-            if (await _userRepository.GetUserByEncodedName(user.EncodedName) != null)
+            if (await _userRepository.GetUserBySlug(user.Slug) != null)
             {
                 int randomNumber = new Random().Next(1, 10000);
-                user.EncodedName = $"{user.EncodedName}-{randomNumber}";
+                user.Slug = $"{user.Slug}-{randomNumber}";
             }
 
-            if (await _userRepository.GetUserByEncodedName(user.EncodedName) != null)
+            if (await _userRepository.GetUserBySlug(user.Slug) != null)
             {
                 return "Name is already in use";
             }

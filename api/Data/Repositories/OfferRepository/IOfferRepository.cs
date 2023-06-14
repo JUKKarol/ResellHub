@@ -7,7 +7,7 @@ namespace ResellHub.Data.Repositories.OfferRepository
         Task<List<Offer>> GetOffers();
         Task<List<Offer>> GetUserOffers(Guid userId);
         Task<Offer> GetOfferById(Guid offerId);
-        Task<Offer> GetOfferByEncodedName(string offerEncodedName);
+        Task<Offer> GetOfferBySlug(string offerSlug);
         Task<Offer> AddOffer(Offer offer);
         Task<Offer> UpdateOffer(Guid offerId, Offer offer);
         Task<Offer> DeleteOffer(Guid offerId);

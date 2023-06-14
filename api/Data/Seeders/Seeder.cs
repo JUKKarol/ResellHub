@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using ResellHub.Entities;
+using ResellHub.Enums;
 using ResellHub.Services.OfferServices;
 using ResellHub.Services.UserServices;
 using ResellHub.Utilities.UserUtilities;
@@ -75,19 +76,19 @@ namespace ResellHub.Data.Seeders
                 Role role1 = new Role()
                 {
                     UserId = Guid.Parse("98765432-1234-5678-9012-345678901234"),
-                    UserRole = Enums.UserRoles.User
+                    UserRole = UserRoles.User
                 };
 
                 Role role2 = new Role()
                 {
                     UserId = Guid.Parse("87654321-4321-5678-9012-345678901234"),
-                    UserRole = Enums.UserRoles.Moderator
+                    UserRole = UserRoles.Moderator
                 };
 
                 Role role3 = new Role()
                 {
                     UserId = Guid.Parse("76543210-5678-1234-9012-345678901234"),
-                    UserRole = Enums.UserRoles.Administrator
+                    UserRole = UserRoles.Administrator
                 };
 
                 _context.Roles.AddRange(role1, role2, role3);
@@ -117,15 +118,37 @@ namespace ResellHub.Data.Seeders
                 _context.Messages.AddRange(message1, message2, message3);
                 _context.SaveChanges();
 
+                Category category1 = new Category()
+                { 
+                    Id = 1,
+                    CategoryName = "Clothes",
+                };
+
+                Category category2 = new Category()
+                {
+                    Id = 2,
+                    CategoryName = "CDs",
+                };
+
+                Category category3 = new Category()
+                {
+                    Id = 3,
+                    CategoryName = "Accessories",
+                };
+
+                _context.Categories.AddRange(category1, category2, category3);
+                _context.SaveChanges();
+
                 Offer offer1 = new Offer()
                 {
                     Id = Guid.Parse("33765432-1234-5678-9012-345678901234"),
                     Title = "Kaz Bałagane - Narkopop",
                     Brand = "Narkopop",
-                    Category = "CD",
+                    CategoryId = 1,
                     Description = "CD is still in foil, perfect condition",
                     Condition = 5,
-                    PricePLN = 50,
+                    Price = 50,
+                    //Currency = Currencies.PLN,
                     ProductionYear = 2017,
                     UserId = Guid.Parse("98765432-1234-5678-9012-345678901234")
                 };
@@ -136,10 +159,10 @@ namespace ResellHub.Data.Seeders
                     Id = Guid.Parse("47765432-1234-5678-9012-345678901234"),
                     Title = "Ogrody hoodie",
                     Brand = "Ogrody",
-                    Category = "Hoodie",
+                    CategoryId = 1,
                     Description = "I was wear it few times, looks well",
                     Condition = 4,
-                    PricePLN = 450,
+                    Price = 450,
                     ProductionYear = 2019,
                     UserId = Guid.Parse("98765432-1234-5678-9012-345678901234")
                 };
@@ -150,10 +173,10 @@ namespace ResellHub.Data.Seeders
                     Id = Guid.Parse("32765432-1234-5678-9012-345678901234"),
                     Title = "Pro8l3m playing cards",
                     Brand = "2020",
-                    Category = "Accesories",
+                    CategoryId = 1,
                     Description = "Often playing, damaged a little bit",
                     Condition = 2,
-                    PricePLN = 60,
+                    Price = 60,
                     ProductionYear = 2022,
                     UserId = Guid.Parse("87654321-4321-5678-9012-345678901234")
                 };

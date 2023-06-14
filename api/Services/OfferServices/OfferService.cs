@@ -95,13 +95,13 @@ namespace ResellHub.Services.OfferServices
             var user = await _userRepository.GetUserByEmail(userEmail);
             offer.UserId = user.Id;
 
-            if (await _offerRepository.GetOfferByEncodedName(offer.EncodedName) != null)
+            if (await _offerRepository.GetOfferBySlug(offer.Slug) != null)
             {
                 int randomNumber = new Random().Next(1, 10000);
-                offer.EncodedName = $"{offer.EncodedName}-{randomNumber}";
+                offer.Slug = $"{offer.Slug}-{randomNumber}";
             }
 
-            if (await _offerRepository.GetOfferByEncodedName(offer.EncodedName) != null)
+            if (await _offerRepository.GetOfferBySlug(offer.Slug) != null)
             {
                 return "Name is already in use";
             }

@@ -27,7 +27,7 @@ namespace ResellHub.Utilities.Validation.Offer
                 .InclusiveBetween(1, 5)
                 .WithMessage("Condition must be between 1 and 5.");
 
-            RuleFor(o => o.PricePLN)
+            RuleFor(o => o.Price)
                 .InclusiveBetween(1, 10000)
                 .WithMessage("Price must be between 1 and 10,000.");
 
