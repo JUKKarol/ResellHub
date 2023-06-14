@@ -105,8 +105,8 @@ namespace ResellHub.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Currency")
-                        .HasColumnType("text");
+                    b.Property<int>("Currency")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Description")
                         .HasMaxLength(200)

@@ -12,7 +12,7 @@ using ResellHub.Data;
 namespace ResellHub.Migrations
 {
     [DbContext(typeof(ResellHubContext))]
-    [Migration("20230614165156_Init")]
+    [Migration("20230614190106_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -108,8 +108,8 @@ namespace ResellHub.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Currency")
-                        .HasColumnType("text");
+                    b.Property<int>("Currency")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Description")
                         .HasMaxLength(200)

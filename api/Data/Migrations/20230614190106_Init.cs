@@ -84,7 +84,7 @@ namespace ResellHub.Migrations
                     Description = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     Condition = table.Column<int>(type: "integer", nullable: false),
                     Price = table.Column<int>(type: "integer", nullable: false),
-                    Currency = table.Column<string>(type: "text", nullable: true),
+                    Currency = table.Column<int>(type: "integer", nullable: false),
                     ProductionYear = table.Column<int>(type: "integer", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),

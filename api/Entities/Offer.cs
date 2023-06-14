@@ -1,4 +1,6 @@
-﻿namespace ResellHub.Entities
+﻿using ResellHub.Enums;
+
+namespace ResellHub.Entities
 {
     public class Offer
     {
@@ -9,7 +11,7 @@
         public string Description { get; set; }
         public int Condition { get; set; }
         public int Price { get; set; }
-        public string Currency { get; set; }
+        public Currencies Currency { get; set; } = Currencies.PLN;
         public int ProductionYear { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
         public Guid UserId { get; set; }

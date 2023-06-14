@@ -1,4 +1,6 @@
-﻿namespace ResellHub.DTOs.OfferDTOs
+﻿using ResellHub.Enums;
+
+namespace ResellHub.DTOs.OfferDTOs
 {
     public class OfferPublicDto
     {
@@ -8,7 +10,7 @@
         public string Description { get; set; }
         public int Condition { get; set; }
         public int Price { get; set; }
-        public string Currency { get; set; }
+        public Currencies Currency { get; set; }
         public int ProductionYear { get; set; }
         public Guid UserId { get; set; }
         public string Slug { get; set; }

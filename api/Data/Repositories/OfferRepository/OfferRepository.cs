@@ -12,6 +12,7 @@ namespace ResellHub.Data.Repositories.OfferRepository
             _dbContext = dbContext;
         }
 
+        //Offer
         public async Task<List<Offer>> GetOffers()
         {
             return await _dbContext.Offers.ToListAsync();
@@ -62,6 +63,14 @@ namespace ResellHub.Data.Repositories.OfferRepository
             await _dbContext.SaveChangesAsync();
 
             return existOffer;
+        }
+
+        //Category
+        public async Task<String> GetCategoryName(int categoryId)
+        {
+            var offerCategory = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == categoryId);
+
+            return offerCategory.CategoryName;
         }
     }
 }
