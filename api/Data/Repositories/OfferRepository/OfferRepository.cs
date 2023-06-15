@@ -66,11 +66,18 @@ namespace ResellHub.Data.Repositories.OfferRepository
         }
 
         //Category
-        public async Task<String> GetCategoryName(int categoryId)
+        public async Task<String> GetCategoryNameById(int categoryId)
         {
             var offerCategory = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == categoryId);
 
             return offerCategory.CategoryName;
+        }
+
+        public async Task<List<Category>> GetCategories()
+        {
+            var categories = await _dbContext.Categories.ToListAsync();
+
+            return categories;
         }
     }
 }

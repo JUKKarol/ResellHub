@@ -44,7 +44,7 @@ namespace ResellHub.Data
                 entity.HasOne(o => o.Category)
                     .WithMany(c => c.Offers)
                     .HasForeignKey(o => o.CategoryId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.SetNull);
                 entity.Property(o => o.Title).IsRequired().HasMaxLength(40);
                 entity.Property(o => o.Description).HasMaxLength(200);
                 entity.Property(o => o.ProductionYear).HasAnnotation("Range", new[] { 1950, DateTime.UtcNow.Year });
@@ -100,7 +100,7 @@ namespace ResellHub.Data
                 entity.HasMany(c => c.Offers)
                     .WithOne(o => o.Category)
                     .HasForeignKey(o => o.CategoryId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.SetNull);
             });
 
             base.OnModelCreating(modelBuilder);

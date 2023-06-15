@@ -14,6 +14,7 @@ namespace ResellHub.Data.Repositories.OfferRepository
         Task<Offer> DeleteOffer(Guid offerId);
 
         //Category
-        Task<String> GetCategoryName(int categoryId);
+        Task<String> GetCategoryNameById(int categoryId);
+        Task<List<Category>> GetCategories();
     }
 }
