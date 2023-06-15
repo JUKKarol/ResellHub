@@ -1,4 +1,5 @@
 ﻿using ResellHub.Enums;
+using System.Text.RegularExpressions;
 
 namespace ResellHub.Entities
 {
@@ -22,7 +23,6 @@ namespace ResellHub.Entities
         public List<FollowOffer> FollowingOffers { get; set; }
 
 
-        public void EncodeName() => Slug = Title.ToLower().Replace(" ", "-");
-
+        public void EncodeName() => Slug = $"{Regex.Replace(Title, @"[^a-zA-Z0-9]", "").ToLower()}-{Id.ToString().Substring(0, 4)}";
     }
 }
