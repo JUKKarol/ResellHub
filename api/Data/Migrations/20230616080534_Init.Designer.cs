@@ -12,7 +12,7 @@ using ResellHub.Data;
 namespace ResellHub.Migrations
 {
     [DbContext(typeof(ResellHubContext))]
-    [Migration("20230614190106_Init")]
+    [Migration("20230616080534_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -123,6 +123,7 @@ namespace ResellHub.Migrations
                         .HasAnnotation("Range", new[] { 1950, 2023 });
 
                     b.Property<string>("Slug")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Title")
@@ -190,6 +191,7 @@ namespace ResellHub.Migrations
                         .HasColumnType("text");
 
                     b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
                         .HasColumnType("bytea");
 
                     b.Property<string>("PhoneNumber")
@@ -200,6 +202,7 @@ namespace ResellHub.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Slug")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("VerifiedAt")
@@ -254,7 +257,7 @@ namespace ResellHub.Migrations
                     b.HasOne("ResellHub.Entities.Category", "Category")
                         .WithMany("Offers")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
                     b.HasOne("ResellHub.Entities.User", "User")

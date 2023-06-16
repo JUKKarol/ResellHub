@@ -29,6 +29,8 @@ namespace ResellHub.Data
                 entity.Property(u => u.City).IsRequired();
                 entity.Property(u => u.Email).IsRequired();
                 entity.Property(u => u.PasswordHash).IsRequired();
+                entity.Property(u => u.PasswordSalt).IsRequired();
+                entity.Property(u => u.Slug).IsRequired();
                 entity.HasMany(u => u.Offers).WithOne(o => o.User);
                 entity.HasMany(u => u.SentMessages).WithOne(m => m.FromUser);
                 entity.HasMany(u => u.ReceivedMessages).WithOne(m => m.ToUser);
@@ -48,6 +50,7 @@ namespace ResellHub.Data
                 entity.Property(o => o.Title).IsRequired().HasMaxLength(40);
                 entity.Property(o => o.Description).HasMaxLength(200);
                 entity.Property(o => o.ProductionYear).HasAnnotation("Range", new[] { 1950, DateTime.UtcNow.Year });
+                entity.Property(o => o.Slug).IsRequired();
                 entity.HasMany(u => u.FollowingOffers).WithOne(m => m.Offer);
             });
 

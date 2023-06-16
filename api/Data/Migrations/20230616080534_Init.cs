@@ -35,8 +35,8 @@ namespace ResellHub.Migrations
                     City = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
                     PasswordHash = table.Column<byte[]>(type: "bytea", nullable: false),
-                    PasswordSalt = table.Column<byte[]>(type: "bytea", nullable: true),
-                    Slug = table.Column<string>(type: "text", nullable: true),
+                    PasswordSalt = table.Column<byte[]>(type: "bytea", nullable: false),
+                    Slug = table.Column<string>(type: "text", nullable: false),
                     VeryficationToken = table.Column<string>(type: "text", nullable: true),
                     VerifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     PasswordResetToken = table.Column<string>(type: "text", nullable: true),
@@ -88,7 +88,7 @@ namespace ResellHub.Migrations
                     ProductionYear = table.Column<int>(type: "integer", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Slug = table.Column<string>(type: "text", nullable: true)
+                    Slug = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -98,7 +98,7 @@ namespace ResellHub.Migrations
                         column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Offers_Users_UserId",
                         column: x => x.UserId,
