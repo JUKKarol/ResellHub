@@ -35,28 +35,29 @@ namespace ResellHub.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Messages",
+                name: "Chats",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     FromUserId = table.Column<Guid>(type: "uuid", nullable: false),
                     ToUserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    Content = table.Column<string>(type: "text", nullable: false),
-                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    LastMessageAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Messages", x => x.Id);
+                    table.PrimaryKey("PK_Chats", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Messages_Users_FromUserId",
+                        name: "FK_Chats_Users_FromUserId",
                         column: x => x.FromUserId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Messages_Users_ToUserId",
+                        name: "FK_Chats_Users_ToUserId",
                         column: x => x.ToUserId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -106,6 +107,40 @@ namespace ResellHub.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Messages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ChatId = table.Column<Guid>(type: "uuid", nullable: false),
+                    FromUserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ToUserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Content = table.Column<string>(type: "text", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Messages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Messages_Chats_ChatId",
+                        column: x => x.ChatId,
+                        principalTable: "Chats",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Messages_Users_FromUserId",
+                        column: x => x.FromUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Messages_Users_ToUserId",
+                        column: x => x.ToUserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "FollowingOffers",
                 columns: table => new
                 {
@@ -129,6 +164,16 @@ namespace ResellHub.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Chats_FromUserId",
+                table: "Chats",
+                column: "FromUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Chats_ToUserId",
+                table: "Chats",
+                column: "ToUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FollowingOffers_OfferId",
                 table: "FollowingOffers",
                 column: "OfferId");
@@ -137,6 +182,11 @@ namespace ResellHub.Migrations
                 name: "IX_FollowingOffers_UserId",
                 table: "FollowingOffers",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Messages_ChatId",
+                table: "Messages",
+                column: "ChatId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Messages_FromUserId",
@@ -173,6 +223,9 @@ namespace ResellHub.Migrations
 
             migrationBuilder.DropTable(
                 name: "Offers");
+
+            migrationBuilder.DropTable(
+                name: "Chats");
 
             migrationBuilder.DropTable(
                 name: "Users");

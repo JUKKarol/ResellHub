@@ -15,6 +15,7 @@ namespace ResellHub.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Offer> Offers { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Chat> Chats { get; set; }
         public DbSet<FollowOffer> FollowingOffers { get; set; }
         public DbSet<Role> Roles { get; set; }
 
@@ -28,9 +29,10 @@ namespace ResellHub.Data
                 entity.Property(u => u.City).IsRequired();
                 entity.Property(u => u.Email).IsRequired();
                 entity.Property(u => u.PasswordHash).IsRequired();
-                entity.HasMany(u => u.Offers).WithOne(o => o.User);
-                entity.HasMany(u => u.SentMessages).WithOne( m => m.FromUser);
-                entity.HasMany(u => u.ReceivedMessages).WithOne(m => m.ToUser);
+
+                entity.HasMany(u => u.FromChats).WithOne(c => c.FromUser);
+                entity.HasMany(u => u.ToChats).WithOne(c => c.ToUser);
+                entity.HasMany(u => u.Offers).WithOne(o => o.User);              
                 entity.HasMany(u => u.FollowingOffers).WithOne(m => m.User);
             });
 
@@ -51,15 +53,34 @@ namespace ResellHub.Data
                 entity.HasKey(m => m.Id);
                 entity.Property(m => m.Content).IsRequired();
 
+                entity.HasOne(m => m.Chat)
+                    .WithMany(c => c.Messages)
+                    .HasForeignKey(m => m.ChatId);
+
                 entity.HasOne(m => m.FromUser)
                     .WithMany(u => u.SentMessages)
-                    .HasForeignKey(m => m.FromUserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
+                    .HasForeignKey(m => m.FromUserId);
 
                 entity.HasOne(m => m.ToUser)
                     .WithMany(u => u.ReceivedMessages)
-                    .HasForeignKey(m => m.ToUserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
+                    .HasForeignKey(m => m.ToUserId);
+            });
+
+            modelBuilder.Entity<Chat>(entity =>
+            {
+                entity.HasKey(c => c.Id);
+
+                entity.HasOne(c => c.FromUser)
+                    .WithMany(u => u.FromChats)
+                    .HasForeignKey(c => c.FromUserId);
+
+                entity.HasOne(c => c.ToUser)
+                    .WithMany(u => u.ToChats)
+                    .HasForeignKey(c => c.ToUserId);
+
+                entity.HasMany(c => c.Messages)
+                    .WithOne(m => m.Chat)
+                    .HasForeignKey(m => m.ChatId);
             });
 
             modelBuilder.Entity<FollowOffer>(entity =>
