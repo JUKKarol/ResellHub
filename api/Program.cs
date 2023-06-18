@@ -18,6 +18,7 @@ using ResellHub.Utilities.Validation.UserValidation;
 using Swashbuckle.AspNetCore.Filters;
 using System;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace ResellHub
@@ -30,6 +31,11 @@ namespace ResellHub
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
+            builder.Services.Configure<JsonOptions>(options =>
+            {
+                options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+            });
+
             builder.Services.AddSwaggerGen(options =>
             {
                 options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
