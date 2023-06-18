@@ -17,22 +17,24 @@ namespace ResellHub.Controllers
             _userService = userService;
         }
 
-        [HttpGet("{firstUserId}/{secondUserId}"), Authorize(Roles = "User")]
-        public async Task<IActionResult> GetUsersMessages(Guid firstUserId, Guid secondUserId)
+        [HttpGet("{chatId}"), Authorize(Roles = "User")]
+        public async Task<IActionResult> GetMessagesByChatId(Guid chatId)
         {
-            if (!await _userService.CheckIsUserExistById(firstUserId) || !await _userService.CheckIsUserExistById(secondUserId))
+            var chat = await _userService.GetChatById(chatId);
+
+            if (chat == null)
             {
-                return BadRequest("sender or receiver doesn't exist");
+                return BadRequest("chat doesn't exist");
             }
 
-            var loggedUserEmail = HttpContext.User.FindFirstValue(ClaimTypes.Email);
+            var loggedUserId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            if (await _userService.GetUserEmailById(firstUserId) != loggedUserEmail && await _userService.GetUserEmailById(secondUserId) != loggedUserEmail)
-            {
-                return BadRequest("sender or receiver aren't logged");
+            if (chat.ToUserId != loggedUserId && chat.FromUserId != loggedUserId)
+            { 
+                return BadRequest("permission dennied");
             }
 
-            var messages = await _userService.ShowUsersMessages(firstUserId, secondUserId);
+            var messages = await _userService.GetMessagesByChatId(chatId);
 
             return Ok(messages);
         }

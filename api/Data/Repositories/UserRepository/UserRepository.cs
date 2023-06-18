@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ResellHub.Entities;
 using ResellHub.Enums;
+using System.Data;
 
 namespace ResellHub.Data.Repositories.UserRepository
 {
@@ -126,17 +127,57 @@ namespace ResellHub.Data.Repositories.UserRepository
         }
 
         //Chats
-        public async Task<List<Chat>> GetUserChats(Guid UserId)
+        public async Task<List<Chat>> GetUserChats(Guid userId)
         {
             var usersChats = await _dbContext.Chats
-                .Where(c => (c.FromUserId == UserId) || (c.ToUserId == UserId))
+                .Where(c => (c.FromUserId == userId) || (c.ToUserId == userId))
                 .OrderBy(c => c.LastMessageAt)
                 .ToListAsync();
 
             return usersChats;
         }
 
+        public async Task<Chat> GetChatById(Guid chatId)
+        {
+            var chat = await _dbContext.Chats
+                .FirstOrDefaultAsync(c => (c.Id == chatId));
+
+            return chat;
+        }
+
+        public async Task<Chat> GetChatByUsersId(Guid firstUserId, Guid secondUserId)
+        {
+            var usersChats = await _dbContext.Chats
+                .FirstOrDefaultAsync(c => (c.FromUserId == firstUserId) || (c.ToUserId == firstUserId) && (c.FromUserId == secondUserId) || (c.ToUserId == secondUserId));
+
+            return usersChats;
+        }
+
+        public async Task<String> CreateChat(Guid formUserId, Guid toUserId)
+        {
+            var chat = new Chat()
+            {
+                FromUserId = formUserId,
+                ToUserId = toUserId,
+            };
+
+            await _dbContext.Chats.AddAsync(chat);
+            await _dbContext.SaveChangesAsync();
+
+            return "New chat created";
+        }
+
         //Messages
+        public async Task<List<Message>> GetChatMessagesById(Guid ChatId)
+        {
+            var chatMessages = await _dbContext.Messages
+                .Where(m => m.ChatId == ChatId)
+                .OrderBy(c => c.CreatedDate)
+                .ToListAsync();
+
+            return chatMessages;
+        }
+
         public async Task<List<Message>> GetMessagesBetweenTwoUsers(Guid firstUserId, Guid secondUserId)
         {
             var usersMessages = await _dbContext.Messages

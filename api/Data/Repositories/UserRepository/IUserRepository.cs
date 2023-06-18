@@ -23,7 +23,11 @@ namespace ResellHub.Data.Repositories.UserRepository
         Task<Role> DeleteRole(Guid roleId);
         //Chats
         Task<List<Chat>> GetUserChats(Guid UserId);
+        Task<Chat> GetChatById(Guid chatId);
+        Task<Chat> GetChatByUsersId(Guid firstUserId, Guid secondUserId);
+        Task<String> CreateChat(Guid formUserId, Guid toUserId);
         //Messages
+        Task<List<Message>> GetChatMessagesById(Guid ChatId);
         Task<List<Message>> GetMessagesBetweenTwoUsers(Guid firstUserId, Guid secondUserId);
         Task<Message> AddMessage(Message message);   
         //FollowingOffers

@@ -250,12 +250,31 @@ namespace ResellHub.Services.UserServices
         }
 
         //Chat
-        public async Task<List<Chat>> GetUserChats(Guid useerId)
+        public async Task<List<Chat>> GetUserChats(Guid userId)
         {
-            return await _userRepository.GetUserChats(useerId);
+            return await _userRepository.GetUserChats(userId);
+        }
+
+        public async Task<bool> CheckIsChatExistsById(Guid chatId)
+        {
+            if (await _userRepository.GetChatById(chatId) == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<Chat> GetChatById(Guid chatId)
+        {
+            return await _userRepository.GetChatById(chatId);
         }
 
         //Message
+        public async Task<List<Message>> GetMessagesByChatId(Guid ChatId)
+        {
+            return await _userRepository.GetChatMessagesById(ChatId);
+        }
+
         public async Task<string> SendMessage(Guid fromUserId, Guid ToUserId, string content)
         {
             var message = new Message { FromUserId = fromUserId, ToUserId = ToUserId, Content = content };

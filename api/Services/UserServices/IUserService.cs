@@ -22,8 +22,11 @@ namespace ResellHub.Services.UserServices
         Task<string> UpdateCity(Guid userId, string city);
         Task<string> DeleteUser(Guid userId);
         //Chat
-        Task<List<Chat>> GetUserChats(Guid useerId);
+        Task<List<Chat>> GetUserChats(Guid userId);
+        Task<bool> CheckIsChatExistsById(Guid chatId);
+        Task<Chat> GetChatById(Guid chatId);
         //Message
+        Task<List<Message>> GetMessagesByChatId(Guid ChatId);
         Task<string> SendMessage(Guid fromUserId, Guid ToUserId, string content);
         Task<List<Message>> ShowUsersMessages(Guid firstUser, Guid secondUser);
         //Role
