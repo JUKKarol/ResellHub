@@ -21,9 +21,11 @@ namespace ResellHub.Data.Repositories.UserRepository
         Task<Role> GetRoleById(Guid roleId);
         Task<Role> ChangeRole(Guid roleId, UserRoles role);
         Task<Role> DeleteRole(Guid roleId);
+        //Chats
+        Task<List<Chat>> GetUserChats(Guid UserId);
         //Messages
         Task<List<Message>> GetMessagesBetweenTwoUsers(Guid firstUserId, Guid secondUserId);
-        Task<Message> AddMessage(Message message);
+        Task<Message> AddMessage(Message message);   
         //FollowingOffers
         Task<List<FollowOffer>> GetUserFollowingOffers(Guid userId);
         Task<FollowOffer> GetUserFollowingOfferById(Guid followingOfferId);

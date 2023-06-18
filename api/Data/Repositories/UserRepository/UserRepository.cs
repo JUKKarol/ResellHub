@@ -125,6 +125,17 @@ namespace ResellHub.Data.Repositories.UserRepository
             return roleToDelete;
         }
 
+        //Chats
+        public async Task<List<Chat>> GetUserChats(Guid UserId)
+        {
+            var usersChats = await _dbContext.Chats
+                .Where(c => (c.FromUserId == UserId) || (c.ToUserId == UserId))
+                .OrderBy(c => c.LastMessageAt)
+                .ToListAsync();
+
+            return usersChats;
+        }
+
         //Messages
         public async Task<List<Message>> GetMessagesBetweenTwoUsers(Guid firstUserId, Guid secondUserId)
         {

@@ -249,6 +249,12 @@ namespace ResellHub.Services.UserServices
             return "User deleted successful";
         }
 
+        //Chat
+        public async Task<List<Chat>> GetUserChats(Guid useerId)
+        {
+            return await _userRepository.GetUserChats(useerId);
+        }
+
         //Message
         public async Task<string> SendMessage(Guid fromUserId, Guid ToUserId, string content)
         {
