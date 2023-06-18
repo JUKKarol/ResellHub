@@ -264,9 +264,23 @@ namespace ResellHub.Services.UserServices
             return true;
         }
 
+        public async Task<bool> CheckIsChatExistsByUsersId(Guid firstUserId, Guid secondUserId)
+        {
+            if (await _userRepository.GetChatByUsersId(firstUserId, secondUserId) == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
         public async Task<Chat> GetChatById(Guid chatId)
         {
             return await _userRepository.GetChatById(chatId);
+        }
+
+        public async Task<String> CreateChat(Guid fromUserId, Guid ToUserId)
+        {
+            return await _userRepository.CreateChat(fromUserId, ToUserId);
         }
 
         //Message
@@ -275,20 +289,26 @@ namespace ResellHub.Services.UserServices
             return await _userRepository.GetChatMessagesById(ChatId);
         }
 
-        public async Task<string> SendMessage(Guid fromUserId, Guid ToUserId, string content)
+        public async Task<string> SendMessage(Guid chatId, Guid fromUserId, string content)
         {
-            var message = new Message { FromUserId = fromUserId, ToUserId = ToUserId, Content = content };
+            var chat = await _userRepository.GetChatById(chatId);
+            Guid toUserId;
+
+            if (chat.FromUserId == fromUserId)
+            {
+                toUserId = chat.ToUserId;
+            }
+            else
+            {
+                toUserId = chat.FromUserId;
+            }
+
+            var message = new Message { ChatId = chatId, FromUserId = fromUserId, ToUserId = toUserId, Content = content };
 
             await _userRepository.AddMessage(message);
 
             return "Message send successful";
         }
-
-        public async Task<List<Message>> ShowUsersMessages(Guid firstUser, Guid secondUser)
-        {
-            return await _userRepository.GetMessagesBetweenTwoUsers(firstUser, secondUser);
-        }
-
         //Role
         public async Task<List<Role>> GetUserRoles(Guid userId)
         {

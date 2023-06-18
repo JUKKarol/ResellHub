@@ -24,11 +24,12 @@ namespace ResellHub.Services.UserServices
         //Chat
         Task<List<Chat>> GetUserChats(Guid userId);
         Task<bool> CheckIsChatExistsById(Guid chatId);
+        Task<bool> CheckIsChatExistsByUsersId(Guid firstUserId, Guid secondUserId);
         Task<Chat> GetChatById(Guid chatId);
+        Task<String> CreateChat(Guid fromUserId, Guid ToUserId);
         //Message
         Task<List<Message>> GetMessagesByChatId(Guid ChatId);
         Task<string> SendMessage(Guid fromUserId, Guid ToUserId, string content);
-        Task<List<Message>> ShowUsersMessages(Guid firstUser, Guid secondUser);
         //Role
         Task<List<Role>> GetUserRoles(Guid userId);
         Task<bool> CheckIsRoleExistById(Guid roleId);

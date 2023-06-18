@@ -27,5 +27,23 @@ namespace ResellHub.Controllers
 
             return Ok(await _userService.GetUserChats(userId));
         }
+
+        [HttpPost("{fromUserId}/{toUserId}"), Authorize(Roles = "User")]
+        public async Task<IActionResult> CreateNewChat(Guid fromUserId, Guid toUserId)
+        {
+            if (await _userService.CheckIsChatExistsByUsersId(fromUserId, toUserId))
+            {
+                return BadRequest("Chat already exist");
+            }
+
+            var loggedUserId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if (fromUserId != loggedUserId && toUserId != loggedUserId)
+            {
+                return BadRequest("permission dennied");
+            }
+
+            return Ok(await _userService.CreateChat(fromUserId, toUserId));
+        }
     }
 }

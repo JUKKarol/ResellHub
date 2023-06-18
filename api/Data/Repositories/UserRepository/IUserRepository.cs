@@ -28,7 +28,6 @@ namespace ResellHub.Data.Repositories.UserRepository
         Task<String> CreateChat(Guid formUserId, Guid toUserId);
         //Messages
         Task<List<Message>> GetChatMessagesById(Guid ChatId);
-        Task<List<Message>> GetMessagesBetweenTwoUsers(Guid firstUserId, Guid secondUserId);
         Task<Message> AddMessage(Message message);   
         //FollowingOffers
         Task<List<FollowOffer>> GetUserFollowingOffers(Guid userId);

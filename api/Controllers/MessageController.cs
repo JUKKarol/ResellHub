@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ResellHub.Entities;
 using ResellHub.Services.UserServices;
 using System.Security.Claims;
 
@@ -39,20 +40,24 @@ namespace ResellHub.Controllers
             return Ok(messages);
         }
 
-        [HttpPost("{fromUserId}/{toUserId}"), Authorize(Roles = "User")]
-        public async Task<IActionResult> SendMessage(Guid fromUserId, Guid toUserId, string content)
+        [HttpPost("{chatId}"), Authorize(Roles = "User")]
+        public async Task<IActionResult> SendMessage(Guid chatId, string content)
         {
-            if (!await _userService.CheckIsUserExistById(fromUserId) || !await _userService.CheckIsUserExistById(toUserId))
+            var chat = await _userService.GetChatById(chatId);
+
+            if (chat == null)
             {
-                return BadRequest("sender or receiver doesn't exist");
+                return BadRequest("chat doesn't exist");
             }
 
-            if (await _userService.GetUserEmailById(fromUserId) != HttpContext.User.FindFirstValue(ClaimTypes.Email))
+            var loggedUserId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if (chat.FromUserId != loggedUserId && chat.ToUserId != loggedUserId)
             {
-                return BadRequest("sender isn't logged");
+                return BadRequest("permission dennied");
             }
 
-            return Ok(await _userService.SendMessage(fromUserId, toUserId, content));
+            return Ok(await _userService.SendMessage(chatId, loggedUserId, content));
         }
     }
 }

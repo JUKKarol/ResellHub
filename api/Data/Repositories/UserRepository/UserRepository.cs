@@ -178,16 +178,6 @@ namespace ResellHub.Data.Repositories.UserRepository
             return chatMessages;
         }
 
-        public async Task<List<Message>> GetMessagesBetweenTwoUsers(Guid firstUserId, Guid secondUserId)
-        {
-            var usersMessages = await _dbContext.Messages
-                .Where(m => (m.ToUserId == firstUserId && m.FromUserId == secondUserId) || (m.ToUserId == secondUserId && m.FromUserId == firstUserId))
-                .OrderBy(m => m.CreatedDate)
-                .ToListAsync();
-
-            return usersMessages;
-        }
-
         public async Task<Message> AddMessage(Message message)
         {
             await _dbContext.Messages.AddAsync(message);
