@@ -93,10 +93,21 @@ namespace ResellHub.Data.Seeders
                 _context.Roles.AddRange(role1, role2, role3);
                 _context.SaveChanges();
 
+                Chat chat1 = new Chat()
+                {
+                    Id = Guid.Parse("23165432-1234-5678-9012-345678901234"),
+                    FromUserId = Guid.Parse("98765432-1234-5678-9012-345678901234"),
+                    ToUserId = Guid.Parse("87654321-4321-5678-9012-345678901234"),
+                };
+
+                _context.Chats.Add(chat1);
+                _context.SaveChanges();
+
                 Message message1 = new Message()
                 {
                     FromUserId = Guid.Parse("98765432-1234-5678-9012-345678901234"),
                     ToUserId = Guid.Parse("87654321-4321-5678-9012-345678901234"),
+                    ChatId = Guid.Parse("23165432-1234-5678-9012-345678901234"),
                     Content = "Is product still for sale?"
                 };
 
@@ -104,6 +115,7 @@ namespace ResellHub.Data.Seeders
                 {
                     FromUserId = Guid.Parse("87654321-4321-5678-9012-345678901234"),
                     ToUserId = Guid.Parse("98765432-1234-5678-9012-345678901234"),
+                    ChatId = Guid.Parse("23165432-1234-5678-9012-345678901234"),
                     Content = "No its not"
                 };
 
@@ -111,6 +123,7 @@ namespace ResellHub.Data.Seeders
                 {
                     FromUserId = Guid.Parse("98765432-1234-5678-9012-345678901234"),
                     ToUserId = Guid.Parse("87654321-4321-5678-9012-345678901234"),
+                    ChatId = Guid.Parse("23165432-1234-5678-9012-345678901234"),
                     Content = "Ok, thanks"
                 };
 
