@@ -47,9 +47,9 @@ namespace ResellHub.Data.Repositories.UserRepository
             return existUser;
         }
 
-        public async Task<User> GetUserByEncodedName(string userEncodedName)
+        public async Task<User> GetUserBySlug(string userSlug)
         {
-            var existUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.EncodedName == userEncodedName);
+            var existUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.Slug == userSlug);
 
             return existUser;
         }

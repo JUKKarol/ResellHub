@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -12,6 +13,19 @@ namespace ResellHub.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Categories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CategoryName = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -21,8 +35,8 @@ namespace ResellHub.Migrations
                     City = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
                     PasswordHash = table.Column<byte[]>(type: "bytea", nullable: false),
-                    PasswordSalt = table.Column<byte[]>(type: "bytea", nullable: true),
-                    EncodedName = table.Column<string>(type: "text", nullable: true),
+                    PasswordSalt = table.Column<byte[]>(type: "bytea", nullable: false),
+                    Slug = table.Column<string>(type: "text", nullable: false),
                     VeryficationToken = table.Column<string>(type: "text", nullable: true),
                     VerifiedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     PasswordResetToken = table.Column<string>(type: "text", nullable: true),
@@ -66,18 +80,25 @@ namespace ResellHub.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Title = table.Column<string>(type: "character varying(40)", maxLength: 40, nullable: false),
                     Brand = table.Column<string>(type: "text", nullable: true),
-                    Category = table.Column<string>(type: "text", nullable: true),
+                    CategoryId = table.Column<int>(type: "integer", nullable: false),
                     Description = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     Condition = table.Column<int>(type: "integer", nullable: false),
-                    PricePLN = table.Column<int>(type: "integer", nullable: false),
+                    Price = table.Column<int>(type: "integer", nullable: false),
+                    Currency = table.Column<int>(type: "integer", nullable: false),
                     ProductionYear = table.Column<int>(type: "integer", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    EncodedName = table.Column<string>(type: "text", nullable: true)
+                    Slug = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Offers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Offers_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Offers_Users_UserId",
                         column: x => x.UserId,
@@ -149,6 +170,11 @@ namespace ResellHub.Migrations
                 column: "ToUserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Offers_CategoryId",
+                table: "Offers",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Offers_UserId",
                 table: "Offers",
                 column: "UserId");
@@ -173,6 +199,9 @@ namespace ResellHub.Migrations
 
             migrationBuilder.DropTable(
                 name: "Offers");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "Users");

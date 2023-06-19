@@ -8,8 +8,11 @@ namespace ResellHub.Utilities.Mapings
     {
         public OfferMappingProfile()
         {
-            CreateMap<OfferPublicDto, Offer>().ReverseMap();
+            CreateMap<OfferPublicDto, Offer>();
+            CreateMap<Offer, OfferPublicDto>()
+                .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.CategoryId));
+
             CreateMap<OfferCreateDto, Offer>().ReverseMap();
-        }
     }
+}
 }

@@ -1,4 +1,5 @@
 ﻿using ResellHub.Enums;
+using System.Text.RegularExpressions;
 
 namespace ResellHub.Entities
 {
@@ -11,7 +12,7 @@ namespace ResellHub.Entities
         public string Email { get; set; }
         public byte[] PasswordHash { get; set; } = new byte[32];
         public byte[] PasswordSalt { get; set; } = new byte[32];
-        public string EncodedName { get; set; }
+        public string Slug { get; set; }
         public string VeryficationToken { get; set; }
         public DateTime? VerifiedAt { get; set; } = null;
         public string PasswordResetToken { get; set; }
@@ -24,6 +25,6 @@ namespace ResellHub.Entities
         public virtual List<Message> ReceivedMessages { get; set; }
         public virtual List<FollowOffer> FollowingOffers { get; set; }
 
-        public void EncodeName() => EncodedName = Name.ToLower().Replace(" ", "-");
+        public void EncodeName() => Slug = $"{Regex.Replace(Name, @"[^a-zA-Z0-9]", "").ToLower()}-{Id.ToString().Substring(0, 4)}";
     }
 }

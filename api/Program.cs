@@ -12,6 +12,7 @@ using ResellHub.DTOs.UserDTOs;
 using ResellHub.Services.EmailService;
 using ResellHub.Services.OfferServices;
 using ResellHub.Services.UserServices;
+using ResellHub.Utilities.OfferUtilities;
 using ResellHub.Utilities.UserUtilities;
 using ResellHub.Utilities.Validation.Offer;
 using ResellHub.Utilities.Validation.UserValidation;
@@ -73,6 +74,7 @@ namespace ResellHub
             builder.Services.AddScoped<IEmailService, EmailService>();
 
             builder.Services.AddScoped<IUserUtilities, UserUtilities>();
+            builder.Services.AddScoped<IOfferUtilities, OfferUtilities>();
 
             var app = builder.Build();
             var scope = app.Services.CreateScope();

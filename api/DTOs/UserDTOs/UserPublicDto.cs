@@ -5,6 +5,6 @@
         public string Name { get; set; }
         public string PhoneNumber { get; set; }
         public string City { get; set; }
-        public string EncodedName { get; set; }
+        public string Slug { get; set; }
     }
 }
