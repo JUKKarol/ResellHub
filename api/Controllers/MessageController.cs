@@ -52,7 +52,7 @@ namespace ResellHub.Controllers
 
             var loggedUserId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            if (chat.FromUserId != loggedUserId && chat.ToUserId != loggedUserId)
+            if (chat.FromUserId != loggedUserId)
             {
                 return BadRequest("permission dennied");
             }
