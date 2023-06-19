@@ -21,19 +21,19 @@ namespace ResellHub.Controllers
             _offerService = offerService;
         }
 
-        [HttpGet("followingoffers/{userId}"), Authorize(Roles = "User")]
+        [HttpGet("{userId}"), Authorize(Roles = "User")]
         public async Task<IActionResult> GetMyFollowingOffers()
         {
             return Ok(await _userService.GetUserFollowingOffers(await _userService.GetUserIdByEmail(HttpContext.User.FindFirstValue(ClaimTypes.Email))));
         }
 
-        [HttpPost("followingoffers/{offerId}"), Authorize(Roles = "User")]
+        [HttpPost("{offerId}"), Authorize(Roles = "User")]
         public async Task<IActionResult> AddOfferToFollowing(Guid offerId)
         {
             return Ok(await _userService.AddOfferToFollowing(await _userService.GetUserIdByEmail(HttpContext.User.FindFirstValue(ClaimTypes.Email)), offerId));
         }
 
-        [HttpDelete("followingoffers/{offerId}"), Authorize(Roles = "User")]
+        [HttpDelete("{offerId}"), Authorize(Roles = "User")]
         public async Task<IActionResult> RemoveOfferFromFollowing(Guid offerId)
         {
             if (!await _offerService.CheckIsOfferExistById(offerId))

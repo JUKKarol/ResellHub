@@ -114,6 +114,8 @@ namespace ResellHub.Data
             base.OnConfiguring(optionsBuilder);
             optionsBuilder
                 .UseNpgsql(_configuration.GetConnectionString("ResellHubConnectionString"));
+
+            optionsBuilder.UseLazyLoadingProxies();
         }
     }
 }

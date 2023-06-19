@@ -18,10 +18,9 @@ namespace ResellHub.Entities
         public Guid UserId { get; set; }
         public string Slug { get; set; }
 
-        public User User { get; set; }
-        public Category Category { get; set; }
-        public List<FollowOffer> FollowingOffers { get; set; }
-
+        public virtual User User { get; set; }
+        public virtual Category Category { get; set; }
+        public virtual List<FollowOffer> FollowingOffers { get; set; }
 
         public void EncodeName() => Slug = $"{Regex.Replace(Title, @"[^a-zA-Z0-9]", "").ToLower()}-{Id.ToString().Substring(0, 4)}";
     }
