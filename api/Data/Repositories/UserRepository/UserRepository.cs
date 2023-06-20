@@ -167,6 +167,16 @@ namespace ResellHub.Data.Repositories.UserRepository
             return chat;
         }
 
+        public async Task<Chat> RefreshChatLastMessageAt(Guid chatId)
+        {
+            var chat = await _dbContext.Chats.FirstOrDefaultAsync(c => c.Id == chatId);
+            chat.LastMessageAt = DateTime.UtcNow;
+
+            await _dbContext.SaveChangesAsync();
+
+            return chat;
+        }
+
         //Messages
         public async Task<List<Message>> GetChatMessagesById(Guid ChatId)
         {

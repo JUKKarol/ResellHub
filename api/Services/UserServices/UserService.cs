@@ -306,6 +306,7 @@ namespace ResellHub.Services.UserServices
             var message = new Message { ChatId = chatId, FromUserId = fromUserId, ToUserId = toUserId, Content = content };
 
             await _userRepository.AddMessage(message);
+            await _userRepository.RefreshChatLastMessageAt(chatId);
 
             return "Message send successful";
         }
