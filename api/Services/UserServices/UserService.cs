@@ -278,7 +278,7 @@ namespace ResellHub.Services.UserServices
             return await _userRepository.GetChatById(chatId);
         }
 
-        public async Task<String> CreateChat(Guid fromUserId, Guid ToUserId)
+        public async Task<Chat> CreateChat(Guid fromUserId, Guid ToUserId)
         {
             return await _userRepository.CreateChat(fromUserId, ToUserId);
         }

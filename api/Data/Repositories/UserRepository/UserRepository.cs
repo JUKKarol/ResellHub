@@ -153,7 +153,7 @@ namespace ResellHub.Data.Repositories.UserRepository
             return usersChats;
         }
 
-        public async Task<String> CreateChat(Guid formUserId, Guid toUserId)
+        public async Task<Chat> CreateChat(Guid formUserId, Guid toUserId)
         {
             var chat = new Chat()
             {
@@ -164,7 +164,7 @@ namespace ResellHub.Data.Repositories.UserRepository
             await _dbContext.Chats.AddAsync(chat);
             await _dbContext.SaveChangesAsync();
 
-            return "New chat created";
+            return chat;
         }
 
         //Messages
