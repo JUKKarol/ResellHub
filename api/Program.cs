@@ -60,11 +60,6 @@ namespace ResellHub
                 };
             });
 
-            builder.Services.Configure<JsonOptions>(options =>
-            {
-                options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-            });
-
             builder.Services.AddDbContext<ResellHubContext>();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

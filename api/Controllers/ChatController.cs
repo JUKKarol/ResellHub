@@ -18,7 +18,7 @@ namespace ResellHub.Controllers
         }
 
         [HttpGet("{userId}"), Authorize(Roles = "User")]
-        public async Task<IActionResult> GetUsersChats(Guid userId)
+        public async Task<IActionResult> GetUserChats(Guid userId)
         {
             if (!await _userService.CheckIsUserExistById(userId))
             {
