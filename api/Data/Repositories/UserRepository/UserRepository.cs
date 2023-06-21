@@ -127,11 +127,13 @@ namespace ResellHub.Data.Repositories.UserRepository
         }
 
         //Chats
-        public async Task<List<Chat>> GetUserChats(Guid userId)
+        public async Task<List<Chat>> GetUserChats(Guid userId, int page)
         {
             var usersChats = await _dbContext.Chats
                 .Where(c => (c.FromUserId == userId) || (c.ToUserId == userId))
                 .OrderBy(c => c.LastMessageAt)
+                .Skip(15 * (page - 1))
+                .Take(15)
                 .ToListAsync();
 
             return usersChats;
@@ -178,11 +180,13 @@ namespace ResellHub.Data.Repositories.UserRepository
         }
 
         //Messages
-        public async Task<List<Message>> GetChatMessagesById(Guid ChatId)
+        public async Task<List<Message>> GetChatMessagesById(Guid ChatId, int page)
         {
             var chatMessages = await _dbContext.Messages
                 .Where(m => m.ChatId == ChatId)
                 .OrderBy(c => c.CreatedDate)
+                .Skip(15 * (page - 1))
+                .Take(15)
                 .ToListAsync();
 
             return chatMessages;

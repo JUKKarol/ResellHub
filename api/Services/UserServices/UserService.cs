@@ -255,9 +255,9 @@ namespace ResellHub.Services.UserServices
         }
 
         //Chat
-        public async Task<List<ChatDto>> GetUserChats(Guid userId)
+        public async Task<List<ChatDto>> GetUserChats(Guid userId, int page )
         {
-            var chats = await _userRepository.GetUserChats(userId);
+            var chats = await _userRepository.GetUserChats(userId, page);
             var chatsDto = _mapper.Map<List<ChatDto>>(chats);
 
             return chatsDto;
@@ -292,9 +292,9 @@ namespace ResellHub.Services.UserServices
         }
 
         //Message
-        public async Task<List<MessageDisplayDto>> GetMessagesByChatId(Guid ChatId)
+        public async Task<List<MessageDisplayDto>> GetMessagesByChatId(Guid ChatId, int page)
         {
-            var messages = await _userRepository.GetChatMessagesById(ChatId);
+            var messages = await _userRepository.GetChatMessagesById(ChatId, page);
             var messagesDto = _mapper.Map<List<MessageDisplayDto>>(messages);
 
             return messagesDto;

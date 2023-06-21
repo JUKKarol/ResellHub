@@ -19,8 +19,13 @@ namespace ResellHub.Controllers
         }
 
         [HttpGet("{chatId}"), Authorize(Roles = "User")]
-        public async Task<IActionResult> GetMessagesByChatId(Guid chatId)
+        public async Task<IActionResult> GetMessagesByChatId(Guid chatId, int page)
         {
+            if (page <= 0)
+            {
+                return BadRequest("page must be greater than 0");
+            }
+
             var chat = await _userService.GetChatById(chatId);
 
             if (chat == null)
@@ -35,7 +40,7 @@ namespace ResellHub.Controllers
                 return BadRequest("permission dennied");
             }
 
-            var messages = await _userService.GetMessagesByChatId(chatId);
+            var messages = await _userService.GetMessagesByChatId(chatId, page);
 
             return Ok(messages);
         }
