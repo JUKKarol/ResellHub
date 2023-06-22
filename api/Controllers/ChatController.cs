@@ -17,8 +17,8 @@ namespace ResellHub.Controllers
             _userService = userService;
         }
 
-        [HttpGet("{userId}/{page}"), Authorize(Roles = "User")]
-        public async Task<IActionResult> GetUserChats(Guid userId, int page)
+        [HttpGet("{userId}"), Authorize(Roles = "User")]
+        public async Task<IActionResult> GetUserChats(Guid userId, int page = 1)
         {
             if (page <= 0)
             {

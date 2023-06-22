@@ -12,7 +12,7 @@ using ResellHub.Data;
 namespace ResellHub.Migrations
 {
     [DbContext(typeof(ResellHubContext))]
-    [Migration("20230617210138_Init")]
+    [Migration("20230621204834_Init")]
     partial class Init
     {
         /// <inheritdoc />
