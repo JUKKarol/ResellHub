@@ -6,7 +6,7 @@ namespace ResellHub.Data.Repositories.UserRepository
     public interface IUserRepository
     {
         //User
-        Task<List<User>> GetUsers();
+        Task<List<User>> GetUsers(int page);
         Task<User> GetUserById(Guid userId);
         Task<User> GetUserByEmail(string userEmail);
         Task<User> GetUserByVeryficationToken(string userToken);
@@ -31,8 +31,9 @@ namespace ResellHub.Data.Repositories.UserRepository
         Task<List<Message>> GetChatMessagesById(Guid ChatId, int page);
         Task<Message> AddMessage(Message message);   
         //FollowingOffers
-        Task<List<FollowOffer>> GetUserFollowingOffers(Guid userId);
+        Task<List<FollowOffer>> GetUserFollowingOffers(Guid userId, int page);
         Task<FollowOffer> GetUserFollowingOfferById(Guid followingOfferId);
+        Task<FollowOffer> GetFollowingOfferByUserAndOfferId(Guid followingOfferId, Guid userId);
         Task<FollowOffer> AddFollowingOffer(FollowOffer followOffer);
         Task<FollowOffer> DeleteFollowingOffer(Guid followOfferId);
     }

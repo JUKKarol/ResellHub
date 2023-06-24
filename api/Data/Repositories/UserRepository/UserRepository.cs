@@ -15,9 +15,12 @@ namespace ResellHub.Data.Repositories.UserRepository
         }
 
         //User
-        public async Task<List<User>> GetUsers()
+        public async Task<List<User>> GetUsers(int page)
         {
-            return await _dbContext.Users.ToListAsync();
+            return await _dbContext.Users
+                .Skip(15 * (page - 1))
+                .Take(15)
+                .ToListAsync();
         }
 
         public async Task<User> GetUserById(Guid userId)
@@ -201,9 +204,12 @@ namespace ResellHub.Data.Repositories.UserRepository
         }
 
         //FollowingOffers
-        public async Task<List<FollowOffer>> GetUserFollowingOffers(Guid userId)
+        public async Task<List<FollowOffer>> GetUserFollowingOffers(Guid userId, int page)
         {
-            var userFolowingOffers = await _dbContext.FollowingOffers.Where(fo => fo.UserId == userId) .ToListAsync();
+            var userFolowingOffers = await _dbContext.FollowingOffers
+                .Where(fo => fo.UserId == userId)
+                .Skip(15 * (page - 1))
+                .Take(15).ToListAsync();
 
             return userFolowingOffers;
         }
@@ -211,6 +217,13 @@ namespace ResellHub.Data.Repositories.UserRepository
         public async Task<FollowOffer> GetUserFollowingOfferById(Guid followingOfferId)
         {
             var followingOffer = await _dbContext.FollowingOffers.FirstOrDefaultAsync(fo => fo.Id == followingOfferId);
+
+            return followingOffer;
+        }
+
+        public async Task<FollowOffer> GetFollowingOfferByUserAndOfferId(Guid followingOfferId, Guid userId)
+        {
+            var followingOffer = await _dbContext.FollowingOffers.FirstOrDefaultAsync(fo => (fo.Id == followingOfferId) && (fo.UserId == userId));
 
             return followingOffer;
         }
