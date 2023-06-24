@@ -30,7 +30,7 @@ namespace ResellHub.Data
                 entity.Property(u => u.City).IsRequired();
                 entity.Property(u => u.Email).IsRequired();
                 entity.Property(u => u.PasswordHash).IsRequired();
-                ntity.Property(u => u.PasswordSalt).IsRequired();
+                entity.Property(u => u.PasswordSalt).IsRequired();
                 entity.Property(u => u.Slug).IsRequired();
 
                 entity.HasMany(u => u.FromChats).WithOne(c => c.FromUser);

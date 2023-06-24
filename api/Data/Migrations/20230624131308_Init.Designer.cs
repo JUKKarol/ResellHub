@@ -12,7 +12,7 @@ using ResellHub.Data;
 namespace ResellHub.Migrations
 {
     [DbContext(typeof(ResellHubContext))]
-    [Migration("20230616080534_Init")]
+    [Migration("20230624131308_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -21,6 +21,9 @@ namespace ResellHub.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.5")
+                .HasAnnotation("Proxies:ChangeTracking", false)
+                .HasAnnotation("Proxies:CheckEquality", false)
+                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -39,6 +42,30 @@ namespace ResellHub.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("ResellHub.Entities.Chat", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("FromUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("LastMessageAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ToUserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FromUserId");
+
+                    b.HasIndex("ToUserId");
+
+                    b.ToTable("Chats");
                 });
 
             modelBuilder.Entity("ResellHub.Entities.FollowOffer", b =>
@@ -68,6 +95,9 @@ namespace ResellHub.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid>("ChatId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("text");
@@ -82,6 +112,8 @@ namespace ResellHub.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ChatId");
 
                     b.HasIndex("FromUserId");
 
@@ -216,6 +248,25 @@ namespace ResellHub.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("ResellHub.Entities.Chat", b =>
+                {
+                    b.HasOne("ResellHub.Entities.User", "FromUser")
+                        .WithMany("FromChats")
+                        .HasForeignKey("FromUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ResellHub.Entities.User", "ToUser")
+                        .WithMany("ToChats")
+                        .HasForeignKey("ToUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FromUser");
+
+                    b.Navigation("ToUser");
+                });
+
             modelBuilder.Entity("ResellHub.Entities.FollowOffer", b =>
                 {
                     b.HasOne("ResellHub.Entities.Offer", "Offer")
@@ -237,15 +288,25 @@ namespace ResellHub.Migrations
 
             modelBuilder.Entity("ResellHub.Entities.Message", b =>
                 {
+                    b.HasOne("ResellHub.Entities.Chat", "Chat")
+                        .WithMany("Messages")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ResellHub.Entities.User", "FromUser")
                         .WithMany("SentMessages")
                         .HasForeignKey("FromUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ResellHub.Entities.User", "ToUser")
                         .WithMany("ReceivedMessages")
                         .HasForeignKey("ToUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Chat");
 
                     b.Navigation("FromUser");
 
@@ -287,6 +348,11 @@ namespace ResellHub.Migrations
                     b.Navigation("Offers");
                 });
 
+            modelBuilder.Entity("ResellHub.Entities.Chat", b =>
+                {
+                    b.Navigation("Messages");
+                });
+
             modelBuilder.Entity("ResellHub.Entities.Offer", b =>
                 {
                     b.Navigation("FollowingOffers");
@@ -296,6 +362,8 @@ namespace ResellHub.Migrations
                 {
                     b.Navigation("FollowingOffers");
 
+                    b.Navigation("FromChats");
+
                     b.Navigation("Offers");
 
                     b.Navigation("ReceivedMessages");
@@ -303,6 +371,8 @@ namespace ResellHub.Migrations
                     b.Navigation("Roles");
 
                     b.Navigation("SentMessages");
+
+                    b.Navigation("ToChats");
                 });
 #pragma warning restore 612, 618
         }

@@ -25,6 +25,22 @@ namespace ResellHub.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("ResellHub.Entities.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CategoryName")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+                });
+
             modelBuilder.Entity("ResellHub.Entities.Chat", b =>
                 {
                     b.Property<Guid>("Id")
@@ -47,21 +63,6 @@ namespace ResellHub.Migrations
                     b.HasIndex("ToUserId");
 
                     b.ToTable("Chats");
-                   
-            modelBuilder.Entity("ResellHub.Entities.Category", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CategoryName")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("ResellHub.Entities.FollowOffer", b =>
@@ -339,12 +340,14 @@ namespace ResellHub.Migrations
                     b.Navigation("RoleOwner");
                 });
 
-            modelBuilder.Entity("ResellHub.Entities.Chat", b =>
-                {
-                    b.Navigation("Messages");
             modelBuilder.Entity("ResellHub.Entities.Category", b =>
                 {
                     b.Navigation("Offers");
+                });
+
+            modelBuilder.Entity("ResellHub.Entities.Chat", b =>
+                {
+                    b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("ResellHub.Entities.Offer", b =>
