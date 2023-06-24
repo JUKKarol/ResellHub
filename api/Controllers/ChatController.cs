@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ResellHub.DTOs.ChatDTOs;
 using ResellHub.Services.UserServices;
 using System.Security.Claims;
 
@@ -38,22 +39,22 @@ namespace ResellHub.Controllers
             return Ok(await _userService.GetUserChats(userId, page));
         }
 
-        [HttpPost("{fromUserId}/{toUserId}"), Authorize(Roles = "User")]
-        public async Task<IActionResult> CreateNewChat(Guid fromUserId, Guid toUserId)
+        [HttpPost, Authorize(Roles = "User")]
+        public async Task<IActionResult> CreateNewChat([FromBody] ChatCreateDto chatDto)
         {
-            if (await _userService.CheckIsChatExistsByUsersId(fromUserId, toUserId))
+            if (await _userService.CheckIsChatExistsByUsersId(chatDto.FromUserId, chatDto.ToUserId))
             {
                 return BadRequest("Chat already exist");
             }
 
             var loggedUserId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            if (fromUserId != loggedUserId && toUserId != loggedUserId)
+            if (chatDto.FromUserId != loggedUserId && chatDto.ToUserId != loggedUserId)
             {
                 return BadRequest("permission dennied");
             }
 
-            return Ok(await _userService.CreateChat(fromUserId, toUserId));
+            return Ok(await _userService.CreateChat(chatDto.FromUserId, chatDto.ToUserId));
         }
     }
 }
