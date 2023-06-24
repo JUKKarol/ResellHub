@@ -18,6 +18,7 @@ namespace ResellHub.Data
         public DbSet<Chat> Chats { get; set; }
         public DbSet<FollowOffer> FollowingOffers { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -29,10 +30,14 @@ namespace ResellHub.Data
                 entity.Property(u => u.City).IsRequired();
                 entity.Property(u => u.Email).IsRequired();
                 entity.Property(u => u.PasswordHash).IsRequired();
+                ntity.Property(u => u.PasswordSalt).IsRequired();
+                entity.Property(u => u.Slug).IsRequired();
 
                 entity.HasMany(u => u.FromChats).WithOne(c => c.FromUser);
                 entity.HasMany(u => u.ToChats).WithOne(c => c.ToUser);
-                entity.HasMany(u => u.Offers).WithOne(o => o.User);              
+                entity.HasMany(u => u.Offers).WithOne(o => o.User);
+                entity.HasMany(u => u.SentMessages).WithOne(m => m.FromUser);
+                entity.HasMany(u => u.ReceivedMessages).WithOne(m => m.ToUser);
                 entity.HasMany(u => u.FollowingOffers).WithOne(m => m.User);
             });
 
@@ -42,9 +47,14 @@ namespace ResellHub.Data
                 entity.HasOne(o => o.User)
                     .WithMany(u => u.Offers)
                     .HasForeignKey(o => o.UserId);
+                entity.HasOne(o => o.Category)
+                    .WithMany(c => c.Offers)
+                    .HasForeignKey(o => o.CategoryId)
+                    .OnDelete(DeleteBehavior.SetNull);
                 entity.Property(o => o.Title).IsRequired().HasMaxLength(40);
                 entity.Property(o => o.Description).HasMaxLength(200);
                 entity.Property(o => o.ProductionYear).HasAnnotation("Range", new[] { 1950, DateTime.UtcNow.Year });
+                entity.Property(o => o.Slug).IsRequired();
                 entity.HasMany(u => u.FollowingOffers).WithOne(m => m.Offer);
             });
 
@@ -107,6 +117,16 @@ namespace ResellHub.Data
                     .OnDelete(DeleteBehavior.Cascade);
 
                 entity.Property(e => e.UserId).IsRequired();
+            });
+
+            modelBuilder.Entity<Category>(entity =>
+            {
+                entity.HasKey(c => c.Id);
+
+                entity.HasMany(c => c.Offers)
+                    .WithOne(o => o.Category)
+                    .HasForeignKey(o => o.CategoryId)
+                    .OnDelete(DeleteBehavior.SetNull);
             });
 
             base.OnModelCreating(modelBuilder);

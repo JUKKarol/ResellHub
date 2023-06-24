@@ -12,6 +12,7 @@ namespace ResellHub.Data.Repositories.OfferRepository
             _dbContext = dbContext;
         }
 
+        //Offer
         public async Task<List<Offer>> GetOffers()
         {
             return await _dbContext.Offers.ToListAsync();
@@ -29,9 +30,9 @@ namespace ResellHub.Data.Repositories.OfferRepository
             return existOffer;
         }
 
-        public async Task<Offer> GetOfferByEncodedName(string offerEncodedName)
+        public async Task<Offer> GetOfferBySlug(string offerSlug)
         {
-            var existOffer = await _dbContext.Offers.FirstOrDefaultAsync(o => o.EncodedName == offerEncodedName);
+            var existOffer = await _dbContext.Offers.FirstOrDefaultAsync(o => o.Slug == offerSlug);
 
             return existOffer;
         }
@@ -62,6 +63,21 @@ namespace ResellHub.Data.Repositories.OfferRepository
             await _dbContext.SaveChangesAsync();
 
             return existOffer;
+        }
+
+        //Category
+        public async Task<String> GetCategoryNameById(int categoryId)
+        {
+            var offerCategory = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == categoryId);
+
+            return offerCategory.CategoryName;
+        }
+
+        public async Task<List<Category>> GetCategories()
+        {
+            var categories = await _dbContext.Categories.ToListAsync();
+
+            return categories;
         }
     }
 }
