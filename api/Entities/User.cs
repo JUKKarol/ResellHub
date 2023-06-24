@@ -23,6 +23,8 @@ namespace ResellHub.Entities
         public virtual List<Offer> Offers { get; set; }
         public virtual List<Message> SentMessages { get; set; }
         public virtual List<Message> ReceivedMessages { get; set; }
+        public virtual List<Chat> FromChats { get; set; }
+        public virtual List<Chat> ToChats { get; set; }
         public virtual List<FollowOffer> FollowingOffers { get; set; }
 
         public void EncodeName() => Slug = $"{Regex.Replace(Name, @"[^a-zA-Z0-9]", "").ToLower()}-{Id.ToString().Substring(0, 4)}";

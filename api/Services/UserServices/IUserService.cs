@@ -1,4 +1,8 @@
-﻿using ResellHub.DTOs.UserDTOs;
+﻿using ResellHub.DTOs.ChatDTOs;
+using ResellHub.DTOs.FollowOfferDTOs;
+using ResellHub.DTOs.MessageDTOs;
+using ResellHub.DTOs.RoleDTOs;
+using ResellHub.DTOs.UserDTOs;
 using ResellHub.Entities;
 using ResellHub.Enums;
 
@@ -21,18 +25,24 @@ namespace ResellHub.Services.UserServices
         Task<string> UpdatePhoneNumber(Guid userId, string phoneNumber);
         Task<string> UpdateCity(Guid userId, string city);
         Task<string> DeleteUser(Guid userId);
+        //Chat
+        Task<List<ChatDto>> GetUserChats(Guid userId, int page);
+        Task<bool> CheckIsChatExistsById(Guid chatId);
+        Task<bool> CheckIsChatExistsByUsersId(Guid firstUserId, Guid secondUserId);
+        Task<Chat> GetChatById(Guid chatId);
+        Task<Chat> CreateChat(Guid fromUserId, Guid ToUserId);
         //Message
+        Task<List<MessageDisplayDto>> GetMessagesByChatId(Guid ChatId, int page);
         Task<string> SendMessage(Guid fromUserId, Guid ToUserId, string content);
-        Task<List<Message>> ShowUsersMessages(Guid firstUser, Guid secondUser);
         //Role
-        Task<List<Role>> GetUserRoles(Guid userId);
+        Task<List<RoleDto>> GetUserRoles(Guid userId);
         Task<bool> CheckIsRoleExistById(Guid roleId);
         Task<string> AddRole(Guid userId, UserRoles userRole);
         Task<string> UpdateRole(Guid roleId, UserRoles userNewRole);
         Task<string> DeleteRole(Guid roleId);
         //FollowOffer
-        Task<List<FollowOffer>> GetUserFollowingOffers(Guid userId);
-        Task<FollowOffer> GetFollowingOfferByUserAndOfferId(Guid userId, Guid offerId);
+        Task<List<FollowOfferDto>> GetUserFollowingOffers(Guid userId);
+        Task<FollowOfferDto> GetFollowingOfferByUserAndOfferId(Guid userId, Guid offerId);
         Task<bool> CheckIsFollowingExistById(Guid followingOfferId);
         Task<string> AddOfferToFollowing(Guid userId, Guid offerId);
         Task<string> RemoveOfferFromFollowing(Guid followingOfferId);

@@ -2,13 +2,18 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using ResellHub.Data.Repositories.UserRepository;
+using ResellHub.DTOs.ChatDTOs;
+using ResellHub.DTOs.FollowOfferDTOs;
+using ResellHub.DTOs.MessageDTOs;
 using ResellHub.DTOs.OfferDTOs;
+using ResellHub.DTOs.RoleDTOs;
 using ResellHub.DTOs.UserDTOs;
 using ResellHub.Entities;
 using ResellHub.Enums;
 using ResellHub.Services.EmailService;
 using ResellHub.Utilities.UserUtilities;
 using System;
+using System.Collections.Generic;
 
 namespace ResellHub.Services.UserServices
 {
@@ -249,25 +254,81 @@ namespace ResellHub.Services.UserServices
             return "User deleted successful";
         }
 
-        //Message
-        public async Task<string> SendMessage(Guid fromUserId, Guid ToUserId, string content)
+        //Chat
+        public async Task<List<ChatDto>> GetUserChats(Guid userId, int page )
         {
-            var message = new Message { FromUserId = fromUserId, ToUserId = ToUserId, Content = content };
+            var chats = await _userRepository.GetUserChats(userId, page);
+            var chatsDto = _mapper.Map<List<ChatDto>>(chats);
+
+            return chatsDto;
+        }
+
+        public async Task<bool> CheckIsChatExistsById(Guid chatId)
+        {
+            if (await _userRepository.GetChatById(chatId) == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<bool> CheckIsChatExistsByUsersId(Guid firstUserId, Guid secondUserId)
+        {
+            if (await _userRepository.GetChatByUsersId(firstUserId, secondUserId) == null)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<Chat> GetChatById(Guid chatId)
+        {
+            return await _userRepository.GetChatById(chatId);
+        }
+
+        public async Task<Chat> CreateChat(Guid fromUserId, Guid ToUserId)
+        {
+            return await _userRepository.CreateChat(fromUserId, ToUserId);
+        }
+
+        //Message
+        public async Task<List<MessageDisplayDto>> GetMessagesByChatId(Guid ChatId, int page)
+        {
+            var messages = await _userRepository.GetChatMessagesById(ChatId, page);
+            var messagesDto = _mapper.Map<List<MessageDisplayDto>>(messages);
+
+            return messagesDto;
+        }
+
+        public async Task<string> SendMessage(Guid chatId, Guid fromUserId, string content)
+        {
+            var chat = await _userRepository.GetChatById(chatId);
+            Guid toUserId;
+
+            if (chat.FromUserId == fromUserId)
+            {
+                toUserId = chat.ToUserId;
+            }
+            else
+            {
+                toUserId = chat.FromUserId;
+            }
+
+            var message = new Message { ChatId = chatId, FromUserId = fromUserId, ToUserId = toUserId, Content = content };
 
             await _userRepository.AddMessage(message);
+            await _userRepository.RefreshChatLastMessageAt(chatId);
 
             return "Message send successful";
         }
 
-        public async Task<List<Message>> ShowUsersMessages(Guid firstUser, Guid secondUser)
-        {
-            return await _userRepository.GetMessagesBetweenTwoUsers(firstUser, secondUser);
-        }
-
         //Role
-        public async Task<List<Role>> GetUserRoles(Guid userId)
+        public async Task<List<RoleDto>> GetUserRoles(Guid userId)
         {
-            return await _userRepository.GetUserRoles(userId);
+            var userRoles = await _userRepository.GetUserRoles(userId);
+            var userRolesDto = _mapper.Map<List<RoleDto>>(userRoles);
+
+            return userRolesDto;
         }
 
         public async Task<bool> CheckIsRoleExistById(Guid roleId)
@@ -307,16 +368,20 @@ namespace ResellHub.Services.UserServices
         }
 
         //FollowOffer
-        public async Task<List<FollowOffer>> GetUserFollowingOffers(Guid userId)
+        public async Task<List<FollowOfferDto>> GetUserFollowingOffers(Guid userId)
         {
-            return await _userRepository.GetUserFollowingOffers(userId);
+            var followingOffers = await _userRepository.GetUserFollowingOffers(userId);
+            var followingOffersDto = _mapper.Map<List<FollowOfferDto>>(followingOffers);
+
+            return followingOffersDto;
         }
 
-        public async Task<FollowOffer> GetFollowingOfferByUserAndOfferId(Guid userId, Guid offerId)
+        public async Task<FollowOfferDto> GetFollowingOfferByUserAndOfferId(Guid userId, Guid offerId)
         {
             var userFollowingOffers = await _userRepository.GetUserFollowingOffers(userId);
-            
-            return userFollowingOffers.FirstOrDefault(fo => fo.OfferId == offerId);
+            var userFollowingOffersDto = _mapper.Map<FollowOfferDto>(userFollowingOffers);
+
+            return userFollowingOffersDto;
         }
 
         public async Task<bool> CheckIsFollowingExistById(Guid followingOfferId)

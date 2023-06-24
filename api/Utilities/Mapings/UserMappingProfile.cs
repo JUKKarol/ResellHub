@@ -7,7 +7,6 @@ namespace ResellHub.Utilities.Mapings
 {
     public class UserMappingProfile : Profile
     {
-
         public UserMappingProfile()
         {
             CreateMap<UserRegistrationDto, User>().ReverseMap();

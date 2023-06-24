@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using ResellHub.Data;
@@ -11,9 +12,11 @@ using ResellHub.Data;
 namespace ResellHub.Migrations
 {
     [DbContext(typeof(ResellHubContext))]
-    partial class ResellHubContextModelSnapshot : ModelSnapshot
+    [Migration("20230621204834_Init")]
+    partial class Init
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,21 +50,6 @@ namespace ResellHub.Migrations
                     b.HasIndex("ToUserId");
 
                     b.ToTable("Chats");
-                   
-            modelBuilder.Entity("ResellHub.Entities.Category", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CategoryName")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Categories");
                 });
 
             modelBuilder.Entity("ResellHub.Entities.FollowOffer", b =>
@@ -127,8 +115,8 @@ namespace ResellHub.Migrations
                     b.Property<string>("Brand")
                         .HasColumnType("text");
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("integer");
+                    b.Property<string>("Category")
+                        .HasColumnType("text");
 
                     b.Property<int>("Condition")
                         .HasColumnType("integer");
@@ -136,23 +124,19 @@ namespace ResellHub.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("Currency")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Description")
                         .HasMaxLength(200)
                         .HasColumnType("character varying(200)");
 
-                    b.Property<int>("Price")
+                    b.Property<string>("EncodedName")
+                        .HasColumnType("text");
+
+                    b.Property<int>("PricePLN")
                         .HasColumnType("integer");
 
                     b.Property<int>("ProductionYear")
                         .HasColumnType("integer")
                         .HasAnnotation("Range", new[] { 1950, 2023 });
-
-                    b.Property<string>("Slug")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<string>("Title")
                         .IsRequired()
@@ -163,8 +147,6 @@ namespace ResellHub.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
 
                     b.HasIndex("UserId");
 
@@ -207,6 +189,9 @@ namespace ResellHub.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("EncodedName")
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -219,7 +204,6 @@ namespace ResellHub.Migrations
                         .HasColumnType("text");
 
                     b.Property<byte[]>("PasswordSalt")
-                        .IsRequired()
                         .HasColumnType("bytea");
 
                     b.Property<string>("PhoneNumber")
@@ -228,10 +212,6 @@ namespace ResellHub.Migrations
 
                     b.Property<DateTime?>("ResetTokenExpires")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Slug")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<DateTime?>("VerifiedAt")
                         .HasColumnType("timestamp with time zone");
@@ -311,19 +291,11 @@ namespace ResellHub.Migrations
 
             modelBuilder.Entity("ResellHub.Entities.Offer", b =>
                 {
-                    b.HasOne("ResellHub.Entities.Category", "Category")
-                        .WithMany("Offers")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.SetNull)
-                        .IsRequired();
-
                     b.HasOne("ResellHub.Entities.User", "User")
                         .WithMany("Offers")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Category");
 
                     b.Navigation("User");
                 });
@@ -342,9 +314,6 @@ namespace ResellHub.Migrations
             modelBuilder.Entity("ResellHub.Entities.Chat", b =>
                 {
                     b.Navigation("Messages");
-            modelBuilder.Entity("ResellHub.Entities.Category", b =>
-                {
-                    b.Navigation("Offers");
                 });
 
             modelBuilder.Entity("ResellHub.Entities.Offer", b =>

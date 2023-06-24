@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using ResellHub.Entities;
 using ResellHub.Services.UserServices;
 using System.Security.Claims;
 
@@ -17,40 +18,51 @@ namespace ResellHub.Controllers
             _userService = userService;
         }
 
-        [HttpGet("{firstUserId}/{secondUserId}"), Authorize(Roles = "User")]
-        public async Task<IActionResult> GetUsersMessages(Guid firstUserId, Guid secondUserId)
+        [HttpGet("{chatId}"), Authorize(Roles = "User")]
+        public async Task<IActionResult> GetMessagesByChatId(Guid chatId, int page = 1)
         {
-            if (!await _userService.CheckIsUserExistById(firstUserId) || !await _userService.CheckIsUserExistById(secondUserId))
+            if (page <= 0)
             {
-                return BadRequest("sender or receiver doesn't exist");
+                return BadRequest("page must be greater than 0");
             }
 
-            var loggedUserEmail = HttpContext.User.FindFirstValue(ClaimTypes.Email);
+            var chat = await _userService.GetChatById(chatId);
 
-            if (await _userService.GetUserEmailById(firstUserId) != loggedUserEmail && await _userService.GetUserEmailById(secondUserId) != loggedUserEmail)
+            if (chat == null)
             {
-                return BadRequest("sender or receiver aren't logged");
+                return BadRequest("chat doesn't exist");
             }
 
-            var messages = await _userService.ShowUsersMessages(firstUserId, secondUserId);
+            var loggedUserId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if (chat.ToUserId != loggedUserId && chat.FromUserId != loggedUserId)
+            { 
+                return BadRequest("permission dennied");
+            }
+
+            var messages = await _userService.GetMessagesByChatId(chatId, page);
 
             return Ok(messages);
         }
 
-        [HttpPost("{fromUserId}/{toUserId}"), Authorize(Roles = "User")]
-        public async Task<IActionResult> SendMessage(Guid fromUserId, Guid toUserId, string content)
+        [HttpPost("{chatId}"), Authorize(Roles = "User")]
+        public async Task<IActionResult> SendMessage(Guid chatId, string content)
         {
-            if (!await _userService.CheckIsUserExistById(fromUserId) || !await _userService.CheckIsUserExistById(toUserId))
+            var chat = await _userService.GetChatById(chatId);
+
+            if (chat == null)
             {
-                return BadRequest("sender or receiver doesn't exist");
+                return BadRequest("chat doesn't exist");
             }
 
-            if (await _userService.GetUserEmailById(fromUserId) != HttpContext.User.FindFirstValue(ClaimTypes.Email))
+            var loggedUserId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if (chat.FromUserId != loggedUserId)
             {
-                return BadRequest("sender isn't logged");
+                return BadRequest("permission dennied");
             }
 
-            return Ok(await _userService.SendMessage(fromUserId, toUserId, content));
+            return Ok(await _userService.SendMessage(chatId, loggedUserId, content));
         }
     }
 }
