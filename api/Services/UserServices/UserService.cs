@@ -286,9 +286,9 @@ namespace ResellHub.Services.UserServices
             return await _userRepository.GetChatById(chatId);
         }
 
-        public async Task<Chat> CreateChat(Guid fromUserId, Guid ToUserId)
+        public async Task<Chat> CreateChat(Guid senderId, Guid ReciverId)
         {
-            return await _userRepository.CreateChat(fromUserId, ToUserId);
+            return await _userRepository.CreateChat(senderId, ReciverId);
         }
 
         //Message
@@ -300,21 +300,21 @@ namespace ResellHub.Services.UserServices
             return messagesDto;
         }
 
-        public async Task<string> SendMessage(Guid chatId, Guid fromUserId, string content)
+        public async Task<string> SendMessage(Guid chatId, Guid senderId, string content)
         {
             var chat = await _userRepository.GetChatById(chatId);
-            Guid toUserId;
+            Guid reciverId;
 
-            if (chat.FromUserId == fromUserId)
+            if (chat.SenderId == senderId)
             {
-                toUserId = chat.ToUserId;
+                reciverId = chat.ReciverId;
             }
             else
             {
-                toUserId = chat.FromUserId;
+                reciverId = chat.SenderId;
             }
 
-            var message = new Message { ChatId = chatId, FromUserId = fromUserId, ToUserId = toUserId, Content = content };
+            var message = new Message { ChatId = chatId, SenderId = senderId, ReciverId = reciverId, Content = content };
 
             await _userRepository.AddMessage(message);
             await _userRepository.RefreshChatLastMessageAt(chatId);

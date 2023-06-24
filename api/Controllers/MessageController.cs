@@ -35,7 +35,7 @@ namespace ResellHub.Controllers
 
             var loggedUserId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            if (chat.ToUserId != loggedUserId && chat.FromUserId != loggedUserId)
+            if (chat.ReciverId != loggedUserId && chat.SenderId != loggedUserId)
             { 
                 return BadRequest("permission dennied");
             }
@@ -57,7 +57,7 @@ namespace ResellHub.Controllers
 
             var loggedUserId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            if (chat.FromUserId != loggedUserId)
+            if (chat.SenderId != loggedUserId)
             {
                 return BadRequest("permission dennied");
             }
