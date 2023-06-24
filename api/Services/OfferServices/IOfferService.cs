@@ -6,8 +6,8 @@ namespace ResellHub.Services.OfferServices
     {
         Task<List<OfferPublicDto>> GetOffers();
         Task<List<OfferPublicDto>> GetUserOffers(Guid userId);
-        Task<OfferPublicDto> GetOfferById(Guid offerId);
-        Task<OfferPublicDto> GetOfferBySlug(String slug);
+        Task<OfferDetalisDto> GetOfferById(Guid offerId);
+        Task<OfferDetalisDto> GetOfferBySlug(String slug);
         Task<bool> CheckIsOfferExistById(Guid offerId);
         Task<bool> CheckIsOfferOwnerCorrectByEmail(Guid offerId, string userEmail);
         Task<string> AddOffer(OfferCreateDto offerDto, string userEmail);

@@ -45,18 +45,18 @@ namespace ResellHub.Services.OfferServices
             return await _offerUtilities.ChangeCategoryIdToCategoryName(offersDto);
         }
 
-        public async Task<OfferPublicDto> GetOfferById(Guid offerId)
+        public async Task<OfferDetalisDto> GetOfferById(Guid offerId)
         {
             var offer = await _offerRepository.GetOfferById(offerId);
-            var offerDto = _mapper.Map<OfferPublicDto>(offer);
+            var offerDto = _mapper.Map<OfferDetalisDto>(offer);
 
             return await _offerUtilities.ChangeCategoryIdToCategoryName(offerDto);
         }
 
-        public async Task<OfferPublicDto> GetOfferBySlug(String slug)
+        public async Task<OfferDetalisDto> GetOfferBySlug(String slug)
         {
             var offer = await _offerRepository.GetOfferBySlug(slug);
-            var offerDto = _mapper.Map<OfferPublicDto>(offer);
+            var offerDto = _mapper.Map<OfferDetalisDto>(offer);
 
             return await _offerUtilities.ChangeCategoryIdToCategoryName(offerDto);
         }
