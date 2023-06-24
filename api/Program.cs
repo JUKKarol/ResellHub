@@ -37,6 +37,7 @@ namespace ResellHub
                 options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             });
 
+            builder.Services.Configure<RouteOptions>(options => { options.LowercaseUrls = true; });
             builder.Services.AddSwaggerGen(options =>
             {
                 options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
