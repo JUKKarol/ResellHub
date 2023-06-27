@@ -15,5 +15,6 @@ namespace ResellHub.DTOs.OfferDTOs
         public Guid UserId { get; set; }
         public string Slug { get; set; }
         public DateTime CreatedDate { get; set; }
+        public bool IsUserFollowing { get; set; } = false;
     }
 }
