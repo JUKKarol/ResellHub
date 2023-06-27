@@ -15,11 +15,11 @@ namespace ResellHub.Data.Repositories.UserRepository
         }
 
         //User
-        public async Task<List<User>> GetUsers(int page)
+        public async Task<List<User>> GetUsers(int page, int pageSize)
         {
             return await _dbContext.Users
-                .Skip(15 * (page - 1))
-                .Take(15)
+                .Skip(pageSize * (page - 1))
+                .Take(pageSize)
                 .ToListAsync();
         }
 
@@ -130,13 +130,13 @@ namespace ResellHub.Data.Repositories.UserRepository
         }
 
         //Chats
-        public async Task<List<Chat>> GetUserChats(Guid userId, int page)
+        public async Task<List<Chat>> GetUserChats(Guid userId, int page, int pageSize)
         {
             var usersChats = await _dbContext.Chats
                 .Where(c => (c.SenderId == userId) || (c.ReciverId == userId))
                 .OrderBy(c => c.LastMessageAt)
-                .Skip(15 * (page - 1))
-                .Take(15)
+                .Skip(pageSize * (page - 1))
+                .Take(pageSize)
                 .ToListAsync();
 
             return usersChats;
@@ -183,13 +183,13 @@ namespace ResellHub.Data.Repositories.UserRepository
         }
 
         //Messages
-        public async Task<List<Message>> GetChatMessagesById(Guid ChatId, int page)
+        public async Task<List<Message>> GetChatMessagesById(Guid ChatId, int page, int pageSize)
         {
             var chatMessages = await _dbContext.Messages
                 .Where(m => m.ChatId == ChatId)
                 .OrderBy(c => c.CreatedDate)
-                .Skip(15 * (page - 1))
-                .Take(15)
+                .Skip(pageSize * (page - 1))
+                .Take(pageSize)
                 .ToListAsync();
 
             return chatMessages;
@@ -204,12 +204,12 @@ namespace ResellHub.Data.Repositories.UserRepository
         }
 
         //FollowingOffers
-        public async Task<List<FollowOffer>> GetUserFollowingOffers(Guid userId, int page)
+        public async Task<List<FollowOffer>> GetUserFollowingOffers(Guid userId, int page, int pageSize)
         {
             var userFolowingOffers = await _dbContext.FollowingOffers
                 .Where(fo => fo.UserId == userId)
-                .Skip(15 * (page - 1))
-                .Take(15).ToListAsync();
+                .Skip(pageSize * (page - 1))
+                .Take(pageSize).ToListAsync();
 
             return userFolowingOffers;
         }

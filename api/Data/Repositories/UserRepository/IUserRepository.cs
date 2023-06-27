@@ -6,7 +6,7 @@ namespace ResellHub.Data.Repositories.UserRepository
     public interface IUserRepository
     {
         //User
-        Task<List<User>> GetUsers(int page);
+        Task<List<User>> GetUsers(int page, int pageSize);
         Task<User> GetUserById(Guid userId);
         Task<User> GetUserByEmail(string userEmail);
         Task<User> GetUserByVeryficationToken(string userToken);
@@ -22,16 +22,16 @@ namespace ResellHub.Data.Repositories.UserRepository
         Task<Role> ChangeRole(Guid roleId, UserRoles role);
         Task<Role> DeleteRole(Guid roleId);
         //Chats
-        Task<List<Chat>> GetUserChats(Guid UserId, int page);
+        Task<List<Chat>> GetUserChats(Guid UserId, int page, int pageSize);
         Task<Chat> GetChatById(Guid chatId);
         Task<Chat> GetChatByUsersId(Guid firstUserId, Guid secondUserId);
         Task<Chat> CreateChat(Guid formUserId, Guid reciverId);
         Task<Chat> RefreshChatLastMessageAt(Guid chatId);
         //Messages
-        Task<List<Message>> GetChatMessagesById(Guid ChatId, int page);
+        Task<List<Message>> GetChatMessagesById(Guid ChatId, int page, int pageSize);
         Task<Message> AddMessage(Message message);   
         //FollowingOffers
-        Task<List<FollowOffer>> GetUserFollowingOffers(Guid userId, int page);
+        Task<List<FollowOffer>> GetUserFollowingOffers(Guid userId, int page, int pageSize);
         Task<FollowOffer> GetUserFollowingOfferById(Guid followingOfferId);
         Task<FollowOffer> GetFollowingOfferByUserAndOfferId(Guid followingOfferId, Guid userId);
         Task<FollowOffer> AddFollowingOffer(FollowOffer followOffer);

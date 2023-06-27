@@ -14,22 +14,22 @@ namespace ResellHub.Data.Repositories.OfferRepository
         }
 
         //Offer
-        public async Task<List<Offer>> GetOffers(int page)
+        public async Task<List<Offer>> GetOffers(int page, int pageSize)
         {
             return await _dbContext.Offers
                 .OrderBy(o => o.CreatedDate)
-                .Skip(40 * (page - 1))
-                .Take(40)
+                .Skip(pageSize * (page - 1))
+                .Take(pageSize)
                 .ToListAsync();
         }
 
-        public async Task<List<Offer>> GetUserOffers(Guid userId, int page)
+        public async Task<List<Offer>> GetUserOffers(Guid userId, int page, int pageSize)
         {
             return await _dbContext.Offers
                 .Where(o => o.UserId == userId)
                 .OrderBy(o => o.CreatedDate)
-                .Skip(40 * (page - 1))
-                .Take(40)
+                .Skip(pageSize * (page - 1))
+                .Take(pageSize)
                 .ToListAsync();
         }
 
@@ -76,7 +76,7 @@ namespace ResellHub.Data.Repositories.OfferRepository
         }
 
         //Category
-        public async Task<String> GetCategoryNameById(int categoryId)
+        public async Task<string> GetCategoryNameById(int categoryId)
         {
             var offerCategory = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == categoryId);
 

@@ -32,7 +32,7 @@ namespace ResellHub.Services.OfferServices
 
         public async Task<List<OfferPublicDto>> GetOffers(int page)
         {
-            var offers = await _offerRepository.GetOffers(page);
+            var offers = await _offerRepository.GetOffers(page, 40);
             var offersDto = _mapper.Map<List<OfferPublicDto>>(offers);
 
             return await _offerUtilities.ChangeCategoryIdToCategoryName(offersDto);
@@ -40,7 +40,7 @@ namespace ResellHub.Services.OfferServices
 
         public async Task<List<OfferPublicDto>> GetUserOffers(Guid userId, int page)
         {
-            var offers = await _offerRepository.GetUserOffers(userId, page);
+            var offers = await _offerRepository.GetUserOffers(userId, page, 40);
             var offersDto = _mapper.Map<List<OfferPublicDto>>(offers);
 
             return await _offerUtilities.ChangeCategoryIdToCategoryName(offersDto);
@@ -54,7 +54,7 @@ namespace ResellHub.Services.OfferServices
             return await _offerUtilities.ChangeCategoryIdToCategoryName(offerDto);
         }
 
-        public async Task<OfferPublicDto> GetOfferBySlug(String slug)
+        public async Task<OfferPublicDto> GetOfferBySlug(string slug)
         {
             var offer = await _offerRepository.GetOfferBySlug(slug);
             var offerDto = _mapper.Map<OfferPublicDto>(offer);
