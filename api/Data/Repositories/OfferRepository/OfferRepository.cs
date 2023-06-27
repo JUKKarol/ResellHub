@@ -18,9 +18,9 @@ namespace ResellHub.Data.Repositories.OfferRepository
             return await _dbContext.Offers.ToListAsync();
         }
 
-        public async Task<List<Offer>> GetUserOffers(Guid userId)
+        public async Task<List<Offer>> GetUserOffers(string userSlug)
         {
-            return await _dbContext.Offers.Where(o => o.UserId == userId).ToListAsync();
+            return await _dbContext.Offers.Where(o => o.Slug == userSlug).ToListAsync();
         }
 
         public async Task<Offer> GetOfferById(Guid offerId)

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ResellHub.DTOs.UserDTOs;
 using ResellHub.Entities;
 using ResellHub.Enums;
+using ResellHub.Services.OfferServices;
 using ResellHub.Services.UserServices;
 using System.Security.Claims;
 
@@ -13,10 +14,12 @@ namespace ResellHub.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IOfferService _offerService;
 
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IOfferService offerService)
         {
             _userService = userService;
+            _offerService = offerService;
         }
 
         [HttpGet, Authorize(Roles = "User")]
@@ -25,15 +28,26 @@ namespace ResellHub.Controllers
             return Ok(await _userService.GetUsers());
         }
 
-        [HttpGet("{userId}"), Authorize(Roles = "User")]
-        public async Task<IActionResult> GetUserById(Guid userId)
+        [HttpGet("{userSlug}"), Authorize(Roles = "User")]
+        public async Task<IActionResult> GetUserBySlug(string userSlug)
         {
-            if (!await _userService.CheckIsUserExistById(userId))
+            if (!await _userService.CheckIsUserExistBySlug(userSlug))
             {
                 return BadRequest("user doesn't exist");
             }
 
-            return Ok(await _userService.GetUserById(userId));
+            return Ok(await _userService.GetUserBySlug(userSlug));
+        }
+
+        [HttpGet("{userSlug}"), Authorize(Roles = "User")]
+        public async Task<IActionResult> GetUserOffersBySlug(string userSlug)
+        {
+            if (!await _userService.CheckIsUserExistBySlug(userSlug))
+            {
+                return BadRequest("user doesn't exist");
+            }
+
+            return Ok(await _offerService.GetUserOffers(userSlug));
         }
 
         [HttpPost, Authorize(Roles = "Moderator")]

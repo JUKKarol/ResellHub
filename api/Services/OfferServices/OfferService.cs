@@ -37,9 +37,9 @@ namespace ResellHub.Services.OfferServices
             return await _offerUtilities.ChangeCategoryIdToCategoryName(offersDto);
         }
 
-        public async Task<List<OfferPublicDto>> GetUserOffers(Guid userId)
+        public async Task<List<OfferPublicDto>> GetUserOffers(string userSlug)
         {
-            var offers = await _offerRepository.GetUserOffers(userId);
+            var offers = await _offerRepository.GetUserOffers(userSlug);
             var offersDto = _mapper.Map<List<OfferPublicDto>>(offers);
 
             return await _offerUtilities.ChangeCategoryIdToCategoryName(offersDto);

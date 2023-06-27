@@ -53,6 +53,14 @@ namespace ResellHub.Services.UserServices
             return userDto;
         }
 
+        public async Task<UserPublicDto> GetUserBySlug(string userSlug)
+        {
+            var user = await _userRepository.GetUserBySlug(userSlug);
+            var userDto = _mapper.Map<UserPublicDto>(user);
+
+            return userDto;
+        }
+
         public async Task<string> GetUserEmailById(Guid userId)
         {
             var user = await _userRepository.GetUserById(userId);
@@ -72,6 +80,20 @@ namespace ResellHub.Services.UserServices
         public async Task<bool> CheckIsUserExistById(Guid userId)
         {
             var user = await _userRepository.GetUserById(userId);
+
+            if (user == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public async Task<bool> CheckIsUserExistBySlug(string userSlug)
+        {
+            var user = await _userRepository.GetUserBySlug(userSlug);
 
             if (user == null)
             {

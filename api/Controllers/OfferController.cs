@@ -29,15 +29,10 @@ namespace ResellHub.Controllers
             return Ok(await _offerService.GetOffers());
         }
 
-        [HttpGet("{userId}"), Authorize(Roles = "User")]
-        public async Task<IActionResult> GetUserOffers(Guid userId)
+        [HttpGet("{offerSlug}"), Authorize(Roles = "User")]
+        public async Task<IActionResult> GetOfferBySlug(string offerSlug)
         {
-            if (!await _userService.CheckIsUserExistById(userId))
-            {
-                return BadRequest("user doesn't exist");
-            }
-
-            return Ok(await _offerService.GetUserOffers(userId));
+            return Ok(await _offerService.GetOfferBySlug(offerSlug));
         }
 
         [HttpPost, Authorize(Roles = "User")]
