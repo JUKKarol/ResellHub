@@ -47,20 +47,20 @@ namespace ResellHub.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("FromUserId")
-                        .HasColumnType("uuid");
-
                     b.Property<DateTime>("LastMessageAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("ToUserId")
+                    b.Property<Guid>("ReciverId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("SenderId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FromUserId");
+                    b.HasIndex("ReciverId");
 
-                    b.HasIndex("ToUserId");
+                    b.HasIndex("SenderId");
 
                     b.ToTable("Chats");
                 });
@@ -102,19 +102,19 @@ namespace ResellHub.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("FromUserId")
+                    b.Property<Guid>("ReciverId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("ToUserId")
+                    b.Property<Guid>("SenderId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ChatId");
 
-                    b.HasIndex("FromUserId");
+                    b.HasIndex("ReciverId");
 
-                    b.HasIndex("ToUserId");
+                    b.HasIndex("SenderId");
 
                     b.ToTable("Messages");
                 });
@@ -247,21 +247,21 @@ namespace ResellHub.Migrations
 
             modelBuilder.Entity("ResellHub.Entities.Chat", b =>
                 {
-                    b.HasOne("ResellHub.Entities.User", "FromUser")
-                        .WithMany("FromChats")
-                        .HasForeignKey("FromUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ResellHub.Entities.User", "ToUser")
+                    b.HasOne("ResellHub.Entities.User", "Reciver")
                         .WithMany("ToChats")
-                        .HasForeignKey("ToUserId")
+                        .HasForeignKey("ReciverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("FromUser");
+                    b.HasOne("ResellHub.Entities.User", "Sender")
+                        .WithMany("FromChats")
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("ToUser");
+                    b.Navigation("Reciver");
+
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("ResellHub.Entities.FollowOffer", b =>
@@ -291,23 +291,23 @@ namespace ResellHub.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ResellHub.Entities.User", "FromUser")
-                        .WithMany("SentMessages")
-                        .HasForeignKey("FromUserId")
+                    b.HasOne("ResellHub.Entities.User", "Reciver")
+                        .WithMany("ReceivedMessages")
+                        .HasForeignKey("ReciverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ResellHub.Entities.User", "ToUser")
-                        .WithMany("ReceivedMessages")
-                        .HasForeignKey("ToUserId")
+                    b.HasOne("ResellHub.Entities.User", "Sender")
+                        .WithMany("SentMessages")
+                        .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Chat");
 
-                    b.Navigation("FromUser");
+                    b.Navigation("Reciver");
 
-                    b.Navigation("ToUser");
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("ResellHub.Entities.Offer", b =>

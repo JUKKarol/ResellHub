@@ -130,7 +130,7 @@ namespace ResellHub.Data.Repositories.UserRepository
         public async Task<List<Chat>> GetUserChats(Guid userId, int page)
         {
             var usersChats = await _dbContext.Chats
-                .Where(c => (c.FromUserId == userId) || (c.ToUserId == userId))
+                .Where(c => (c.SenderId == userId) || (c.ReciverId == userId))
                 .OrderBy(c => c.LastMessageAt)
                 .Skip(15 * (page - 1))
                 .Take(15)
@@ -150,17 +150,17 @@ namespace ResellHub.Data.Repositories.UserRepository
         public async Task<Chat> GetChatByUsersId(Guid firstUserId, Guid secondUserId)
         {
             var usersChats = await _dbContext.Chats
-                .FirstOrDefaultAsync(c => (c.FromUserId == firstUserId) || (c.ToUserId == firstUserId) && (c.FromUserId == secondUserId) || (c.ToUserId == secondUserId));
+                .FirstOrDefaultAsync(c => (c.SenderId == firstUserId) || (c.ReciverId == firstUserId) && (c.SenderId == secondUserId) || (c.ReciverId == secondUserId));
 
             return usersChats;
         }
 
-        public async Task<Chat> CreateChat(Guid formUserId, Guid toUserId)
+        public async Task<Chat> CreateChat(Guid formUserId, Guid reciverId)
         {
             var chat = new Chat()
             {
-                FromUserId = formUserId,
-                ToUserId = toUserId,
+                SenderId = formUserId,
+                ReciverId = reciverId,
             };
 
             await _dbContext.Chats.AddAsync(chat);

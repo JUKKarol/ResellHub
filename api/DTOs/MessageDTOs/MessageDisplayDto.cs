@@ -2,8 +2,8 @@
 {
     public class MessageDisplayDto
     {
-        public Guid FromUserId { get; set; }
-        public Guid ToUserId { get; set; }
+        public Guid SenderId { get; set; }
+        public Guid ReciverId { get; set; }
 
         public string Content { get; set; }
         public DateTime CreatedDate { get; set; }

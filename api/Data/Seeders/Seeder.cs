@@ -97,8 +97,8 @@ namespace ResellHub.Data.Seeders
                 Chat chat1 = new Chat()
                 {
                     Id = Guid.Parse("23165432-1234-5678-9012-345678901234"),
-                    FromUserId = Guid.Parse("98765432-1234-5678-9012-345678901234"),
-                    ToUserId = Guid.Parse("87654321-4321-5678-9012-345678901234"),
+                    SenderId = Guid.Parse("98765432-1234-5678-9012-345678901234"),
+                    ReciverId = Guid.Parse("87654321-4321-5678-9012-345678901234"),
                 };
 
                 _context.Chats.Add(chat1);
@@ -106,24 +106,24 @@ namespace ResellHub.Data.Seeders
 
                 Message message1 = new Message()
                 {
-                    FromUserId = Guid.Parse("98765432-1234-5678-9012-345678901234"),
-                    ToUserId = Guid.Parse("87654321-4321-5678-9012-345678901234"),
+                    SenderId = Guid.Parse("98765432-1234-5678-9012-345678901234"),
+                    ReciverId = Guid.Parse("87654321-4321-5678-9012-345678901234"),
                     ChatId = Guid.Parse("23165432-1234-5678-9012-345678901234"),
                     Content = "Is product still for sale?"
                 };
 
                 Message message2 = new Message()
                 {
-                    FromUserId = Guid.Parse("87654321-4321-5678-9012-345678901234"),
-                    ToUserId = Guid.Parse("98765432-1234-5678-9012-345678901234"),
+                    SenderId = Guid.Parse("87654321-4321-5678-9012-345678901234"),
+                    ReciverId = Guid.Parse("98765432-1234-5678-9012-345678901234"),
                     ChatId = Guid.Parse("23165432-1234-5678-9012-345678901234"),
                     Content = "No its not"
                 };
 
                 Message message3 = new Message()
                 {
-                    FromUserId = Guid.Parse("98765432-1234-5678-9012-345678901234"),
-                    ToUserId = Guid.Parse("87654321-4321-5678-9012-345678901234"),
+                    SenderId = Guid.Parse("98765432-1234-5678-9012-345678901234"),
+                    ReciverId = Guid.Parse("87654321-4321-5678-9012-345678901234"),
                     ChatId = Guid.Parse("23165432-1234-5678-9012-345678901234"),
                     Content = "Ok, thanks"
                 };

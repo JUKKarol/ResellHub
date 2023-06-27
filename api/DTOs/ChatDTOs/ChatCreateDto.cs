@@ -2,7 +2,7 @@
 {
     public class ChatCreateDto
     {
-        public Guid FromUserId { get; set; }
-        public Guid ToUserId { get; set; }
+        public Guid SenderId { get; set; }
+        public Guid ReciverId { get; set; }
     }
 }

@@ -33,11 +33,11 @@ namespace ResellHub.Data
                 entity.Property(u => u.PasswordSalt).IsRequired();
                 entity.Property(u => u.Slug).IsRequired();
 
-                entity.HasMany(u => u.FromChats).WithOne(c => c.FromUser);
-                entity.HasMany(u => u.ToChats).WithOne(c => c.ToUser);
+                entity.HasMany(u => u.FromChats).WithOne(c => c.Sender);
+                entity.HasMany(u => u.ToChats).WithOne(c => c.Reciver);
                 entity.HasMany(u => u.Offers).WithOne(o => o.User);
-                entity.HasMany(u => u.SentMessages).WithOne(m => m.FromUser);
-                entity.HasMany(u => u.ReceivedMessages).WithOne(m => m.ToUser);
+                entity.HasMany(u => u.SentMessages).WithOne(m => m.Sender);
+                entity.HasMany(u => u.ReceivedMessages).WithOne(m => m.Reciver);
                 entity.HasMany(u => u.FollowingOffers).WithOne(m => m.User);
             });
 
@@ -67,26 +67,26 @@ namespace ResellHub.Data
                     .WithMany(c => c.Messages)
                     .HasForeignKey(m => m.ChatId);
 
-                entity.HasOne(m => m.FromUser)
+                entity.HasOne(m => m.Sender)
                     .WithMany(u => u.SentMessages)
-                    .HasForeignKey(m => m.FromUserId);
+                    .HasForeignKey(m => m.SenderId);
 
-                entity.HasOne(m => m.ToUser)
+                entity.HasOne(m => m.Reciver)
                     .WithMany(u => u.ReceivedMessages)
-                    .HasForeignKey(m => m.ToUserId);
+                    .HasForeignKey(m => m.ReciverId);
             });
 
             modelBuilder.Entity<Chat>(entity =>
             {
                 entity.HasKey(c => c.Id);
 
-                entity.HasOne(c => c.FromUser)
+                entity.HasOne(c => c.Sender)
                     .WithMany(u => u.FromChats)
-                    .HasForeignKey(c => c.FromUserId);
+                    .HasForeignKey(c => c.SenderId);
 
-                entity.HasOne(c => c.ToUser)
+                entity.HasOne(c => c.Reciver)
                     .WithMany(u => u.ToChats)
-                    .HasForeignKey(c => c.ToUserId);
+                    .HasForeignKey(c => c.ReciverId);
 
                 entity.HasMany(c => c.Messages)
                     .WithOne(m => m.Chat)

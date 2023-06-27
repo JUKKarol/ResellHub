@@ -25,7 +25,7 @@ namespace ResellHub.Data.Repositories.UserRepository
         Task<List<Chat>> GetUserChats(Guid UserId, int page);
         Task<Chat> GetChatById(Guid chatId);
         Task<Chat> GetChatByUsersId(Guid firstUserId, Guid secondUserId);
-        Task<Chat> CreateChat(Guid formUserId, Guid toUserId);
+        Task<Chat> CreateChat(Guid formUserId, Guid reciverId);
         Task<Chat> RefreshChatLastMessageAt(Guid chatId);
         //Messages
         Task<List<Message>> GetChatMessagesById(Guid ChatId, int page);
