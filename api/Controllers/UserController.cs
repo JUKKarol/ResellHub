@@ -40,14 +40,14 @@ namespace ResellHub.Controllers
         }
 
         [HttpGet("{userSlug}/offers"), Authorize(Roles = "User")]
-        public async Task<IActionResult> GetUserOffersBySlug(string userSlug)
+        public async Task<IActionResult> GetUserOffersBySlug(string userSlug, int page)
         {
             if (!await _userService.CheckIsUserExistBySlug(userSlug))
             {
                 return BadRequest("user doesn't exist");
             }
 
-            return Ok(await _offerService.GetUserOffers(userSlug));
+            return Ok(await _offerService.GetUserOffers(userSlug, page));
         }
 
         [HttpPost, Authorize(Roles = "Moderator")]

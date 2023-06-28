@@ -26,7 +26,7 @@ namespace ResellHub.Data.Repositories.OfferRepository
         public async Task<List<Offer>> GetUserOffers(string userSlug, int page, int pageSize)
         {
             return await _dbContext.Offers
-                .Where(o => o.slug == userSlug)
+                .Where(o => o.Slug == userSlug)
                 .OrderBy(o => o.CreatedDate)
                 .Skip(pageSize * (page - 1))
                 .Take(pageSize)
