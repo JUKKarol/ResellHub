@@ -5,8 +5,8 @@ namespace ResellHub.Data.Repositories.OfferRepository
     public interface IOfferRepository
     {
         //Offer
-        Task<List<Offer>> GetOffers();
-        Task<List<Offer>> GetUserOffers(Guid userId);
+        Task<List<Offer>> GetOffers(int page, int pageSize);
+        Task<List<Offer>> GetUserOffers(Guid userId, int page, int pageSize);
         Task<Offer> GetOfferById(Guid offerId);
         Task<Offer> GetOfferBySlug(string offerSlug);
         Task<Offer> AddOffer(Offer offer);
@@ -14,7 +14,7 @@ namespace ResellHub.Data.Repositories.OfferRepository
         Task<Offer> DeleteOffer(Guid offerId);
 
         //Category
-        Task<String> GetCategoryNameById(int categoryId);
+        Task<string> GetCategoryNameById(int categoryId);
         Task<List<Category>> GetCategories();
     }
 }

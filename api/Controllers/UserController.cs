@@ -20,9 +20,9 @@ namespace ResellHub.Controllers
         }
 
         [HttpGet, Authorize(Roles = "User")]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers(int page = 1)
         {
-            return Ok(await _userService.GetUsers());
+            return Ok(await _userService.GetUsers(page));
         }
 
         [HttpGet("{userId}"), Authorize(Roles = "User")]
