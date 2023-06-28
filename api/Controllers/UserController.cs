@@ -39,7 +39,7 @@ namespace ResellHub.Controllers
             return Ok(await _userService.GetUserBySlug(userSlug));
         }
 
-        [HttpGet("{userSlug}"), Authorize(Roles = "User")]
+        [HttpGet("{userSlug}/offers"), Authorize(Roles = "User")]
         public async Task<IActionResult> GetUserOffersBySlug(string userSlug)
         {
             if (!await _userService.CheckIsUserExistBySlug(userSlug))
