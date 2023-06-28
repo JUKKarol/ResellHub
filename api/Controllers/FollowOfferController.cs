@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ResellHub.Entities;
 using ResellHub.Services.OfferServices;
 using ResellHub.Services.UserServices;
 using System.Security.Claims;
@@ -22,9 +20,9 @@ namespace ResellHub.Controllers
         }
 
         [HttpGet("{userId}"), Authorize(Roles = "User")]
-        public async Task<IActionResult> GetMyFollowingOffers()
+        public async Task<IActionResult> GetMyFollowingOffers(int page = 1)
         {
-            return Ok(await _userService.GetUserFollowingOffers(await _userService.GetUserIdByEmail(HttpContext.User.FindFirstValue(ClaimTypes.Email))));
+            return Ok(await _userService.GetUserFollowingOffers(await _userService.GetUserIdByEmail(HttpContext.User.FindFirstValue(ClaimTypes.Email)), page));
         }
 
         [HttpPost("{offerId}"), Authorize(Roles = "User")]

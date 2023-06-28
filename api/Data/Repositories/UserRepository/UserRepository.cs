@@ -15,9 +15,12 @@ namespace ResellHub.Data.Repositories.UserRepository
         }
 
         //User
-        public async Task<List<User>> GetUsers()
+        public async Task<List<User>> GetUsers(int page, int pageSize)
         {
-            return await _dbContext.Users.ToListAsync();
+            return await _dbContext.Users
+                .Skip(pageSize * (page - 1))
+                .Take(pageSize)
+                .ToListAsync();
         }
 
         public async Task<User> GetUserById(Guid userId)
@@ -127,13 +130,13 @@ namespace ResellHub.Data.Repositories.UserRepository
         }
 
         //Chats
-        public async Task<List<Chat>> GetUserChats(Guid userId, int page)
+        public async Task<List<Chat>> GetUserChats(Guid userId, int page, int pageSize)
         {
             var usersChats = await _dbContext.Chats
-                .Where(c => (c.FromUserId == userId) || (c.ToUserId == userId))
+                .Where(c => (c.SenderId == userId) || (c.ReciverId == userId))
                 .OrderBy(c => c.LastMessageAt)
-                .Skip(15 * (page - 1))
-                .Take(15)
+                .Skip(pageSize * (page - 1))
+                .Take(pageSize)
                 .ToListAsync();
 
             return usersChats;
@@ -150,17 +153,17 @@ namespace ResellHub.Data.Repositories.UserRepository
         public async Task<Chat> GetChatByUsersId(Guid firstUserId, Guid secondUserId)
         {
             var usersChats = await _dbContext.Chats
-                .FirstOrDefaultAsync(c => (c.FromUserId == firstUserId) || (c.ToUserId == firstUserId) && (c.FromUserId == secondUserId) || (c.ToUserId == secondUserId));
+                .FirstOrDefaultAsync(c => (c.SenderId == firstUserId) || (c.ReciverId == firstUserId) && (c.SenderId == secondUserId) || (c.ReciverId == secondUserId));
 
             return usersChats;
         }
 
-        public async Task<Chat> CreateChat(Guid formUserId, Guid toUserId)
+        public async Task<Chat> CreateChat(Guid formUserId, Guid reciverId)
         {
             var chat = new Chat()
             {
-                FromUserId = formUserId,
-                ToUserId = toUserId,
+                SenderId = formUserId,
+                ReciverId = reciverId,
             };
 
             await _dbContext.Chats.AddAsync(chat);
@@ -180,13 +183,13 @@ namespace ResellHub.Data.Repositories.UserRepository
         }
 
         //Messages
-        public async Task<List<Message>> GetChatMessagesById(Guid ChatId, int page)
+        public async Task<List<Message>> GetChatMessagesById(Guid ChatId, int page, int pageSize)
         {
             var chatMessages = await _dbContext.Messages
                 .Where(m => m.ChatId == ChatId)
                 .OrderBy(c => c.CreatedDate)
-                .Skip(15 * (page - 1))
-                .Take(15)
+                .Skip(pageSize * (page - 1))
+                .Take(pageSize)
                 .ToListAsync();
 
             return chatMessages;
@@ -201,9 +204,12 @@ namespace ResellHub.Data.Repositories.UserRepository
         }
 
         //FollowingOffers
-        public async Task<List<FollowOffer>> GetUserFollowingOffers(Guid userId)
+        public async Task<List<FollowOffer>> GetUserFollowingOffers(Guid userId, int page, int pageSize)
         {
-            var userFolowingOffers = await _dbContext.FollowingOffers.Where(fo => fo.UserId == userId) .ToListAsync();
+            var userFolowingOffers = await _dbContext.FollowingOffers
+                .Where(fo => fo.UserId == userId)
+                .Skip(pageSize * (page - 1))
+                .Take(pageSize).ToListAsync();
 
             return userFolowingOffers;
         }
@@ -211,6 +217,13 @@ namespace ResellHub.Data.Repositories.UserRepository
         public async Task<FollowOffer> GetUserFollowingOfferById(Guid followingOfferId)
         {
             var followingOffer = await _dbContext.FollowingOffers.FirstOrDefaultAsync(fo => fo.Id == followingOfferId);
+
+            return followingOffer;
+        }
+
+        public async Task<FollowOffer> GetFollowingOfferByUserAndOfferId(Guid followingOfferId, Guid userId)
+        {
+            var followingOffer = await _dbContext.FollowingOffers.FirstOrDefaultAsync(fo => (fo.Id == followingOfferId) && (fo.UserId == userId));
 
             return followingOffer;
         }

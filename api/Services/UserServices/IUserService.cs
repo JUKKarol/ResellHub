@@ -11,7 +11,7 @@ namespace ResellHub.Services.UserServices
     public interface IUserService
     {
         //User
-        Task<List<UserPublicDto>> GetUsers();
+        Task<List<UserPublicDto>> GetUsers(int page);
         Task<UserPublicDto> GetUserById(Guid userId);
         Task<UserPublicDto> GetUserBySlug(string userSlug);
         Task<string> GetUserEmailById(Guid userId);
@@ -32,10 +32,10 @@ namespace ResellHub.Services.UserServices
         Task<bool> CheckIsChatExistsById(Guid chatId);
         Task<bool> CheckIsChatExistsByUsersId(Guid firstUserId, Guid secondUserId);
         Task<Chat> GetChatById(Guid chatId);
-        Task<Chat> CreateChat(Guid fromUserId, Guid ToUserId);
+        Task<Chat> CreateChat(Guid senderId, Guid ReciverId);
         //Message
         Task<List<MessageDisplayDto>> GetMessagesByChatId(Guid ChatId, int page);
-        Task<string> SendMessage(Guid fromUserId, Guid ToUserId, string content);
+        Task<string> SendMessage(Guid senderId, Guid ReciverId, string content);
         //Role
         Task<List<RoleDto>> GetUserRoles(Guid userId);
         Task<bool> CheckIsRoleExistById(Guid roleId);
@@ -43,7 +43,7 @@ namespace ResellHub.Services.UserServices
         Task<string> UpdateRole(Guid roleId, UserRoles userNewRole);
         Task<string> DeleteRole(Guid roleId);
         //FollowOffer
-        Task<List<FollowOfferDto>> GetUserFollowingOffers(Guid userId);
+        Task<List<FollowOfferDto>> GetUserFollowingOffers(Guid userId, int page);
         Task<FollowOfferDto> GetFollowingOfferByUserAndOfferId(Guid userId, Guid offerId);
         Task<bool> CheckIsFollowingExistById(Guid followingOfferId);
         Task<string> AddOfferToFollowing(Guid userId, Guid offerId);

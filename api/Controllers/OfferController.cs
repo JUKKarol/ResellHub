@@ -24,9 +24,9 @@ namespace ResellHub.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetOffers()
+        public async Task<IActionResult> GetOffers(int page = 1)
         {
-            return Ok(await _offerService.GetOffers());
+            return Ok(await _offerService.GetOffers(page));
         }
 
         [HttpGet("{offerSlug}"), Authorize(Roles = "User")]

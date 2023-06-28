@@ -53,22 +53,22 @@ namespace ResellHub.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    FromUserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ToUserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    SenderId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ReciverId = table.Column<Guid>(type: "uuid", nullable: false),
                     LastMessageAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Chats", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Chats_Users_FromUserId",
-                        column: x => x.FromUserId,
+                        name: "FK_Chats_Users_ReciverId",
+                        column: x => x.ReciverId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Chats_Users_ToUserId",
-                        column: x => x.ToUserId,
+                        name: "FK_Chats_Users_SenderId",
+                        column: x => x.SenderId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -133,8 +133,8 @@ namespace ResellHub.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     ChatId = table.Column<Guid>(type: "uuid", nullable: false),
-                    FromUserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ToUserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    SenderId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ReciverId = table.Column<Guid>(type: "uuid", nullable: false),
                     Content = table.Column<string>(type: "text", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
@@ -148,14 +148,14 @@ namespace ResellHub.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Messages_Users_FromUserId",
-                        column: x => x.FromUserId,
+                        name: "FK_Messages_Users_ReciverId",
+                        column: x => x.ReciverId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Messages_Users_ToUserId",
-                        column: x => x.ToUserId,
+                        name: "FK_Messages_Users_SenderId",
+                        column: x => x.SenderId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -185,14 +185,14 @@ namespace ResellHub.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Chats_FromUserId",
+                name: "IX_Chats_ReciverId",
                 table: "Chats",
-                column: "FromUserId");
+                column: "ReciverId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Chats_ToUserId",
+                name: "IX_Chats_SenderId",
                 table: "Chats",
-                column: "ToUserId");
+                column: "SenderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FollowingOffers_OfferId",
@@ -210,14 +210,14 @@ namespace ResellHub.Migrations
                 column: "ChatId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_FromUserId",
+                name: "IX_Messages_ReciverId",
                 table: "Messages",
-                column: "FromUserId");
+                column: "ReciverId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Messages_ToUserId",
+                name: "IX_Messages_SenderId",
                 table: "Messages",
-                column: "ToUserId");
+                column: "SenderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Offers_CategoryId",

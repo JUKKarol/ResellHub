@@ -3,8 +3,8 @@
     public class ChatDto
     {
         public Guid Id { get; set; }
-        public Guid FromUserId { get; set; }
-        public Guid ToUserId { get; set; }
+        public Guid SenderId { get; set; }
+        public Guid ReciverId { get; set; }
         public DateTime LastMessageAt { get; set; }
     }
 }
