@@ -4,7 +4,7 @@ namespace ResellHub.Services.OfferServices
 {
     public interface IOfferService
     {
-        Task<List<OfferPublicDto>> GetOffers(int page);
+        Task<List<OfferPublicDto>> GetOffers(int page, Guid loggedUserId);
         Task<List<OfferPublicDto>> GetUserOffers(string userSlug, int page);
         Task<OfferDetalisDto> GetOfferById(Guid offerId);
         Task<OfferDetalisDto> GetOfferBySlug(string slug);

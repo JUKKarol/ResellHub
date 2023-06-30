@@ -14,12 +14,13 @@ namespace ResellHub.Data.Repositories.OfferRepository
         }
 
         //Offer
-        public async Task<List<Offer>> GetOffers(int page, int pageSize)
+        public async Task<List<Offer>> GetOffers(int page, int pageSize, Guid loggedUserId)
         {
             return await _dbContext.Offers
                 .OrderBy(o => o.CreatedDate)
                 .Skip(pageSize * (page - 1))
                 .Take(pageSize)
+                .Include(o => o.FollowingOffers)
                 .ToListAsync();
         }
 

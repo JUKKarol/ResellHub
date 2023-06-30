@@ -8,6 +8,7 @@ using ResellHub.DTOs.UserDTOs;
 using ResellHub.Entities;
 using ResellHub.Utilities.OfferUtilities;
 using ResellHub.Utilities.UserUtilities;
+using System;
 
 namespace ResellHub.Services.OfferServices
 {
@@ -30,13 +31,26 @@ namespace ResellHub.Services.OfferServices
             _offerValidator = offerValidator;
         }
 
-        public async Task<List<OfferPublicDto>> GetOffers(int page)
+        public async Task<List<OfferPublicDto>> GetOffers(int page, Guid loggedUserId)
         {
-            var offers = await _offerRepository.GetOffers(page, 40);
+            var offers = await _offerRepository.GetOffers(page, 40, loggedUserId);
             var offersDto = _mapper.Map<List<OfferPublicDto>>(offers);
+
+            var followedOfferTitles = offers
+                .Where(offer => offer.FollowingOffers.Any(fo => fo.UserId == loggedUserId))
+                .Select(offer => offer.Title)
+                .ToList();
+
+            foreach (var offerDto in offersDto)
+            {
+                offerDto.IsUserFollowing = followedOfferTitles.Contains(offerDto.Title);
+            }
 
             return await _offerUtilities.ChangeCategoryIdToCategoryName(offersDto);
         }
+
+
+
 
         public async Task<List<OfferPublicDto>> GetUserOffers(string userSlug, int page)
         {

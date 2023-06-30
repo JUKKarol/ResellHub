@@ -23,10 +23,10 @@ namespace ResellHub.Controllers
             _userService = userService;
         }
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "User")]
         public async Task<IActionResult> GetOffers(int page = 1)
         {
-            return Ok(await _offerService.GetOffers(page));
+            return Ok(await _offerService.GetOffers(page, Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier))));
         }
 
         [HttpGet("{offerSlug}"), Authorize(Roles = "User")]
