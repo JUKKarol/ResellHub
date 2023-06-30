@@ -11,10 +11,12 @@ namespace ResellHub.Services.UserServices
     public interface IUserService
     {
         //User
-        Task<List<UserPublicDto>> GetUsers();
+        Task<List<UserPublicDto>> GetUsers(int page);
         Task<UserPublicDto> GetUserById(Guid userId);
+        Task<UserPublicDto> GetUserBySlug(string userSlug);
         Task<string> GetUserEmailById(Guid userId);
         Task<bool> CheckIsUserExistById(Guid userId);
+        Task<bool> CheckIsUserExistBySlug(string userSlug);
         Task<bool> CheckIsUserExistByEmail(string userEmail);
         Task<Guid> GetUserIdByEmail(string userEmail);
         Task<string> CreateUser(UserRegistrationDto user);
@@ -41,7 +43,7 @@ namespace ResellHub.Services.UserServices
         Task<string> UpdateRole(Guid roleId, UserRoles userNewRole);
         Task<string> DeleteRole(Guid roleId);
         //FollowOffer
-        Task<List<FollowOfferDto>> GetUserFollowingOffers(Guid userId);
+        Task<List<FollowOfferDto>> GetUserFollowingOffers(Guid userId, int page);
         Task<FollowOfferDto> GetFollowingOfferByUserAndOfferId(Guid userId, Guid offerId);
         Task<bool> CheckIsFollowingExistById(Guid followingOfferId);
         Task<string> AddOfferToFollowing(Guid userId, Guid offerId);

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using ResellHub.Data.Repositories.OfferRepository;
 using ResellHub.Data.Repositories.UserRepository;
 using ResellHub.DTOs.OfferDTOs;
@@ -29,17 +30,17 @@ namespace ResellHub.Services.OfferServices
             _offerValidator = offerValidator;
         }
 
-        public async Task<List<OfferPublicDto>> GetOffers()
+        public async Task<List<OfferPublicDto>> GetOffers(int page)
         {
-            var offers = await _offerRepository.GetOffers();
+            var offers = await _offerRepository.GetOffers(page, 40);
             var offersDto = _mapper.Map<List<OfferPublicDto>>(offers);
 
             return await _offerUtilities.ChangeCategoryIdToCategoryName(offersDto);
         }
 
-        public async Task<List<OfferPublicDto>> GetUserOffers(Guid userId)
+        public async Task<List<OfferPublicDto>> GetUserOffers(string userSlug, int page)
         {
-            var offers = await _offerRepository.GetUserOffers(userId);
+            var offers = await _offerRepository.GetUserOffers(userSlug, page, 40);
             var offersDto = _mapper.Map<List<OfferPublicDto>>(offers);
 
             return await _offerUtilities.ChangeCategoryIdToCategoryName(offersDto);
@@ -53,7 +54,7 @@ namespace ResellHub.Services.OfferServices
             return await _offerUtilities.ChangeCategoryIdToCategoryName(offerDto);
         }
 
-        public async Task<OfferDetalisDto> GetOfferBySlug(String slug)
+        public async Task<OfferDetalisDto> GetOfferBySlug(string slug)
         {
             var offer = await _offerRepository.GetOfferBySlug(slug);
             var offerDto = _mapper.Map<OfferDetalisDto>(offer);

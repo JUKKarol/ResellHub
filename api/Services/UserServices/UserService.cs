@@ -37,9 +37,9 @@ namespace ResellHub.Services.UserServices
         }
 
         //User
-        public async Task<List<UserPublicDto>> GetUsers()
+        public async Task<List<UserPublicDto>> GetUsers(int page)
         {
-            var users = await _userRepository.GetUsers();
+            var users = await _userRepository.GetUsers(page, 15);
             var usersDto = _mapper.Map<List<UserPublicDto>>(users);
 
             return usersDto;
@@ -48,6 +48,14 @@ namespace ResellHub.Services.UserServices
         public async Task<UserPublicDto> GetUserById(Guid userId)
         {
             var user = await _userRepository.GetUserById(userId);
+            var userDto = _mapper.Map<UserPublicDto>(user);
+
+            return userDto;
+        }
+
+        public async Task<UserPublicDto> GetUserBySlug(string userSlug)
+        {
+            var user = await _userRepository.GetUserBySlug(userSlug);
             var userDto = _mapper.Map<UserPublicDto>(user);
 
             return userDto;
@@ -72,6 +80,20 @@ namespace ResellHub.Services.UserServices
         public async Task<bool> CheckIsUserExistById(Guid userId)
         {
             var user = await _userRepository.GetUserById(userId);
+
+            if (user == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public async Task<bool> CheckIsUserExistBySlug(string userSlug)
+        {
+            var user = await _userRepository.GetUserBySlug(userSlug);
 
             if (user == null)
             {
@@ -255,9 +277,9 @@ namespace ResellHub.Services.UserServices
         }
 
         //Chat
-        public async Task<List<ChatDto>> GetUserChats(Guid userId, int page )
+        public async Task<List<ChatDto>> GetUserChats(Guid userId, int page)
         {
-            var chats = await _userRepository.GetUserChats(userId, page);
+            var chats = await _userRepository.GetUserChats(userId, page, 15);
             var chatsDto = _mapper.Map<List<ChatDto>>(chats);
 
             return chatsDto;
@@ -294,7 +316,7 @@ namespace ResellHub.Services.UserServices
         //Message
         public async Task<List<MessageDisplayDto>> GetMessagesByChatId(Guid ChatId, int page)
         {
-            var messages = await _userRepository.GetChatMessagesById(ChatId, page);
+            var messages = await _userRepository.GetChatMessagesById(ChatId, page, 15);
             var messagesDto = _mapper.Map<List<MessageDisplayDto>>(messages);
 
             return messagesDto;
@@ -368,9 +390,9 @@ namespace ResellHub.Services.UserServices
         }
 
         //FollowOffer
-        public async Task<List<FollowOfferDto>> GetUserFollowingOffers(Guid userId)
+        public async Task<List<FollowOfferDto>> GetUserFollowingOffers(Guid userId, int page)
         {
-            var followingOffers = await _userRepository.GetUserFollowingOffers(userId);
+            var followingOffers = await _userRepository.GetUserFollowingOffers(userId, page, 40);
             var followingOffersDto = _mapper.Map<List<FollowOfferDto>>(followingOffers);
 
             return followingOffersDto;
@@ -378,7 +400,7 @@ namespace ResellHub.Services.UserServices
 
         public async Task<FollowOfferDto> GetFollowingOfferByUserAndOfferId(Guid userId, Guid offerId)
         {
-            var userFollowingOffers = await _userRepository.GetUserFollowingOffers(userId);
+            var userFollowingOffers = await _userRepository.GetFollowingOfferByUserAndOfferId(userId, offerId);
             var userFollowingOffersDto = _mapper.Map<FollowOfferDto>(userFollowingOffers);
 
             return userFollowingOffersDto;
