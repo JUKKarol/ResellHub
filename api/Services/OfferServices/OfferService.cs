@@ -33,24 +33,21 @@ namespace ResellHub.Services.OfferServices
 
         public async Task<List<OfferPublicDto>> GetOffers(int page, Guid loggedUserId)
         {
-            var offers = await _offerRepository.GetOffers(page, 40, loggedUserId);
+            var offers = await _offerRepository.GetOffers(page, 40);
             var offersDto = _mapper.Map<List<OfferPublicDto>>(offers);
 
-            var followedOfferTitles = offers
+            var followedOfferSlugs = offers
                 .Where(offer => offer.FollowingOffers.Any(fo => fo.UserId == loggedUserId))
-                .Select(offer => offer.Title)
+                .Select(offer => offer.Slug)
                 .ToList();
 
             foreach (var offerDto in offersDto)
             {
-                offerDto.IsUserFollowing = followedOfferTitles.Contains(offerDto.Title);
+                offerDto.IsUserFollowing = followedOfferSlugs.Contains(offerDto.Slug);
             }
 
             return await _offerUtilities.ChangeCategoryIdToCategoryName(offersDto);
         }
-
-
-
 
         public async Task<List<OfferPublicDto>> GetUserOffers(string userSlug, int page)
         {

@@ -14,7 +14,7 @@ namespace ResellHub.Data.Repositories.OfferRepository
         }
 
         //Offer
-        public async Task<List<Offer>> GetOffers(int page, int pageSize, Guid loggedUserId)
+        public async Task<List<Offer>> GetOffers(int page, int pageSize)
         {
             return await _dbContext.Offers
                 .OrderBy(o => o.CreatedDate)
