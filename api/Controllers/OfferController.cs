@@ -23,18 +23,23 @@ namespace ResellHub.Controllers
             _userService = userService;
         }
 
-        [HttpGet]
-        [Authorize(Roles = "User")]
-        [AllowAnonymous]
+        [HttpGet("logged"), Authorize(Roles = "User")]
         public async Task<IActionResult> GetOffers(int page = 1)
         {
-            var user = HttpContext.User;
-            Guid loggedUserId = user.Identity.IsAuthenticated ? Guid.Parse(user.FindFirstValue(ClaimTypes.NameIdentifier)) : Guid.Empty;
+            Guid loggedUserId = User.Identity.IsAuthenticated ? Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)) : Guid.Empty;
 
             var offers = await _offerService.GetOffers(page, loggedUserId);
             return Ok(offers);
         }
 
+        [HttpGet, Authorize(Roles = "User"), AllowAnonymous]
+        public async Task<IActionResult> GetOffersUlogged(int page = 1)
+        {
+            Guid loggedUserId = User.Identity.IsAuthenticated ? Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)) : Guid.Empty;
+
+            var offers = await _offerService.GetOffers(page, loggedUserId);
+            return Ok(offers);
+        }
 
         [HttpGet("{offerSlug}"), Authorize(Roles = "User")]
         public async Task<IActionResult> GetOfferBySlug(string offerSlug)
