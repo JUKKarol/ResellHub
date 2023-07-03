@@ -103,5 +103,25 @@ namespace ResellHub.Controllers
         {
             return Ok(await _userService.DeleteUser(await _userService.GetUserIdByEmail(HttpContext.User.FindFirstValue(ClaimTypes.Email))));
         }
+
+        //images
+        [HttpPost, Authorize(Roles = "User")]
+        public async Task<IActionResult> UploadAvatar(IFormFile file)
+        {
+            //uplad photo service
+
+            return Ok();
+        }
+
+        [HttpDelete, Authorize(Roles = "User")]
+        public async Task<IActionResult> DeleteAvatar(string avatarSlug)
+        {
+            //get image by slug
+            //check permission
+
+            //delete photo service
+
+            return Ok();
+        }
     }
 }

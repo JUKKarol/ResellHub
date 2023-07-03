@@ -36,5 +36,9 @@ namespace ResellHub.Data.Repositories.UserRepository
         Task<FollowOffer> GetFollowingOfferByUserAndOfferId(Guid followingOfferId, Guid userId);
         Task<FollowOffer> AddFollowingOffer(FollowOffer followOffer);
         Task<FollowOffer> DeleteFollowingOffer(Guid followOfferId);
+        //AvatarImage
+        Task<AvatarImage> AddAvatarImage(string ImageSlug, Guid UserId);
+        Task<string> GetAvatarImageSlugByUserId(Guid userId);
+        Task<AvatarImage> DeleteAvatarImage(string ImageSlug);
     }
 }

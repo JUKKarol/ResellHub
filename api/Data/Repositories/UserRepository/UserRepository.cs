@@ -245,5 +245,36 @@ namespace ResellHub.Data.Repositories.UserRepository
 
             return existingFollowOffer;
         }
+        //AvatarImage
+        public async Task<AvatarImage> AddAvatarImage(string ImageSlug, Guid UserId)
+        {
+            var avatarImage = new AvatarImage()
+            {
+                ImageSlug = ImageSlug,
+                UserId = UserId
+            };
+
+            await _dbContext.AvatarImages.AddAsync(avatarImage);
+            await _dbContext.SaveChangesAsync();
+
+            return avatarImage;
+        }
+
+        public async Task<string> GetAvatarImageSlugByUserId(Guid userId)
+        {
+            var avatarImage = await _dbContext.AvatarImages.FirstOrDefaultAsync(ai => ai.UserId == userId);
+
+            return avatarImage.ImageSlug;
+        }
+
+        public async Task<AvatarImage> DeleteAvatarImage(string ImageSlug)
+        {
+            var existingAvatarImage = await _dbContext.AvatarImages.FirstOrDefaultAsync(ai => ai.ImageSlug == ImageSlug);
+
+            _dbContext.AvatarImages.Remove(existingAvatarImage);
+            await _dbContext.SaveChangesAsync();
+
+            return existingAvatarImage;
+        }
     }
 }

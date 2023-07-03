@@ -433,5 +433,8 @@ namespace ResellHub.Services.UserServices
             await _userRepository.DeleteFollowingOffer(followingOfferId);
             return "Offer is not following anymore";
         }
+
+        //Avatar
+        
     }
 }
