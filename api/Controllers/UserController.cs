@@ -39,15 +39,17 @@ namespace ResellHub.Controllers
             return Ok(await _userService.GetUserBySlug(userSlug));
         }
 
-        [HttpGet("{userSlug}/offers"), Authorize(Roles = "User")]
-        public async Task<IActionResult> GetUserOffersBySlug(string userSlug, int page)
+        [HttpGet("{userSlug}/offers"), Authorize(Roles = "User"), AllowAnonymous]
+        public async Task<IActionResult> GetUserOffersBySlug(string userSlug, int page = 1)
         {
             if (!await _userService.CheckIsUserExistBySlug(userSlug))
             {
                 return BadRequest("user doesn't exist");
             }
 
-            return Ok(await _offerService.GetUserOffers(userSlug, page));
+            Guid loggedUserId = User.Identity.IsAuthenticated ? Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)) : Guid.Empty;
+
+            return Ok(await _offerService.GetUserOffers(userSlug, page, loggedUserId));
         }
 
         [HttpPost, Authorize(Roles = "Moderator")]

@@ -23,15 +23,6 @@ namespace ResellHub.Controllers
             _userService = userService;
         }
 
-        [HttpGet("logged"), Authorize(Roles = "User")]
-        public async Task<IActionResult> GetOffers(int page = 1)
-        {
-            Guid loggedUserId = User.Identity.IsAuthenticated ? Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)) : Guid.Empty;
-
-            var offers = await _offerService.GetOffers(page, loggedUserId);
-            return Ok(offers);
-        }
-
         [HttpGet, Authorize(Roles = "User"), AllowAnonymous]
         public async Task<IActionResult> GetOffersUlogged(int page = 1)
         {
@@ -41,10 +32,12 @@ namespace ResellHub.Controllers
             return Ok(offers);
         }
 
-        [HttpGet("{offerSlug}"), Authorize(Roles = "User")]
+        [HttpGet("{offerSlug}"), Authorize(Roles = "User"), AllowAnonymous]
         public async Task<IActionResult> GetOfferBySlug(string offerSlug)
         {
-            return Ok(await _offerService.GetOfferBySlug(offerSlug));
+            Guid loggedUserId = User.Identity.IsAuthenticated ? Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)) : Guid.Empty;
+
+            return Ok(await _offerService.GetOfferBySlug(offerSlug, loggedUserId));
         }
 
         [HttpPost, Authorize(Roles = "User")]
