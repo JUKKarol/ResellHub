@@ -20,29 +20,31 @@ namespace ResellHub.Data.Repositories.OfferRepository
                 .OrderBy(o => o.CreatedDate)
                 .Skip(pageSize * (page - 1))
                 .Take(pageSize)
+                .Include(o => o.FollowingOffers)
                 .ToListAsync();
         }
 
-        public async Task<List<Offer>> GetUserOffers(Guid userId, int page, int pageSize)
+        public async Task<List<Offer>> GetUserOffers(string userSlug, int page, int pageSize)
         {
             return await _dbContext.Offers
-                .Where(o => o.UserId == userId)
+                .Where(o => o.User.Slug == userSlug)
                 .OrderBy(o => o.CreatedDate)
                 .Skip(pageSize * (page - 1))
                 .Take(pageSize)
+                .Include(o => o.FollowingOffers)
                 .ToListAsync();
         }
 
         public async Task<Offer> GetOfferById(Guid offerId)
         {
-            var existOffer = await _dbContext.Offers.FirstOrDefaultAsync(u => u.Id == offerId);
+            var existOffer = await _dbContext.Offers.Include(o => o.FollowingOffers).FirstOrDefaultAsync(u => u.Id == offerId);
 
             return existOffer;
         }
 
         public async Task<Offer> GetOfferBySlug(string offerSlug)
         {
-            var existOffer = await _dbContext.Offers.FirstOrDefaultAsync(o => o.Slug == offerSlug);
+            var existOffer = await _dbContext.Offers.Include(o => o.FollowingOffers).FirstOrDefaultAsync(o => o.Slug == offerSlug);
 
             return existOffer;
         }

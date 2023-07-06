@@ -23,21 +23,21 @@ namespace ResellHub.Controllers
             _userService = userService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetOffers(int page = 1)
+        [HttpGet, Authorize(Roles = "User"), AllowAnonymous]
+        public async Task<IActionResult> GetOffersUlogged(int page = 1)
         {
-            return Ok(await _offerService.GetOffers(page));
+            Guid loggedUserId = User.Identity.IsAuthenticated ? Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)) : Guid.Empty;
+
+            var offers = await _offerService.GetOffers(page, loggedUserId);
+            return Ok(offers);
         }
 
-        [HttpGet("{userId}"), Authorize(Roles = "User")]
-        public async Task<IActionResult> GetUserOffers(Guid userId, int page = 1)
+        [HttpGet("{offerSlug}"), Authorize(Roles = "User"), AllowAnonymous]
+        public async Task<IActionResult> GetOfferBySlug(string offerSlug)
         {
-            if (!await _userService.CheckIsUserExistById(userId))
-            {
-                return BadRequest("user doesn't exist");
-            }
+            Guid loggedUserId = User.Identity.IsAuthenticated ? Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)) : Guid.Empty;
 
-            return Ok(await _offerService.GetUserOffers(userId, page));
+            return Ok(await _offerService.GetOfferBySlug(offerSlug, loggedUserId));
         }
 
         [HttpPost, Authorize(Roles = "User")]

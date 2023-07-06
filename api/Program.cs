@@ -100,6 +100,7 @@ namespace ResellHub
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 
