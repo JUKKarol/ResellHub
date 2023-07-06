@@ -8,6 +8,7 @@ using ResellHub.DTOs.UserDTOs;
 using ResellHub.Entities;
 using ResellHub.Utilities.OfferUtilities;
 using ResellHub.Utilities.UserUtilities;
+using System;
 
 namespace ResellHub.Services.OfferServices
 {
@@ -30,37 +31,73 @@ namespace ResellHub.Services.OfferServices
             _offerValidator = offerValidator;
         }
 
-        public async Task<List<OfferPublicDto>> GetOffers(int page)
+        public async Task<List<OfferPublicDto>> GetOffers(int page, Guid loggedUserId)
         {
             var offers = await _offerRepository.GetOffers(page, 40);
             var offersDto = _mapper.Map<List<OfferPublicDto>>(offers);
 
+            var followedOfferSlugs = offers
+                .Where(offer => offer.FollowingOffers.Any(fo => fo.UserId == loggedUserId))
+                .Select(offer => offer.Slug)
+                .ToList();
+
+            foreach (var offerDto in offersDto)
+            {
+                offerDto.IsUserFollowing = followedOfferSlugs.Contains(offerDto.Slug);
+            }
+
             return await _offerUtilities.ChangeCategoryIdToCategoryName(offersDto);
         }
 
-        public async Task<List<OfferPublicDto>> GetUserOffers(string userSlug, int page)
+        public async Task<List<OfferPublicDto>> GetUserOffers(string userSlug, int page, Guid loggedUserId)
         {
             var offers = await _offerRepository.GetUserOffers(userSlug, page, 40);
             var offersDto = _mapper.Map<List<OfferPublicDto>>(offers);
 
+            var followedOfferSlugs = offers
+                .Where(offer => offer.FollowingOffers.Any(fo => fo.UserId == loggedUserId))
+                .Select(offer => offer.Slug)
+                .ToList();
+
+            foreach (var offerDto in offersDto)
+            {
+                offerDto.IsUserFollowing = followedOfferSlugs.Contains(offerDto.Slug);
+            }
+
             return await _offerUtilities.ChangeCategoryIdToCategoryName(offersDto);
         }
 
-        public async Task<OfferPublicDto> GetOfferById(Guid offerId)
+        public async Task<OfferDetalisDto> GetOfferById(Guid offerId, Guid loggedUserId)
         {
             var offer = await _offerRepository.GetOfferById(offerId);
-            var offerDto = _mapper.Map<OfferPublicDto>(offer);
+            var offerDto = _mapper.Map<OfferDetalisDto>(offer);
+
+            var followedOfferSlugs = offer.FollowingOffers
+                .Where(fo => fo.UserId == loggedUserId)
+                .Select(fo => fo.Offer.Slug)
+                .ToList();
+
+            offerDto.IsUserFollowing = followedOfferSlugs.Contains(offerDto.Slug);
 
             return await _offerUtilities.ChangeCategoryIdToCategoryName(offerDto);
         }
 
-        public async Task<OfferPublicDto> GetOfferBySlug(string slug)
+
+        public async Task<OfferDetalisDto> GetOfferBySlug(string slug, Guid loggedUserId)
         {
             var offer = await _offerRepository.GetOfferBySlug(slug);
-            var offerDto = _mapper.Map<OfferPublicDto>(offer);
+            var offerDto = _mapper.Map<OfferDetalisDto>(offer);
+
+            var followedOfferSlugs = offer.FollowingOffers
+                .Where(fo => fo.UserId == loggedUserId)
+                .Select(fo => fo.Offer.Slug)
+                .ToList();
+
+            offerDto.IsUserFollowing = followedOfferSlugs.Contains(offerDto.Slug);
 
             return await _offerUtilities.ChangeCategoryIdToCategoryName(offerDto);
         }
+
 
         public async Task<bool> CheckIsOfferExistById(Guid offerId)
         {
