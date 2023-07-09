@@ -434,7 +434,20 @@ namespace ResellHub.Services.UserServices
             return "Offer is not following anymore";
         }
 
-        //Avatar
-        
+        //AvatarImage
+        public async Task<bool> CheckIsAvatarImageExistByUserId(Guid userId)
+        {
+            var avatarImage = await _userRepository.GetAvatarImageSlugByUserId(userId);
+
+            if (avatarImage != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
     }
 }

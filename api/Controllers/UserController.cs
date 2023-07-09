@@ -4,6 +4,7 @@ using ResellHub.DTOs.UserDTOs;
 using ResellHub.Entities;
 using ResellHub.Enums;
 using ResellHub.Services.OfferServices;
+using ResellHub.Services.SupabaseServices;
 using ResellHub.Services.UserServices;
 using System.Security.Claims;
 
@@ -15,11 +16,13 @@ namespace ResellHub.Controllers
     {
         private readonly IUserService _userService;
         private readonly IOfferService _offerService;
+        private readonly ISupabaseService _supabaseService;
 
-        public UserController(IUserService userService, IOfferService offerService)
+        public UserController(IUserService userService, IOfferService offerService, ISupabaseService supabaseService)
         {
             _userService = userService;
             _offerService = offerService;
+            _supabaseService = supabaseService;
         }
 
         [HttpGet, Authorize(Roles = "User")]
@@ -107,15 +110,25 @@ namespace ResellHub.Controllers
         }
 
         //images
-        [HttpPost, Authorize(Roles = "User")]
-        public async Task<IActionResult> UploadAvatar(IFormFile file)
+        [HttpPost("avatar"), Authorize(Roles = "User")]
+        public async Task<IActionResult> UploadAvatar(IFormFile image)
         {
-            //uplad photo service
+            Guid userId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            return Ok();
+            if (!await _userService.CheckIsAvatarImageExistByUserId(userId))
+            { 
+                return BadRequest("user have avatar alredy");
+            }
+
+            if (!await _supabaseService.UploadAvatar(image, userId))
+            { 
+                return BadRequest("failed while uploading avatar");
+            }
+
+            return Ok("avatar uploaded");
         }
 
-        [HttpDelete, Authorize(Roles = "User")]
+        [HttpDelete("avatar"), Authorize(Roles = "User")]
         public async Task<IActionResult> DeleteAvatar(string avatarSlug)
         {
             //get image by slug

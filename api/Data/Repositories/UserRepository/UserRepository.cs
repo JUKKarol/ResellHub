@@ -245,6 +245,7 @@ namespace ResellHub.Data.Repositories.UserRepository
 
             return existingFollowOffer;
         }
+
         //AvatarImage
         public async Task<AvatarImage> AddAvatarImage(string ImageSlug, Guid UserId)
         {

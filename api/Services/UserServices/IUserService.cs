@@ -49,5 +49,6 @@ namespace ResellHub.Services.UserServices
         Task<string> AddOfferToFollowing(Guid userId, Guid offerId);
         Task<string> RemoveOfferFromFollowing(Guid followingOfferId);
         //Avatar
+        Task<bool> CheckIsAvatarImageExistByUserId(Guid userId);
     }
 }
