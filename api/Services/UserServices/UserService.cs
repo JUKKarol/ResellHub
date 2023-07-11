@@ -437,7 +437,7 @@ namespace ResellHub.Services.UserServices
         //AvatarImage
         public async Task<bool> CheckIsAvatarImageExistByUserId(Guid userId)
         {
-            var avatarImage = await _userRepository.GetAvatarImageSlugByUserId(userId);
+            var avatarImage = await _userRepository.GetAvatarImageByUserId(userId);
 
             if (avatarImage != null)
             {
@@ -449,5 +449,9 @@ namespace ResellHub.Services.UserServices
             }
         }
 
+        public async Task<AvatarImage> GetAvatarByUserId(Guid userId)
+        {
+            return await _userRepository.GetAvatarImageByUserId(userId);
+        }
     }
 }

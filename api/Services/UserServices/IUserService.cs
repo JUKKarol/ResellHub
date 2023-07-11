@@ -50,5 +50,6 @@ namespace ResellHub.Services.UserServices
         Task<string> RemoveOfferFromFollowing(Guid followingOfferId);
         //Avatar
         Task<bool> CheckIsAvatarImageExistByUserId(Guid userId);
+        Task<AvatarImage> GetAvatarByUserId(Guid userId);
     }
 }

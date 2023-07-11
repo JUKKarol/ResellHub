@@ -247,30 +247,31 @@ namespace ResellHub.Data.Repositories.UserRepository
         }
 
         //AvatarImage
-        public async Task<AvatarImage> AddAvatarImage(string ImageSlug, Guid UserId)
+        public async Task<AvatarImage> AddAvatarImage(AvatarImage avatarImage)
         {
-            var avatarImage = new AvatarImage()
-            {
-                ImageSlug = ImageSlug,
-                UserId = UserId
-            };
-
             await _dbContext.AvatarImages.AddAsync(avatarImage);
             await _dbContext.SaveChangesAsync();
 
             return avatarImage;
         }
 
-        public async Task<string> GetAvatarImageSlugByUserId(Guid userId)
+        public async Task<AvatarImage> GetAvatarImageByUserId(Guid userId)
         {
             var avatarImage = await _dbContext.AvatarImages.FirstOrDefaultAsync(ai => ai.UserId == userId);
 
-            return avatarImage.ImageSlug;
+            return avatarImage;
         }
 
-        public async Task<AvatarImage> DeleteAvatarImage(string ImageSlug)
+        public async Task<AvatarImage> GetAvatarImageBySlug(string slug)
         {
-            var existingAvatarImage = await _dbContext.AvatarImages.FirstOrDefaultAsync(ai => ai.ImageSlug == ImageSlug);
+            var avatarImage = await _dbContext.AvatarImages.FirstOrDefaultAsync(ai => ai.ImageSlug == slug);
+
+            return avatarImage;
+        }
+
+        public async Task<AvatarImage> DeleteAvatarImage(Guid userId)
+        {
+            var existingAvatarImage = await _dbContext.AvatarImages.FirstOrDefaultAsync(ai => ai.UserId == userId);
 
             _dbContext.AvatarImages.Remove(existingAvatarImage);
             await _dbContext.SaveChangesAsync();

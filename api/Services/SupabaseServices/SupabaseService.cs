@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Threading.Tasks;
 using ResellHub.Data.Repositories.UserRepository;
+using ResellHub.Entities;
 using Supabase;
 using Supabase.Interfaces;
 using Supabase.Storage;
@@ -32,6 +33,20 @@ namespace ResellHub.Services.SupabaseServices
             return result;
         }
 
+        public async Task<bool> DeleteImage(string bucketName, string fileName)
+        {
+            var result = await _client.Storage.From(bucketName).Remove(fileName);
+
+            if (result != null)
+            {
+                return true;
+            }
+            else
+            { 
+                return false;
+            }
+        }
+
         public async Task<byte[]> DownloadImage(string bucketName, string fileName)
         {
             var options = new TransformOptions
@@ -45,12 +60,12 @@ namespace ResellHub.Services.SupabaseServices
             return bytes;
         }
 
-        public async Task<bool> UploadAvatar(IFormFile photo, Guid userGuid)
+        public async Task<bool> UploadAvatar(IFormFile photo, Guid userId)
         {
             var lastIndexOfDot = photo.FileName.LastIndexOf('.');
             string extension = photo.FileName.Substring(lastIndexOfDot + 1);
 
-            string fileName = $"{userGuid}.{extension}";
+            string fileName = $"{userId}.{extension}";
             string avatarsBucketName = "user-avatars";
 
             var photoUrl = await UploadImage(avatarsBucketName, fileName, photo);
@@ -60,7 +75,27 @@ namespace ResellHub.Services.SupabaseServices
                 return false;
             }
 
-            await _userRepository.AddAvatarImage(photoUrl, userGuid);
+            var avatarImage = new AvatarImage()
+            {
+                ImageSlug = photoUrl,
+                UserId = userId,
+            };
+
+            await _userRepository.AddAvatarImage(avatarImage);
+
+            return true;
+        }
+
+        public async Task<bool> DeleteAvatar(string fileName, Guid userId)
+        {
+            var result = await _client.Storage.From("user-avatars").Remove(fileName);
+
+            if (result == null)
+            {
+                return false;
+            }
+
+            await _userRepository.DeleteAvatarImage(userId);
 
             return true;
         }

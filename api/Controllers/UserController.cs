@@ -6,7 +6,9 @@ using ResellHub.Enums;
 using ResellHub.Services.OfferServices;
 using ResellHub.Services.SupabaseServices;
 using ResellHub.Services.UserServices;
+using Supabase.Gotrue;
 using System.Security.Claims;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ResellHub.Controllers
 {
@@ -117,7 +119,7 @@ namespace ResellHub.Controllers
 
             if (!await _userService.CheckIsAvatarImageExistByUserId(userId))
             { 
-                return BadRequest("user have avatar alredy");
+                return NotFound("user have avatar alredy");
             }
 
             if (!await _supabaseService.UploadAvatar(image, userId))
@@ -129,12 +131,19 @@ namespace ResellHub.Controllers
         }
 
         [HttpDelete("avatar"), Authorize(Roles = "User")]
-        public async Task<IActionResult> DeleteAvatar(string avatarSlug)
+        public async Task<IActionResult> DeleteAvatar()
         {
-            //get image by slug
-            //check permission
+            var userAvatar = await _userService.GetAvatarByUserId(Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)));
 
-            //delete photo service
+            if (userAvatar == null)
+            { 
+                return NotFound("User didn't uploaded avatar yet");
+            }
+
+            if (!await _supabaseService.DeleteAvatar(userAvatar.ImageSlug, userAvatar.UserId))
+            {
+                return BadRequest("failed while deleting avatar");
+            }
 
             return Ok();
         }
