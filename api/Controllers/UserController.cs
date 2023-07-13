@@ -117,7 +117,7 @@ namespace ResellHub.Controllers
         {
             Guid userId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            if (!await _userService.CheckIsAvatarImageExistByUserId(userId))
+            if (await _userService.CheckIsAvatarImageExistByUserId(userId))
             { 
                 return NotFound("user have avatar alredy");
             }
