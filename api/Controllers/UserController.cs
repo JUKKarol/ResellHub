@@ -4,9 +4,7 @@ using ResellHub.DTOs.UserDTOs;
 using ResellHub.Entities;
 using ResellHub.Enums;
 using ResellHub.Services.OfferServices;
-using ResellHub.Services.SupabaseServices;
 using ResellHub.Services.UserServices;
-using Supabase.Gotrue;
 using System.Security.Claims;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -18,13 +16,11 @@ namespace ResellHub.Controllers
     {
         private readonly IUserService _userService;
         private readonly IOfferService _offerService;
-        private readonly ISupabaseService _supabaseService;
 
-        public UserController(IUserService userService, IOfferService offerService, ISupabaseService supabaseService)
+        public UserController(IUserService userService, IOfferService offerService)
         {
             _userService = userService;
             _offerService = offerService;
-            _supabaseService = supabaseService;
         }
 
         [HttpGet, Authorize(Roles = "User")]
@@ -122,10 +118,7 @@ namespace ResellHub.Controllers
                 return NotFound("user have avatar alredy");
             }
 
-            if (!await _supabaseService.UploadAvatar(image, userId))
-            { 
-                return BadRequest("failed while uploading avatar");
-            }
+            //add photo
 
             return Ok("avatar uploaded");
         }
@@ -140,10 +133,7 @@ namespace ResellHub.Controllers
                 return NotFound("User didn't uploaded avatar yet");
             }
 
-            if (!await _supabaseService.DeleteAvatar(userAvatar.ImageSlug, userAvatar.UserId))
-            {
-                return BadRequest("failed while deleting avatar");
-            }
+            //delete
 
             return Ok();
         }

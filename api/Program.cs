@@ -11,13 +11,11 @@ using ResellHub.DTOs.OfferDTOs;
 using ResellHub.DTOs.UserDTOs;
 using ResellHub.Services.EmailService;
 using ResellHub.Services.OfferServices;
-using ResellHub.Services.SupabaseServices;
 using ResellHub.Services.UserServices;
 using ResellHub.Utilities.OfferUtilities;
 using ResellHub.Utilities.UserUtilities;
 using ResellHub.Utilities.Validation.Offer;
 using ResellHub.Utilities.Validation.UserValidation;
-using Supabase;
 using Swashbuckle.AspNetCore.Filters;
 using System;
 using System.Text;
@@ -76,20 +74,9 @@ namespace ResellHub
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IOfferService, OfferService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
-            builder.Services.AddScoped<ISupabaseService, SupabaseService>();
 
             builder.Services.AddScoped<IUserUtilities, UserUtilities>();
             builder.Services.AddScoped<IOfferUtilities, OfferUtilities>();
-
-            builder.Services.AddScoped<Supabase.Client>(_ =>
-                new Supabase.Client(
-                    builder.Configuration.GetSection("Supabase:Url").Value!,
-                    builder.Configuration.GetSection("Supabase:Key").Value!,
-                    new SupabaseOptions
-                    {
-                        AutoRefreshToken = true,
-                        AutoConnectRealtime = true
-                    }));
 
             var app = builder.Build();
             var scope = app.Services.CreateScope();
