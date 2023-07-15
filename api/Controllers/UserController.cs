@@ -111,6 +111,26 @@ namespace ResellHub.Controllers
         }
 
         //images
+        [HttpGet("avatar"), Authorize(Roles = "User")]
+        public async Task<IActionResult> GetMyAvatar()
+        {
+            Guid userId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if (!await _userService.CheckIsAvatarImageExistByUserId(userId))
+            {
+                return NotFound("user didn't uploaded avatar yet");
+            }
+
+            byte[] myAvatar = await _fileService.GetAvatar(userId);
+
+            if (myAvatar.Length < 1)
+            {
+                return BadRequest("error while uploading file");
+            }
+
+            return Ok(myAvatar);
+        }
+
         [HttpPost("avatar"), Authorize(Roles = "User")]
         public async Task<IActionResult> UploadAvatar(IFormFile image)
         {
@@ -141,12 +161,15 @@ namespace ResellHub.Controllers
 
             if (userAvatar == null)
             {
-                return NotFound("User didn't uploaded avatar yet");
+                return NotFound("user didn't uploaded avatar yet");
             }
 
-            //delete
+            if (!await _fileService.DeleteAvatar(userAvatar.UserId))
+            {
+                return BadRequest("error while deleting file");
+            }
 
-            return Ok();
+            return Ok("avatar deleted");
         }
     }
 }
