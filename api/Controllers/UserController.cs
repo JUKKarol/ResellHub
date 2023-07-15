@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ResellHub.DTOs.UserDTOs;
 using ResellHub.Entities;
 using ResellHub.Enums;
+using ResellHub.Services.FileServices;
 using ResellHub.Services.OfferServices;
 using ResellHub.Services.UserServices;
 using System.Security.Claims;
@@ -16,11 +17,13 @@ namespace ResellHub.Controllers
     {
         private readonly IUserService _userService;
         private readonly IOfferService _offerService;
+        private readonly IFileService _fileService;
 
-        public UserController(IUserService userService, IOfferService offerService)
+        public UserController(IUserService userService, IOfferService offerService, IFileService fileService)
         {
             _userService = userService;
             _offerService = offerService;
+            _fileService = fileService;
         }
 
         [HttpGet, Authorize(Roles = "User")]
@@ -114,11 +117,19 @@ namespace ResellHub.Controllers
             Guid userId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             if (await _userService.CheckIsAvatarImageExistByUserId(userId))
-            { 
+            {
                 return NotFound("user have avatar alredy");
             }
 
-            //add photo
+            if (image == null)
+            {
+                return BadRequest("image can't be empty");
+            }
+
+            if (!await _fileService.AddAvatar(image, userId))
+            {
+                return BadRequest("error while uploading file");
+            }
 
             return Ok("avatar uploaded");
         }
@@ -129,7 +140,7 @@ namespace ResellHub.Controllers
             var userAvatar = await _userService.GetAvatarByUserId(Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)));
 
             if (userAvatar == null)
-            { 
+            {
                 return NotFound("User didn't uploaded avatar yet");
             }
 

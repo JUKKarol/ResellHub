@@ -10,6 +10,8 @@ using ResellHub.Data.Seeders;
 using ResellHub.DTOs.OfferDTOs;
 using ResellHub.DTOs.UserDTOs;
 using ResellHub.Services.EmailService;
+using ResellHub.Services.FileService;
+using ResellHub.Services.FileServices;
 using ResellHub.Services.OfferServices;
 using ResellHub.Services.UserServices;
 using ResellHub.Utilities.OfferUtilities;
@@ -74,6 +76,7 @@ namespace ResellHub
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IOfferService, OfferService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
+            builder.Services.AddScoped<IFileService, FileService>();
 
             builder.Services.AddScoped<IUserUtilities, UserUtilities>();
             builder.Services.AddScoped<IOfferUtilities, OfferUtilities>();
