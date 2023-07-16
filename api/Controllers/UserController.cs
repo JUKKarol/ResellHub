@@ -40,7 +40,7 @@ namespace ResellHub.Controllers
                 return BadRequest("user doesn't exist");
             }
 
-            return Ok(await _userService.GetUserBySlug(userSlug));
+            return Ok(await _userService.GetUserBySlugIncludeAvatar(userSlug));
         }
 
         [HttpGet("{userSlug}/offers"), Authorize(Roles = "User"), AllowAnonymous]

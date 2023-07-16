@@ -25,6 +25,21 @@ namespace ResellHub.Services.FileService
                 Directory.CreateDirectory(targetFolderPath);
 
                 DirectoryInfo directory = new DirectoryInfo(targetFolderPath);
+
+                if (imageName.Contains("."))
+                {
+                    FileInfo file = new FileInfo(Path.Combine(targetFolderPath, imageName));
+
+                    using (var fileStream = file.Open(FileMode.Open, FileAccess.Read, FileShare.Read))
+                    {
+                        MemoryStream memoryStream = new MemoryStream();
+                        await fileStream.CopyToAsync(memoryStream);
+                        memoryStream.Position = 0;
+
+                        return memoryStream.ToArray();
+                    }
+                }
+
                 FileInfo[] files = directory.GetFiles(imageName + ".*");
 
                 foreach (FileInfo file in files)

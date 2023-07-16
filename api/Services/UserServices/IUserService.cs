@@ -13,7 +13,7 @@ namespace ResellHub.Services.UserServices
         //User
         Task<List<UserPublicDto>> GetUsers(int page);
         Task<UserPublicDto> GetUserById(Guid userId);
-        Task<UserPublicDto> GetUserBySlug(string userSlug);
+        Task<UserDetalisDto> GetUserBySlugIncludeAvatar(string userSlug);
         Task<string> GetUserEmailById(Guid userId);
         Task<bool> CheckIsUserExistById(Guid userId);
         Task<bool> CheckIsUserExistBySlug(string userSlug);

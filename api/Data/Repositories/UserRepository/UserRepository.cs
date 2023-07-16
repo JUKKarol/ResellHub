@@ -57,6 +57,12 @@ namespace ResellHub.Data.Repositories.UserRepository
 
             return existUser;
         }
+        public async Task<User> GetUserBySlugIncludeAvatar(string userSlug)
+        {
+            var existUser = await _dbContext.Users.Include(u => u.AvatarImage).FirstOrDefaultAsync(u => u.Slug == userSlug);
+
+            return existUser;
+        }
 
         public async Task<User> AddUser(User user)
         {
