@@ -51,6 +51,26 @@ namespace ResellHub.Services.FileService
             return await GetImage(userId.ToString(), "Avatars");
         }
 
+        //check
+        private bool ChceckIsImageSizeCorrect(IFormFile image, int MaxsizeInMegaBytes)
+        {
+            int maxSizeInBytes = MaxsizeInMegaBytes * 1024 * 1024;
+
+            if (image.Length > maxSizeInBytes)
+            { 
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public bool CheckIsAvatarSizeCorrect(IFormFile image)
+        {
+            return ChceckIsImageSizeCorrect(image, 1);
+        }
+
         //create
         private async Task<string> AddImage(IFormFile image, string imageName, string imagesFolder)
         {
@@ -111,7 +131,7 @@ namespace ResellHub.Services.FileService
 
                 foreach (FileInfo file in files)
                 {
-                    file.Delete();
+                    await Task.Run(() => file.Delete());
                 }
 
                 return true;

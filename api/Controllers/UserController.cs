@@ -146,6 +146,11 @@ namespace ResellHub.Controllers
                 return BadRequest("image can't be empty");
             }
 
+            if (!_fileService.CheckIsAvatarSizeCorrect(image))
+            {
+                return BadRequest("image is to large");
+            }
+
             if (!await _fileService.AddAvatar(image, userId))
             {
                 return BadRequest("error while uploading file");
