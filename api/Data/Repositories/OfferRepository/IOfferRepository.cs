@@ -16,5 +16,12 @@ namespace ResellHub.Data.Repositories.OfferRepository
         //Category
         Task<string> GetCategoryNameById(int categoryId);
         Task<List<Category>> GetCategories();
+        //OfferImages
+        Task<OfferImage> AddOfferImageImage(OfferImage offerImage);
+        Task<OfferImage> GetOfferImageById(Guid offerImageId);
+        Task<List<OfferImage>> GetAllOfferImagesByOfferId(Guid offerId);
+        Task<OfferImage> GetPrimaryOfferImageByOfferId(Guid offerId);
+        Task<OfferImage> SetOfferImageAsPrimaryById(Guid offerImageId);
+        Task<OfferImage> DeleteOfferImage(Guid offerImageId);
     }
 }

@@ -91,5 +91,55 @@ namespace ResellHub.Data.Repositories.OfferRepository
 
             return categories;
         }
+
+        //OfferImages
+        public async Task<OfferImage> AddOfferImageImage(OfferImage offerImage)
+        {
+            await _dbContext.OfferImages.AddAsync(offerImage);
+            await _dbContext.SaveChangesAsync();
+
+            return offerImage;
+        }
+
+        public async Task<OfferImage> GetOfferImageById(Guid offerImageId)
+        {
+            var offerImage = await _dbContext.OfferImages.FirstOrDefaultAsync(oi => oi.Id == offerImageId);
+
+            return offerImage;
+        }
+
+        public async Task<List<OfferImage>> GetAllOfferImagesByOfferId(Guid offerId)
+        {
+            var offerImages = await _dbContext.OfferImages.Where(oi => oi.OfferId == offerId).OrderByDescending(oi => oi.CreatedDate).ToListAsync();
+
+            return offerImages;
+        }
+
+        public async Task<OfferImage> GetPrimaryOfferImageByOfferId(Guid offerId)
+        {
+            var offerImage = await _dbContext.OfferImages.OrderByDescending(oi => oi.CreatedDate).FirstOrDefaultAsync(oi => oi.OfferId == offerId);
+
+            return offerImage;
+        }
+
+        public async Task<OfferImage> SetOfferImageAsPrimaryById(Guid offerImageId)
+        {
+            var offerImage = await _dbContext.OfferImages.FirstOrDefaultAsync(oi => oi.Id == offerImageId);
+            offerImage.CreatedDate = DateTime.UtcNow;
+
+            await _dbContext.SaveChangesAsync();
+
+            return offerImage;
+        }
+
+        public async Task<OfferImage> DeleteOfferImage(Guid offerImageId)
+        {
+            var existingOfferImage = await _dbContext.OfferImages.FirstOrDefaultAsync(oi => oi.Id == offerImageId);
+
+            _dbContext.OfferImages.Remove(existingOfferImage);
+            await _dbContext.SaveChangesAsync();
+
+            return existingOfferImage;
+        }
     }
 }
