@@ -75,18 +75,57 @@ namespace ResellHub.Services.FileService
         {
             return await GetImage(userId.ToString(), avatarsFolderName);
         }
-        
-        public async Task<byte[]> GetOfferPrimaryImage(Guid offerId)
-        {
-            var primaryImage = await _offerRepository.GetPrimaryOfferImageByOfferId(offerId);
 
-            return await GetImage(primaryImage.ImageSlug, offerImagesFolderName);
+        public async Task<byte[]> GetOfferImageBySlug(string offerImageSlug)
+        {
+            return await GetImage(offerImageSlug, offerImagesFolderName);
         }
 
-        public async Task<List<OfferImageDisplayDTO>> GetOfferImages(Guid offerId)
+        public async Task<OfferImageDisplayDTO> GetOfferPrimaryImage(Guid offerId)
+        {
+            OfferImage primaryImage = await _offerRepository.GetPrimaryOfferImageByOfferId(offerId);
+
+            if (primaryImage == null)
+            {
+                return new OfferImageDisplayDTO();
+            }
+
+            var primaryImageDto = new OfferImageDisplayDTO()
+            {
+                ImageSlug = primaryImage.ImageSlug,
+                ImageBytes = await GetImage(primaryImage.ImageSlug, offerImagesFolderName),
+            };
+
+            return primaryImageDto;
+        }
+
+        public async Task<List<OfferImageDisplayDTO>> GetOfferImagesByOfferId(Guid offerId)
         {
             var offerImages = await _offerRepository.GetAllOfferImagesByOfferId(offerId);
             var offerImagesDto = _mapper.Map<List<OfferImageDisplayDTO>>(offerImages);
+
+            if (offerImages == null)
+            {
+                return new List<OfferImageDisplayDTO>();
+            }
+
+            foreach (var offerImageDto in offerImagesDto)
+            {
+                offerImageDto.ImageBytes = await GetImage(offerImageDto.ImageSlug, offerImagesFolderName);
+            }
+
+            return offerImagesDto;
+        }
+
+        public async Task<List<OfferImageDisplayDTO>> GetOfferImagesByOfferSlug(string offerSlug)
+        {
+            var offerImages = await _offerRepository.GetAllOfferImagesByOfferslug(offerSlug);
+            var offerImagesDto = _mapper.Map<List<OfferImageDisplayDTO>>(offerImages);
+
+            if (offerImages == null)
+            {
+                return new List<OfferImageDisplayDTO>();
+            }
 
             foreach (var offerImageDto in offerImagesDto)
             {

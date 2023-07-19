@@ -21,6 +21,7 @@ namespace ResellHub.Data.Repositories.OfferRepository
                 .Skip(pageSize * (page - 1))
                 .Take(pageSize)
                 .Include(o => o.FollowingOffers)
+                .Include(o => o.OfferImages)
                 .ToListAsync();
         }
 
@@ -32,19 +33,20 @@ namespace ResellHub.Data.Repositories.OfferRepository
                 .Skip(pageSize * (page - 1))
                 .Take(pageSize)
                 .Include(o => o.FollowingOffers)
+                .Include(o => o.OfferImages)
                 .ToListAsync();
         }
 
         public async Task<Offer> GetOfferById(Guid offerId)
         {
-            var existOffer = await _dbContext.Offers.Include(o => o.FollowingOffers).FirstOrDefaultAsync(u => u.Id == offerId);
+            var existOffer = await _dbContext.Offers.Include(o => o.FollowingOffers).Include(o => o.OfferImages).FirstOrDefaultAsync(u => u.Id == offerId);
 
             return existOffer;
         }
 
         public async Task<Offer> GetOfferBySlug(string offerSlug)
         {
-            var existOffer = await _dbContext.Offers.Include(o => o.FollowingOffers).FirstOrDefaultAsync(o => o.Slug == offerSlug);
+            var existOffer = await _dbContext.Offers.Include(o => o.FollowingOffers).Include(o => o.OfferImages).FirstOrDefaultAsync(o => o.Slug == offerSlug);
 
             return existOffer;
         }
@@ -115,6 +117,13 @@ namespace ResellHub.Data.Repositories.OfferRepository
             return offerImages;
         }
 
+        public async Task<List<OfferImage>> GetAllOfferImagesByOfferslug(string offerSlug)
+        {
+            var offerImages = await _dbContext.OfferImages.Where(oi => oi.Offer.Slug == offerSlug).OrderByDescending(oi => oi.CreatedDate).ToListAsync();
+
+            return offerImages;
+        }
+
         public async Task<OfferImage> GetPrimaryOfferImageByOfferId(Guid offerId)
         {
             var offerImage = await _dbContext.OfferImages.OrderByDescending(oi => oi.CreatedDate).FirstOrDefaultAsync(oi => oi.OfferId == offerId);
@@ -122,9 +131,16 @@ namespace ResellHub.Data.Repositories.OfferRepository
             return offerImage;
         }
 
-        public async Task<OfferImage> SetOfferImageAsPrimaryById(Guid offerImageId)
+        public async Task<OfferImage> GetOfferImageBySlug(string offerImageSlug)
         {
-            var offerImage = await _dbContext.OfferImages.FirstOrDefaultAsync(oi => oi.Id == offerImageId);
+            var offerImage = await _dbContext.OfferImages.FirstOrDefaultAsync(oi => oi.ImageSlug == offerImageSlug);
+
+            return offerImage;
+        }
+
+        public async Task<OfferImage> SetOfferImageAsPrimaryBySlug(string offerImageSlug)
+        {
+            var offerImage = await _dbContext.OfferImages.FirstOrDefaultAsync(oi => oi.ImageSlug == offerImageSlug);
             offerImage.CreatedDate = DateTime.UtcNow;
 
             await _dbContext.SaveChangesAsync();

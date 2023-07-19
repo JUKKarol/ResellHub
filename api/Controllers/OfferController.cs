@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using ResellHub.DTOs.OfferDTOs;
 using ResellHub.DTOs.UserDTOs;
 using ResellHub.Entities;
+using ResellHub.Services.FileServices;
 using ResellHub.Services.OfferServices;
 using ResellHub.Services.UserServices;
 using System.Security.Claims;
@@ -16,15 +17,17 @@ namespace ResellHub.Controllers
     {
         private readonly IOfferService _offerService;
         private readonly IUserService _userService;
+        private readonly IFileService _fileService;
 
-        public OfferController(IOfferService offerService, IUserService userService)
+        public OfferController(IOfferService offerService, IUserService userService, IFileService fileService)
         {
             _offerService = offerService;
             _userService = userService;
+            _fileService = fileService;
         }
 
         [HttpGet, Authorize(Roles = "User"), AllowAnonymous]
-        public async Task<IActionResult> GetOffersUlogged(int page = 1)
+        public async Task<IActionResult> GetOffers(int page = 1)
         {
             Guid loggedUserId = User.Identity.IsAuthenticated ? Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)) : Guid.Empty;
 
@@ -76,6 +79,108 @@ namespace ResellHub.Controllers
             }
 
             return Ok(await _offerService.DeleteOffer(offerId));
+        }
+
+        //images
+        [HttpGet("image/{offerslug}"), Authorize(Roles = "User")]
+        public async Task<IActionResult> GetOfferImages(string offerslug)
+        {
+            var offer = await _offerService.GetOfferBySlug(offerslug, Guid.Empty);
+
+            if (offer == null)
+            {
+                return NotFound("offer doesn't exist");
+            }
+
+            if (offer.OfferImages == null)
+            {
+                return NotFound("offer doesn't have uploaded images yet");
+            }
+
+            var offerImages = await _fileService.GetOfferImagesByOfferSlug(offerslug);
+
+            foreach (var offerImage in offerImages)
+            {
+                if (offerImage.ImageBytes.Length < 1)
+                {
+                    return BadRequest("error while uploading file");
+                }
+            }
+
+            return Ok(offerImages);
+        }
+
+        [HttpPost("image/{offerSlug}"), Authorize(Roles = "User")]
+        public async Task<IActionResult> UploadOfferImage(IFormFile image, string offerSlug)
+        {
+            Guid userId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var offer = await _offerService.GetOfferBySlug(offerSlug, Guid.Empty);
+
+            if (offer.OfferImages.Count > 3)
+            { 
+                return BadRequest("offer images are full");
+            }
+
+            if (offer.UserId != userId)
+            { 
+                return BadRequest("permission denied");
+            }
+
+            if (image == null)
+            {
+                return BadRequest("image can't be empty");
+            }
+
+            if (!_fileService.CheckIsOfferImageSizeCorrect(image))
+            {
+                return BadRequest("image is to large");
+            }
+
+            if (!await _fileService.AddOfferImage(image, await _offerService.GetOfferIdByOfferSlug(offerSlug)))
+            {
+                return BadRequest("error while uploading file");
+            }
+
+            return Ok("image uploaded");
+        }
+
+        [HttpPost("image/primary/{imageSlug}"), Authorize(Roles = "User")]
+        public async Task<IActionResult> SetOfferImageAsPrimary(string imageSlug)
+        {
+            Guid userId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var offerId = await _offerService.GetOfferIdByOfferImageSlug(imageSlug);
+
+            if (offerId == Guid.Empty)
+            {
+                return BadRequest("image didn't exist");
+            }
+
+            if (offerId != userId)
+            {
+                return BadRequest("permission denied");
+            }
+
+            await _offerService.SetOfferImageAsPrimaryBySlug(imageSlug);
+
+            return Ok("image is set as primary");
+        }
+
+        [HttpDelete("image"), Authorize(Roles = "User")]
+        public async Task<IActionResult> DeleteOfferImage()
+        {
+            var userAvatar = await _userService.GetAvatarByUserId(Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)));
+
+            if (userAvatar == null)
+            {
+                return NotFound("user didn't uploaded avatar yet");
+            }
+
+            if (!await _fileService.DeleteAvatar(userAvatar.UserId))
+            {
+                return BadRequest("error while deleting file");
+            }
+
+            return Ok("avatar deleted");
         }
     }
 }

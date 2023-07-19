@@ -1,10 +1,12 @@
-﻿using ResellHub.Enums;
+﻿using ResellHub.DTOs.OfferImageDTOs;
+using ResellHub.Enums;
 
 namespace ResellHub.DTOs.OfferDTOs
 {
     public class OfferPublicDto
     {
         public string Title { get; set; }
+        public OfferImageDisplayDTO OfferPrimaryImage { get; set; }
         public string Brand { get; set; }
         public string Category { get; set; }
         public int Condition { get; set; }
