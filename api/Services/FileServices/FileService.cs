@@ -283,16 +283,16 @@ namespace ResellHub.Services.FileService
             return true;
         }
 
-        public async Task<bool> DeleteOfferImage(Guid offerImageId)
+        public async Task<bool> DeleteOfferImage(string offerImageSlug)
         {
-            bool deleteCorrect = await DeleteImage(offerImageId.ToString(), offerImagesFolderName);
+            bool deleteCorrect = await DeleteImage(offerImageSlug, offerImagesFolderName);
 
             if (!deleteCorrect)
             {
                 return false;
             }
 
-            await _offerRepository.DeleteOfferImage(offerImageId);
+            await _offerRepository.DeleteOfferImage(offerImageSlug);
 
             return true;
         }

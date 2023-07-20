@@ -17,6 +17,6 @@ namespace ResellHub.Services.FileServices
         bool CheckIsOfferImageSizeCorrect(IFormFile image);
         Task<bool> CheckIsOfferHaveSpaceForImages(Guid offerId);
         Task<bool> AddOfferImage(IFormFile image, Guid offerId);
-        Task<bool> DeleteOfferImage(Guid offerImageId);
+        Task<bool> DeleteOfferImage(string offerImageSlug);
     }
 }

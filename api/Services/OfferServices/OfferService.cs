@@ -35,6 +35,7 @@ namespace ResellHub.Services.OfferServices
             _offerValidator = offerValidator;
         }
 
+        //Offer
         public async Task<List<OfferPublicDto>> GetOffers(int page, Guid loggedUserId)
         {
             var offers = await _offerRepository.GetOffers(page, 40);
@@ -198,13 +199,6 @@ namespace ResellHub.Services.OfferServices
             return "Offer ceated successful";
         }
 
-        public async Task<string> SetOfferImageAsPrimaryBySlug(string offerImageSlug)
-        {
-            await _offerRepository.SetOfferImageAsPrimaryBySlug(offerImageSlug);
-
-            return offerImageSlug;
-        }
-
         public async Task<string> UpdateOffer(Guid offerId, OfferCreateDto offerDto)
         {
             var validationResult = await _offerValidator.ValidateAsync(offerDto);
@@ -218,12 +212,21 @@ namespace ResellHub.Services.OfferServices
 
             await _offerRepository.UpdateOffer(offerId, updatedOffer);
             return "User updated successful";
+            return "User updated successful";
         }
 
         public async Task<string> DeleteOffer(Guid offerId)
         {
             await _offerRepository.DeleteOffer(offerId);
             return "Offer deleted successful";
+        }
+
+        //Image
+        public async Task<string> SetOfferImageAsPrimaryBySlug(string offerImageSlug)
+        {
+            await _offerRepository.SetOfferImageAsPrimaryBySlug(offerImageSlug);
+
+            return offerImageSlug;
         }
     }
 }

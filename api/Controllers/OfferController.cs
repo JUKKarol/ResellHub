@@ -89,12 +89,12 @@ namespace ResellHub.Controllers
 
             if (offer == null)
             {
-                return NotFound("offer doesn't exist");
+                return NotFound("offer didn't exist");
             }
 
             if (offer.OfferImages == null)
             {
-                return NotFound("offer doesn't have uploaded images yet");
+                return NotFound("offer didn't have uploaded images yet");
             }
 
             var offerImages = await _fileService.GetOfferImagesByOfferSlug(offerslug);
@@ -113,7 +113,7 @@ namespace ResellHub.Controllers
         [HttpPost("image/{offerSlug}"), Authorize(Roles = "User")]
         public async Task<IActionResult> UploadOfferImage(IFormFile image, string offerSlug)
         {
-            Guid userId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
             var offer = await _offerService.GetOfferBySlug(offerSlug, Guid.Empty);
 
             if (offer.OfferImages.Count > 3)
@@ -147,7 +147,7 @@ namespace ResellHub.Controllers
         [HttpPost("image/primary/{imageSlug}"), Authorize(Roles = "User")]
         public async Task<IActionResult> SetOfferImageAsPrimary(string imageSlug)
         {
-            Guid userId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var userId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
             var offerId = await _offerService.GetOfferIdByOfferImageSlug(imageSlug);
 
             if (offerId == Guid.Empty)
@@ -165,17 +165,24 @@ namespace ResellHub.Controllers
             return Ok("image is set as primary");
         }
 
-        [HttpDelete("image"), Authorize(Roles = "User")]
-        public async Task<IActionResult> DeleteOfferImage()
+        [HttpDelete("image/{imageSlug}"), Authorize(Roles = "User")]
+        public async Task<IActionResult> DeleteOfferImage(string imageSlug)
         {
-            var userAvatar = await _userService.GetAvatarByUserId(Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)));
+            var userId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var image = _fileService.GetOfferImageBySlug(imageSlug);
+            var offer = await _offerService.GetOfferByOfferImageSlug(imageSlug);
 
-            if (userAvatar == null)
+            if (image == null)
             {
-                return NotFound("user didn't uploaded avatar yet");
+                return NotFound("image didn't exist");
             }
 
-            if (!await _fileService.DeleteAvatar(userAvatar.UserId))
+            if (offer.UserId != userId)
+            {
+                return NotFound("permission denied");
+            }
+
+            if (!await _fileService.DeleteOfferImage(imageSlug))
             {
                 return BadRequest("error while deleting file");
             }

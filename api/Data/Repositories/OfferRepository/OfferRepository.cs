@@ -148,9 +148,9 @@ namespace ResellHub.Data.Repositories.OfferRepository
             return offerImage;
         }
 
-        public async Task<OfferImage> DeleteOfferImage(Guid offerImageId)
+        public async Task<OfferImage> DeleteOfferImage(string offerImageSlug)
         {
-            var existingOfferImage = await _dbContext.OfferImages.FirstOrDefaultAsync(oi => oi.Id == offerImageId);
+            var existingOfferImage = await _dbContext.OfferImages.FirstOrDefaultAsync(oi => oi.ImageSlug == offerImageSlug);
 
             _dbContext.OfferImages.Remove(existingOfferImage);
             await _dbContext.SaveChangesAsync();
