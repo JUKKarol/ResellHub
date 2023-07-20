@@ -144,7 +144,7 @@ namespace ResellHub.Controllers
             return Ok("image uploaded");
         }
 
-        [HttpPost("image/primary/{imageSlug}"), Authorize(Roles = "User")]
+        [HttpPut("image/primary/{imageSlug}"), Authorize(Roles = "User")]
         public async Task<IActionResult> SetOfferImageAsPrimary(string imageSlug)
         {
             var userId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
