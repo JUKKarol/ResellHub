@@ -10,7 +10,7 @@ namespace ResellHub.Services.OfferServices
         Task<List<OfferPublicDto>> GetUserOffers(string userSlug, int page, Guid loggedUserId);
         Task<OfferDetalisDto> GetOfferById(Guid offerId, Guid loggedUserId);
         Task<OfferDetalisDto> GetOfferBySlug(string offerSlug, Guid loggedUserId);
-        Task<Offer> GetOfferByOfferImageSlug(string offerImageSlug);
+        Task<OfferDetalisDto> GetOfferByOfferImageSlug(string offerImageSlug);
         Task<Guid> GetOfferIdByOfferImageSlug(string offerImageSlug);
         Task<Guid> GetOfferIdByOfferSlug(string offerSlug);
         Task<bool> CheckIsOfferExistById(Guid offerId);

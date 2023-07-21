@@ -92,7 +92,7 @@ namespace ResellHub.Controllers
                 return NotFound("offer didn't exist");
             }
 
-            if (offer.OfferImages == null)
+            if (!offer.OfferImages.Any())
             {
                 return NotFound("offer didn't have uploaded images yet");
             }
@@ -148,14 +148,14 @@ namespace ResellHub.Controllers
         public async Task<IActionResult> SetOfferImageAsPrimary(string imageSlug)
         {
             var userId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var offerId = await _offerService.GetOfferIdByOfferImageSlug(imageSlug);
+            var offer = await _offerService.GetOfferByOfferImageSlug(imageSlug);
 
-            if (offerId == Guid.Empty)
+            if (offer == null)
             {
                 return BadRequest("image didn't exist");
             }
 
-            if (offerId != userId)
+            if (offer.UserId != userId)
             {
                 return BadRequest("permission denied");
             }
@@ -169,10 +169,9 @@ namespace ResellHub.Controllers
         public async Task<IActionResult> DeleteOfferImage(string imageSlug)
         {
             var userId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
-            var image = _fileService.GetOfferImageBySlug(imageSlug);
             var offer = await _offerService.GetOfferByOfferImageSlug(imageSlug);
 
-            if (image == null)
+            if (offer.UserId == Guid.Empty)
             {
                 return NotFound("image didn't exist");
             }
@@ -187,7 +186,7 @@ namespace ResellHub.Controllers
                 return BadRequest("error while deleting file");
             }
 
-            return Ok("avatar deleted");
+            return Ok("image deleted");
         }
     }
 }

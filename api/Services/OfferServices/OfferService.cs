@@ -52,11 +52,6 @@ namespace ResellHub.Services.OfferServices
                 offersDto[i].OfferPrimaryImage = await _fileService.GetOfferPrimaryImage(offers[i].Id);
             }
 
-            //foreach (var offerDto in offersDto)
-            //{
-            //    offerDto.IsUserFollowing = followedOfferSlugs.Contains(offerDto.Slug);
-            //}
-
             return await _offerUtilities.ChangeCategoryIdToCategoryName(offersDto);
         }
 
@@ -75,12 +70,6 @@ namespace ResellHub.Services.OfferServices
                 offersDto[i].IsUserFollowing = followedOfferSlugs.Contains(offersDto[i].Slug);
                 offersDto[i].OfferPrimaryImage = await _fileService.GetOfferPrimaryImage(offers[i].Id);
             }
-
-            //foreach (var offerDto in offersDto)
-            //{
-            //    offerDto.IsUserFollowing = followedOfferSlugs.Contains(offerDto.Slug);
-            //    offerDto.OfferPrimaryImage = await _fileService.GetOfferPrimaryImage();
-            //}
 
             return await _offerUtilities.ChangeCategoryIdToCategoryName(offersDto);
         }
@@ -105,6 +94,12 @@ namespace ResellHub.Services.OfferServices
         public async Task<OfferDetalisDto> GetOfferBySlug(string offerSlug, Guid loggedUserId)
         {
             var offer = await _offerRepository.GetOfferBySlug(offerSlug);
+
+            if (offer == null)
+            { 
+                return null;
+            }
+
             var offerDto = _mapper.Map<OfferDetalisDto>(offer);
 
             var followedOfferSlugs = offer.FollowingOffers
@@ -125,17 +120,29 @@ namespace ResellHub.Services.OfferServices
             return offer.Id;
         }
 
-        public async Task<Offer> GetOfferByOfferImageSlug(string offerImageSlug)
+        public async Task<OfferDetalisDto> GetOfferByOfferImageSlug(string offerImageSlug)
         {
             var offerImage = await _offerRepository.GetOfferImageBySlug(offerImageSlug);
-            var offer = await _offerRepository.GetOfferById(offerImage.OfferId);
 
-            return offer;
+            if (offerImage == null)
+            {
+                return new OfferDetalisDto();
+            }
+
+            var offer = await _offerRepository.GetOfferById(offerImage.OfferId);
+            var offerDto = _mapper.Map<OfferDetalisDto>(offer);
+
+            return offerDto;
         }
 
         public async Task<Guid> GetOfferIdByOfferImageSlug(string offerImageSlug)
         {
             var offerImage = await _offerRepository.GetOfferImageBySlug(offerImageSlug);
+
+            if (offerImage == null)
+            {
+                return Guid.Empty;
+            }
 
             return offerImage.OfferId;
         }
@@ -211,7 +218,6 @@ namespace ResellHub.Services.OfferServices
             var updatedOffer = _mapper.Map<Offer>(offerDto);
 
             await _offerRepository.UpdateOffer(offerId, updatedOffer);
-            return "User updated successful";
             return "User updated successful";
         }
 
