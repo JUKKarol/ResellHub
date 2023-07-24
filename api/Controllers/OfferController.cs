@@ -82,7 +82,7 @@ namespace ResellHub.Controllers
         }
 
         //images
-        [HttpGet("image/{offerslug}"), Authorize(Roles = "User")]
+        [HttpGet("{offerslug}/image"), Authorize(Roles = "User")]
         public async Task<IActionResult> GetOfferImages(string offerslug)
         {
             var offer = await _offerService.GetOfferBySlug(offerslug, Guid.Empty);
@@ -110,7 +110,7 @@ namespace ResellHub.Controllers
             return Ok(offerImages);
         }
 
-        [HttpPost("image/{offerSlug}"), Authorize(Roles = "User")]
+        [HttpPost("{offerSlug}/image"), Authorize(Roles = "User")]
         public async Task<IActionResult> UploadOfferImage(IFormFile image, string offerSlug)
         {
             var userId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
