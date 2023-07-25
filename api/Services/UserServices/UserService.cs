@@ -119,15 +119,8 @@ namespace ResellHub.Services.UserServices
             }
         }
 
-        public async Task<string> CreateUser(UserRegistrationDto userDto)
+        public async Task<bool> CreateUser(UserRegistrationDto userDto)
         {
-            var validationResult = await _userValidator.ValidateAsync(userDto);
-            if (!validationResult.IsValid)
-            {
-                var validationErrors = validationResult.Errors.Select(error => error.ErrorMessage);
-                return string.Join(Environment.NewLine, validationErrors);
-            }
-
             var user = _mapper.Map<User>(userDto);
             user.EncodeName();
 
@@ -139,7 +132,7 @@ namespace ResellHub.Services.UserServices
 
             if (await _userRepository.GetUserBySlug(user.Slug) != null)
             {
-                return "Name is already in use";
+                return false;
             }
 
             byte[] passwordHash;
@@ -156,54 +149,27 @@ namespace ResellHub.Services.UserServices
 
             _emailService.SendVeryficationToken(userDto.Email, user.VeryficationToken);
 
-            return "User ceated successful, email with conformation token was sent";
+            return true;
         }
 
         public async Task<string> LoginUser(UserLoginDto userDto)
         {
-            var user = await _userRepository.GetUserByEmail(userDto.Email);
-
-            if (user == null)
-            {
-                return "User not found";
-            }
-
-            if (!_userUtilities.VerifyPasswordHash(userDto.Password, user.PasswordHash, user.PasswordSalt))
-            {
-                return "Password incorect";
-            }
-
-            if (user.VerifiedAt == null)
-            {
-                return "Not verified";
-            }
-
             string token = await _userUtilities.CreateToken(userDto);
 
             return token;
         }
 
-        public async Task<string> VerifyUser(string token)
+        public async Task VerifyUser(string token)
         {
             var user = await _userRepository.GetUserByVeryficationToken(token);
-            if (user == null)
-            {
-                return "Invalid token";
-            }
 
             user.VerifiedAt = DateTime.UtcNow;
             await _userRepository.UpdateUser(user.Id, user);
-
-            return "User verified";
         }
 
-        public async Task<string> ForgotPassword(string userEmail)
+        public async Task ForgotPassword(string userEmail)
         {
             var user = await _userRepository.GetUserByEmail(userEmail);
-            if (user == null)
-            {
-                return "User not found";
-            }
 
             user.PasswordResetToken = _userUtilities.CreateRandomToken();
             user.ResetTokenExpires = DateTime.UtcNow.AddDays(1);
@@ -211,17 +177,11 @@ namespace ResellHub.Services.UserServices
             _emailService.SendPasswordResetToken(userEmail, user.PasswordResetToken);
 
             await _userRepository.UpdateUser(user.Id, user);
-
-            return "Reset code was sent to your email";
         }
 
-        public async Task<string> ResetPassword(UserResetPasswordDto userDto)
+        public async Task ResetPassword(UserResetPasswordDto userDto)
         {
             var user = await _userRepository.GetUserByResetToken(userDto.Token);
-            if (user == null || user.ResetTokenExpires < DateTime.UtcNow)
-            {
-                return "Invalid Token.";
-            }
 
             _userUtilities.CreatePasswordHash(userDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -231,8 +191,6 @@ namespace ResellHub.Services.UserServices
             user.ResetTokenExpires = null;
 
             await _userRepository.UpdateUser(user.Id, user);
-
-            return "Password successfully reset.";
         }
 
         public async Task<string> UpdatePhoneNumber(Guid userId, string phoneNumber)

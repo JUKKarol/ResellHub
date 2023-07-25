@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ResellHub.DTOs.UserDTOs;
 using ResellHub.Entities;
@@ -15,11 +16,13 @@ namespace ResellHub.Controllers
     {
         private readonly IUserService _userService;
         private readonly IOfferService _offerService;
+        private readonly IValidator<UserRegistrationDto> _userValidator;
 
-        public UserController(IUserService userService, IOfferService offerService)
+        public UserController(IUserService userService, IOfferService offerService, IValidator<UserRegistrationDto> userValidator)
         {
             _userService = userService;
             _offerService = offerService;
+            _userValidator = userValidator;
         }
 
         [HttpGet, Authorize(Roles = "User")]
@@ -55,6 +58,13 @@ namespace ResellHub.Controllers
         [HttpPost, Authorize(Roles = "Moderator")]
         public async Task<IActionResult> CreateUser(UserRegistrationDto userDto)
         {
+            var validationResult = await _userValidator.ValidateAsync(userDto);
+            if (!validationResult.IsValid)
+            {
+                var validationErrors = validationResult.Errors.Select(error => error.ErrorMessage);
+                return BadRequest(string.Join(Environment.NewLine, validationErrors));
+            }
+
             if (!await _userService.CheckIsUserExistByEmail(userDto.Email))
             {
                 return BadRequest("email is already in use");
