@@ -1,9 +1,8 @@
 ﻿using ResellHub.Enums;
-using System.ComponentModel.DataAnnotations;
 
 namespace ResellHub.DTOs.OfferDTOs
 {
-    public class OfferCreateDto
+    public class OfferUpdateDto
     {
         public string Title { get; set; }
         public List<IFormFile> Images { get; set; }

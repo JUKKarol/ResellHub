@@ -22,9 +22,10 @@ namespace ResellHub.Services.OfferServices
         private readonly IOfferUtilities _offerUtilities;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
-        private readonly IValidator<OfferCreateDto> _offerValidator;
+        private readonly IValidator<OfferCreateDto> _offerCreteValidator;
+        private readonly IValidator<OfferUpdateDto> _offerUpdateValidator;
 
-        public OfferService(IUserRepository userRepository, IOfferRepository offerRepository, IFileService fileService, IOfferUtilities offerUtilities, IConfiguration configuration, IMapper mapper, IValidator<OfferCreateDto> offerValidator)
+        public OfferService(IUserRepository userRepository, IOfferRepository offerRepository, IFileService fileService, IOfferUtilities offerUtilities, IConfiguration configuration, IMapper mapper, IValidator<OfferCreateDto> offerCreteValidator, IValidator<OfferUpdateDto> offerUpdateValidator)
         {
             _userRepository = userRepository;
             _offerRepository = offerRepository;
@@ -32,7 +33,8 @@ namespace ResellHub.Services.OfferServices
             _offerUtilities = offerUtilities;
             _configuration = configuration;
             _mapper = mapper;
-            _offerValidator = offerValidator;
+            _offerCreteValidator = offerCreteValidator;
+            _offerUpdateValidator = offerUpdateValidator;
         }
 
         //Offer
@@ -178,7 +180,7 @@ namespace ResellHub.Services.OfferServices
 
         public async Task<string> AddOffer(OfferCreateDto offerDto, string userEmail)
         {
-            var validationResult = await _offerValidator.ValidateAsync(offerDto);
+            var validationResult = await _offerCreteValidator.ValidateAsync(offerDto);
             if (!validationResult.IsValid)
             {
                 var validationErrors = validationResult.Errors.Select(error => error.ErrorMessage);
@@ -203,12 +205,17 @@ namespace ResellHub.Services.OfferServices
 
             await _offerRepository.AddOffer(offer);
 
+            if (!await _fileService.AddOfferImages(offerDto.Images, offer.Id))
+            {
+                return "Error while creating offer";   
+            }
+
             return "Offer ceated successful";
         }
 
-        public async Task<string> UpdateOffer(Guid offerId, OfferCreateDto offerDto)
+        public async Task<string> UpdateOffer(Guid offerId, OfferUpdateDto offerDto)
         {
-            var validationResult = await _offerValidator.ValidateAsync(offerDto);
+            var validationResult = await _offerUpdateValidator.ValidateAsync(offerDto);
             if (!validationResult.IsValid)
             {
                 var validationErrors = validationResult.Errors.Select(error => error.ErrorMessage);

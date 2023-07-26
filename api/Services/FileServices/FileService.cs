@@ -245,6 +245,26 @@ namespace ResellHub.Services.FileService
             return true;
         }
 
+        public async Task<bool> AddOfferImages(List<IFormFile> images, Guid offerId)
+        {
+            bool result = true;
+
+            if (images.Count > 3)
+            {
+                return false;
+            }
+
+            foreach (var image in images)
+            {
+                if (!await AddOfferImage(image, offerId))
+                {
+                    result = false;
+                }
+            }
+
+            return result;
+        }
+
         //delete
         private async Task<bool> DeleteImage(string imageName, string imagesFolder)
         {

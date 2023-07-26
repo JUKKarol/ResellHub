@@ -17,6 +17,7 @@ using ResellHub.Services.UserServices;
 using ResellHub.Utilities.OfferUtilities;
 using ResellHub.Utilities.UserUtilities;
 using ResellHub.Utilities.Validation.Offer;
+using ResellHub.Utilities.Validation.OfferValidation;
 using ResellHub.Utilities.Validation.UserValidation;
 using Swashbuckle.AspNetCore.Filters;
 using System;
@@ -68,6 +69,7 @@ namespace ResellHub
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             builder.Services.AddScoped<IValidator<OfferCreateDto>, OfferCreateValidator>();
+            builder.Services.AddScoped<IValidator<OfferUpdateDto>, OfferUpdateValidator>();
             builder.Services.AddScoped<IValidator<UserRegistrationDto>, UserRegistrationValidation>();
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();

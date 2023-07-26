@@ -16,7 +16,10 @@ namespace ResellHub.Services.FileServices
         Task<List<OfferImageDisplayDTO>> GetOfferImagesByOfferSlug(string offerSlug);
         bool CheckIsOfferImageSizeCorrect(IFormFile image);
         Task<bool> CheckIsOfferHaveSpaceForImages(Guid offerId);
+        //create
         Task<bool> AddOfferImage(IFormFile image, Guid offerId);
+        Task<bool> AddOfferImages(List<IFormFile> images, Guid offerId);
+        //delete
         Task<bool> DeleteOfferImage(string offerImageSlug);
     }
 }
