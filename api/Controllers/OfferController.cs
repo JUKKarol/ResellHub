@@ -50,7 +50,7 @@ namespace ResellHub.Controllers
         }
 
         [HttpPut("{offerId}"), Authorize(Roles = "User")]
-        public async Task<IActionResult> UpdateOffer(Guid offerId, OfferCreateDto offerDto)
+        public async Task<IActionResult> UpdateOffer(Guid offerId, OfferUpdateDto offerDto)
         {
             if (!await _offerService.CheckIsOfferExistById(offerId))
             {
