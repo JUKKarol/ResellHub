@@ -212,6 +212,8 @@ namespace ResellHub.Services.OfferServices
             }
 
             await _offerRepository.AddOffer(offer);
+
+            return "Offer created successfull";
         }
 
         public async Task<string> UpdateOffer(Guid offerId, OfferUpdateDto offerDto)
