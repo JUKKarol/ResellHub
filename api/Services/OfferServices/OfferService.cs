@@ -203,14 +203,15 @@ namespace ResellHub.Services.OfferServices
                 return "Name is already in use";
             }
 
-            await _offerRepository.AddOffer(offer);
-
-            if (!await _fileService.AddOfferImages(offerDto.Images, offer.Id))
+            if (offer.OfferImages != null)
             {
-                return "Error while creating offer";   
+                if (!await _fileService.AddOfferImages(offerDto.Images, offer.Id))
+                {
+                    return "Error while creating offer";
+                }
             }
 
-            return "Offer ceated successful";
+            await _offerRepository.AddOffer(offer);
         }
 
         public async Task<string> UpdateOffer(Guid offerId, OfferUpdateDto offerDto)
