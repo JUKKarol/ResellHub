@@ -12,7 +12,7 @@ namespace ResellHub.Services.OfferServices
         Task<bool> CheckIsOfferExistById(Guid offerId);
         Task<bool> CheckIsOfferOwnerCorrectByEmail(Guid offerId, string userEmail);
         Task<string> AddOffer(OfferCreateDto offerDto, string userEmail);
-        Task UpdateOffer(Guid offerId, OfferCreateDto offerDto);
-        Task DeleteOffer(Guid offerId);
+        Task<string> UpdateOffer(Guid offerId, OfferCreateDto offerDto);
+        Task<string> DeleteOffer(Guid offerId);
     }
 }

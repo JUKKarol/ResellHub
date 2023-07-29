@@ -46,7 +46,7 @@ namespace ResellHub.Services.UserServices
         Task<List<FollowOfferDto>> GetUserFollowingOffers(Guid userId, int page);
         Task<FollowOfferDto> GetFollowingOfferByUserAndOfferId(Guid userId, Guid offerId);
         Task<bool> CheckIsFollowingExistById(Guid followingOfferId);
-        Task<string> AddOfferToFollowing(Guid userId, Guid offerId);
-        Task<string> RemoveOfferFromFollowing(Guid followingOfferId);
+        Task AddOfferToFollowing(Guid userId, Guid offerId);
+        Task RemoveOfferFromFollowing(Guid followingOfferId);
     }
 }
