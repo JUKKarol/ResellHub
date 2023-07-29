@@ -111,32 +111,40 @@ namespace ResellHub.Controllers
         }
 
         [HttpPost("{offerSlug}/image"), Authorize(Roles = "User")]
-        public async Task<IActionResult> UploadOfferImage(IFormFile image, string offerSlug)
+        public async Task<IActionResult> UploadOfferImages(List<IFormFile> images, string offerSlug)
         {
             var userId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
             var offer = await _offerService.GetOfferBySlug(offerSlug, Guid.Empty);
+
+            if (offer.UserId != userId)
+            {
+                return BadRequest("permission denied");
+            }
+
+            if (images == null)
+            {
+                return BadRequest("images can't be empty");
+            }
+
+            if ((images.Count + offer.OfferImages.Count) > 3)
+            {
+                return BadRequest("too much images in request");
+            }
 
             if (offer.OfferImages.Count > 3)
             { 
                 return BadRequest("offer images are full");
             }
-
-            if (offer.UserId != userId)
-            { 
-                return BadRequest("permission denied");
-            }
-
-            if (image == null)
+            
+            foreach (var image in images)
             {
-                return BadRequest("image can't be empty");
+                if (!_fileService.CheckIsOfferImageSizeCorrect(image))
+                {
+                    return BadRequest("image is to large");
+                }
             }
 
-            if (!_fileService.CheckIsOfferImageSizeCorrect(image))
-            {
-                return BadRequest("image is to large");
-            }
-
-            if (!await _fileService.AddOfferImage(image, await _offerService.GetOfferIdByOfferSlug(offerSlug)))
+            if (!await _fileService.AddOfferImages(images, await _offerService.GetOfferIdByOfferSlug(offerSlug)))
             {
                 return BadRequest("error while uploading file");
             }

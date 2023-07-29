@@ -5,7 +5,6 @@ namespace ResellHub.DTOs.OfferDTOs
     public class OfferUpdateDto
     {
         public string Title { get; set; }
-        public List<IFormFile> Images { get; set; }
         public string Brand { get; set; }
         public int CategoryId { get; set; }
         public string Description { get; set; }

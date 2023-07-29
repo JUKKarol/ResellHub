@@ -203,14 +203,6 @@ namespace ResellHub.Services.OfferServices
                 return "Name is already in use";
             }
 
-            if (offer.OfferImages != null)
-            {
-                if (!await _fileService.AddOfferImages(offerDto.Images, offer.Id))
-                {
-                    return "Error while creating offer";
-                }
-            }
-
             await _offerRepository.AddOffer(offer);
 
             return "Offer created successfull";
