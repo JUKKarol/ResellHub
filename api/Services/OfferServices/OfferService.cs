@@ -139,19 +139,11 @@ namespace ResellHub.Services.OfferServices
             }
         }
 
-        public async Task<string> AddOffer(OfferCreateDto offerDto, string userEmail)
+        public async Task<bool> AddOffer(OfferCreateDto offerDto, Guid userId)
         {
-            var validationResult = await _offerValidator.ValidateAsync(offerDto);
-            if (!validationResult.IsValid)
-            {
-                var validationErrors = validationResult.Errors.Select(error => error.ErrorMessage);
-                return string.Join(Environment.NewLine, validationErrors);
-            }
-
             var offer = _mapper.Map<Offer>(offerDto);
             offer.EncodeName();
-            var user = await _userRepository.GetUserByEmail(userEmail);
-            offer.UserId = user.Id;
+            offer.UserId = userId;
 
             if (await _offerRepository.GetOfferBySlug(offer.Slug) != null)
             {
@@ -161,12 +153,12 @@ namespace ResellHub.Services.OfferServices
 
             if (await _offerRepository.GetOfferBySlug(offer.Slug) != null)
             {
-                return "Name is already in use";
+                return false;
             }
 
             await _offerRepository.AddOffer(offer);
 
-            return "Offer ceated successful";
+            return true;
         }
 
         public async Task<string> UpdateOffer(Guid offerId, OfferCreateDto offerDto)
