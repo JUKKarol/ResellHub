@@ -98,6 +98,17 @@ namespace ResellHub.Services.OfferServices
             return await _offerUtilities.ChangeCategoryIdToCategoryName(offerDto);
         }
 
+        public async Task<Guid> GetOfferIdBySlug(string offerSlug)
+        {
+            var offer = await _offerRepository.GetOfferBySlug(offerSlug);
+
+            if (offer == null)
+            { 
+                return Guid.Empty;
+            }
+
+            return offer.Id;
+        }
 
         public async Task<bool> CheckIsOfferExistById(Guid offerId)
         {

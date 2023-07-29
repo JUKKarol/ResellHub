@@ -378,18 +378,15 @@ namespace ResellHub.Services.UserServices
             }
         }
 
-        public async Task<string> AddOfferToFollowing(Guid userId, Guid offerId)
+        public async Task AddOfferToFollowing(Guid userId, Guid offerId)
         {
             var followingOffer = new FollowOffer { UserId = userId, OfferId = offerId };
             await _userRepository.AddFollowingOffer(followingOffer);
-
-            return "Offer is following from now";
         }
 
-        public async Task<string> RemoveOfferFromFollowing(Guid followingOfferId)
+        public async Task RemoveOfferFromFollowing(Guid followingOfferId)
         {
             await _userRepository.DeleteFollowingOffer(followingOfferId);
-            return "Offer is not following anymore";
         }
     }
 }
