@@ -14,6 +14,7 @@ namespace ResellHub.Services.FileService
         private readonly string imagesFolderPath = $"{Directory.GetParent(Environment.CurrentDirectory).FullName}\\Images";
         private readonly string avatarsFolderName = "Avatars";
         private readonly string offerImagesFolderName = "OfferImages";
+        public int MaxImagesForOffer { get; } = 3;
 
         private readonly IUserRepository _userRepository;
         private readonly IOfferRepository _offerRepository;
@@ -165,7 +166,7 @@ namespace ResellHub.Services.FileService
             var offerImages = await _offerRepository.GetAllOfferImagesByOfferId(offerId);
             int offerImagesCount = offerImages.Count;
 
-            if (offerImagesCount > 3)
+            if (offerImagesCount > MaxImagesForOffer)
             {
                 return false;
             }
@@ -249,7 +250,7 @@ namespace ResellHub.Services.FileService
         {
             bool result = true;
 
-            if (images.Count > 3)
+            if (images.Count > MaxImagesForOffer)
             {
                 return false;
             }

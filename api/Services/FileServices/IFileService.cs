@@ -4,6 +4,8 @@ namespace ResellHub.Services.FileServices
 {
     public interface IFileService
     {
+        //variables
+        int MaxImagesForOffer { get; }
         //avatars
         Task<byte[]> GetAvatar(Guid userId);
         bool CheckIsAvatarSizeCorrect(IFormFile image);

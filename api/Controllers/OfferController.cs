@@ -126,12 +126,12 @@ namespace ResellHub.Controllers
                 return BadRequest("images can't be empty");
             }
 
-            if ((images.Count + offer.OfferImages.Count) > 3)
+            if ((images.Count + offer.OfferImages.Count) > _fileService.MaxImagesForOffer)
             {
                 return BadRequest("too much images in request");
             }
 
-            if (offer.OfferImages.Count > 3)
+            if (offer.OfferImages.Count > _fileService.MaxImagesForOffer)
             { 
                 return BadRequest("offer images are full");
             }
