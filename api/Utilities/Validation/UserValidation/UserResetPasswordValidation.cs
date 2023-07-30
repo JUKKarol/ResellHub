@@ -7,7 +7,7 @@ namespace ResellHub.Utilities.Validation.UserValidation
     {
         public UserResetPasswordValidation()
         {
-            RuleFor(x => x.Token)
+            RuleFor(u => u.Token)
                 .NotEmpty().WithMessage("Token is required.");
 
             RuleFor(u => u.Password)

@@ -193,45 +193,31 @@ namespace ResellHub.Services.UserServices
             await _userRepository.UpdateUser(user.Id, user);
         }
 
-        public async Task<string> UpdatePhoneNumber(Guid userId, string phoneNumber)
+        public async Task UpdateUser(Guid userId, UserUpdateDto userDto)
         {
             var user = await _userRepository.GetUserById(userId);
 
-            if (user == null)
+            if (!string.IsNullOrEmpty(userDto.PhoneNumber))
             {
-                return "User didn't exist";
+                user.PhoneNumber = userDto.PhoneNumber;
             }
 
-            user.PhoneNumber = phoneNumber;
+            if (!string.IsNullOrEmpty(userDto.City))
+            {
+                user.City = userDto.City;
+            }
+
+            if (!string.IsNullOrEmpty(userDto.Email))
+            {
+                user.Email = userDto.Email;
+            }
 
             await _userRepository.UpdateUser(userId, user);
-            return "User updated successful";
         }
 
-        public async Task<string> UpdateCity(Guid userId, string city)
+        public async Task DeleteUser(Guid userId)
         {
-            var user = await _userRepository.GetUserById(userId);
-
-            if (user == null)
-            {
-                return "User didn't exist";
-            }
-
-            user.City = city;
-
-            await _userRepository.UpdateUser(userId, user);
-            return "User updated successful";
-        }
-
-        public async Task<string> DeleteUser(Guid userId)
-        {
-            if (await _userRepository.GetUserById(userId) == null)
-            {
-                return "User didn't exist";
-            }
-
             await _userRepository.DeleteUser(userId);
-            return "User deleted successful";
         }
 
         //Chat

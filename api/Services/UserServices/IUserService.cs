@@ -24,9 +24,8 @@ namespace ResellHub.Services.UserServices
         Task VerifyUser(string token);
         Task ForgotPassword(string userEmail);
         Task ResetPassword(UserResetPasswordDto userDto);
-        Task<string> UpdatePhoneNumber(Guid userId, string phoneNumber);
-        Task<string> UpdateCity(Guid userId, string city);
-        Task<string> DeleteUser(Guid userId);
+        Task UpdateUser(Guid userId, UserUpdateDto userDto);
+        Task DeleteUser(Guid userId);
         //Chat
         Task<List<ChatDto>> GetUserChats(Guid userId, int page);
         Task<bool> CheckIsChatExistsById(Guid chatId);

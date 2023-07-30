@@ -68,6 +68,7 @@ namespace ResellHub
             builder.Services.AddScoped<IValidator<OfferCreateDto>, OfferCreateValidator>();
             builder.Services.AddScoped<IValidator<UserRegistrationDto>, UserRegistrationValidation>();
             builder.Services.AddScoped<IValidator<UserResetPasswordDto>, UserResetPasswordValidation>();
+            builder.Services.AddScoped<IValidator<UserUpdateDto>, UserUpdateValidation>();
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IOfferRepository, OfferRepository>();

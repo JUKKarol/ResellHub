@@ -16,13 +16,15 @@ namespace ResellHub.Controllers
     {
         private readonly IUserService _userService;
         private readonly IOfferService _offerService;
-        private readonly IValidator<UserRegistrationDto> _userValidator;
+        private readonly IValidator<UserRegistrationDto> _userRegistrationValidator;
+        private readonly IValidator<UserUpdateDto> _userUpdateValidator;
 
-        public UserController(IUserService userService, IOfferService offerService, IValidator<UserRegistrationDto> userValidator)
+        public UserController(IUserService userService, IOfferService offerService, IValidator<UserRegistrationDto> userRegistrationValidator, IValidator<UserUpdateDto> userUpdateValidator)
         {
             _userService = userService;
             _offerService = offerService;
-            _userValidator = userValidator;
+            _userRegistrationValidator = userRegistrationValidator;
+            _userUpdateValidator = userUpdateValidator;
         }
 
         [HttpGet, Authorize(Roles = "User")]
@@ -58,7 +60,7 @@ namespace ResellHub.Controllers
         [HttpPost, Authorize(Roles = "Moderator")]
         public async Task<IActionResult> CreateUser(UserRegistrationDto userDto)
         {
-            var validationResult = await _userValidator.ValidateAsync(userDto);
+            var validationResult = await _userRegistrationValidator.ValidateAsync(userDto);
             if (!validationResult.IsValid)
             {
                 var validationErrors = validationResult.Errors.Select(error => error.ErrorMessage);
@@ -73,30 +75,24 @@ namespace ResellHub.Controllers
             return Ok(_userService.CreateUser(userDto));
         }
 
-        [HttpPut("{userId}/{phonenumber}"), Authorize(Roles = "User")]
-        public async Task<IActionResult> UpdateUserPhoneNumber(string newPhoneNumber)
+        [HttpPut(), Authorize(Roles = "User")]
+        public async Task<IActionResult> UpdateUser(UserUpdateDto userDto)
         {
-            var userId = await _userService.GetUserIdByEmail(HttpContext.User.FindFirstValue(ClaimTypes.Email));
-
-            if (!await _userService.CheckIsUserExistById(userId))
+            if (string.IsNullOrEmpty(userDto.City) && string.IsNullOrEmpty(userDto.Email) && string.IsNullOrEmpty(userDto.PhoneNumber))
             {
-                return BadRequest("user doesn't exist");
+                return BadRequest("no data to update");
             }
 
-            return Ok(await _userService.UpdatePhoneNumber(userId, newPhoneNumber));
-        }
-
-        [HttpPut("{userId}/{city}"), Authorize(Roles = "User")]
-        public async Task<IActionResult> UpdateUserCity(string newCity)
-        {
-            var userId = await _userService.GetUserIdByEmail(HttpContext.User.FindFirstValue(ClaimTypes.Email));
-
-            if (!await _userService.CheckIsUserExistById(userId))
+            var validationResult = await _userUpdateValidator.ValidateAsync(userDto);
+            if (!validationResult.IsValid)
             {
-                return BadRequest("user doesn't exist");
+                var validationErrors = validationResult.Errors.Select(error => error.ErrorMessage);
+                return BadRequest(string.Join(Environment.NewLine, validationErrors));
             }
 
-            return Ok(await _userService.UpdateCity(userId, newCity));
+            await _userService.UpdateUser(Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)), userDto);
+
+            return Ok("profile updated successfully");
         }
 
         [HttpDelete("{userId}"), Authorize(Roles = "Administrator")]
@@ -107,13 +103,17 @@ namespace ResellHub.Controllers
                 return BadRequest("user doesn't exist");
             }
 
-            return Ok(await _userService.DeleteUser(userId));
+            await _userService.DeleteUser(userId);
+
+            return Ok("account deleted");
         }
 
         [HttpDelete, Authorize(Roles = "User")]
         public async Task<IActionResult> DeleteAccount()
         {
-            return Ok(await _userService.DeleteUser(await _userService.GetUserIdByEmail(HttpContext.User.FindFirstValue(ClaimTypes.Email))));
+            await _userService.DeleteUser(Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)));
+
+            return Ok("account deleted");
         }
     }
 }
