@@ -28,7 +28,7 @@ namespace ResellHub.Controllers
         [HttpPost("{offerSlug}"), Authorize(Roles = "User")]
         public async Task<IActionResult> AddOfferToFollowing(string offerSlug)
         {
-            var offerId = await _offerService.GetOfferIdBySlug(offerSlug);
+            var offerId = await _offerService.GetOfferIdByOfferSlug(offerSlug);
 
             if (offerId == Guid.Empty)
             {
@@ -43,7 +43,7 @@ namespace ResellHub.Controllers
         [HttpDelete("{offerslug}"), Authorize(Roles = "User")]
         public async Task<IActionResult> RemoveOfferFromFollowing(string offerSlug)
         {
-            var offerId = await _offerService.GetOfferIdBySlug(offerSlug);
+            var offerId = await _offerService.GetOfferIdByOfferSlug(offerSlug);
 
             if (!await _offerService.CheckIsOfferExistById(offerId))
             {

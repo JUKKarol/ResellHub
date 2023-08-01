@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using ResellHub.DTOs.OfferDTOs;
 using ResellHub.DTOs.UserDTOs;
 using ResellHub.Entities;
+using ResellHub.Services.FileServices;
 using ResellHub.Services.OfferServices;
 using ResellHub.Services.UserServices;
 using System.Security.Claims;
@@ -18,12 +19,16 @@ namespace ResellHub.Controllers
         private readonly IOfferService _offerService;
         private readonly IUserService _userService;
         private readonly IValidator<OfferCreateDto> _offerCreateValidator;
+        private readonly IValidator<OfferUpdateDto> _offerUpdateValidator;
+        private readonly IFileService _fileService;
 
-        public OfferController(IOfferService offerService, IUserService userService, IValidator<OfferCreateDto> offerCreateValidator)
+        public OfferController(IOfferService offerService, IUserService userService, IValidator<OfferCreateDto> offerCreateValidator, IValidator<OfferUpdateDto> offerUpdateValidator, IFileService fileService)
         {
             _offerService = offerService;
             _userService = userService;
             _offerCreateValidator = offerCreateValidator;
+            _offerUpdateValidator = offerUpdateValidator;
+            _fileService = fileService;
         }
 
         [HttpGet, Authorize(Roles = "User"), AllowAnonymous]
@@ -67,9 +72,9 @@ namespace ResellHub.Controllers
         }
 
         [HttpPut("{offerId}"), Authorize(Roles = "User")]
-        public async Task<IActionResult> UpdateOffer(Guid offerId, OfferCreateDto offerDto)
+        public async Task<IActionResult> UpdateOffer(Guid offerId, OfferUpdateDto offerDto)
         {
-            var validationResult = await _offerCreateValidator.ValidateAsync(offerDto);
+            var validationResult = await _offerUpdateValidator.ValidateAsync(offerDto);
             if (!validationResult.IsValid)
             {
                 var validationErrors = validationResult.Errors.Select(error => error.ErrorMessage);
@@ -103,6 +108,122 @@ namespace ResellHub.Controllers
             }
 
             return Ok(await _offerService.DeleteOffer(offerId));
+        }
+
+        //images
+        [HttpGet("{offerslug}/image"), Authorize(Roles = "User")]
+        public async Task<IActionResult> GetOfferImages(string offerslug)
+        {
+            var offer = await _offerService.GetOfferBySlug(offerslug, Guid.Empty);
+
+            if (offer == null)
+            {
+                return NotFound("offer didn't exist");
+            }
+
+            if (!offer.OfferImages.Any())
+            {
+                return NotFound("offer didn't have uploaded images yet");
+            }
+
+            var offerImages = await _fileService.GetOfferImagesByOfferSlug(offerslug);
+
+            foreach (var offerImage in offerImages)
+            {
+                if (offerImage.ImageBytes.Length < 1)
+                {
+                    return BadRequest("error while uploading file");
+                }
+            }
+
+            return Ok(offerImages);
+        }
+
+        [HttpPost("{offerSlug}/image"), Authorize(Roles = "User")]
+        public async Task<IActionResult> UploadOfferImages(List<IFormFile> images, string offerSlug)
+        {
+            var userId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var offer = await _offerService.GetOfferBySlug(offerSlug, Guid.Empty);
+
+            if (offer.UserId != userId)
+            {
+                return BadRequest("permission denied");
+            }
+
+            if (images == null)
+            {
+                return BadRequest("images can't be empty");
+            }
+
+            if ((images.Count + offer.OfferImages.Count) > _fileService.MaxImagesForOffer)
+            {
+                return BadRequest("too much images in request");
+            }
+
+            if (offer.OfferImages.Count > _fileService.MaxImagesForOffer)
+            { 
+                return BadRequest("offer images are full");
+            }
+            
+            foreach (var image in images)
+            {
+                if (!_fileService.CheckIsOfferImageSizeCorrect(image))
+                {
+                    return BadRequest("image is to large");
+                }
+            }
+
+            if (!await _fileService.AddOfferImages(images, await _offerService.GetOfferIdByOfferSlug(offerSlug)))
+            {
+                return BadRequest("error while uploading file");
+            }
+
+            return Ok("image uploaded");
+        }
+
+        [HttpPut("image/primary/{imageSlug}"), Authorize(Roles = "User")]
+        public async Task<IActionResult> SetOfferImageAsPrimary(string imageSlug)
+        {
+            var userId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var offer = await _offerService.GetOfferByOfferImageSlug(imageSlug);
+
+            if (offer == null)
+            {
+                return BadRequest("image didn't exist");
+            }
+
+            if (offer.UserId != userId)
+            {
+                return BadRequest("permission denied");
+            }
+
+            await _offerService.SetOfferImageAsPrimaryBySlug(imageSlug);
+
+            return Ok("image is set as primary");
+        }
+
+        [HttpDelete("image/{imageSlug}"), Authorize(Roles = "User")]
+        public async Task<IActionResult> DeleteOfferImage(string imageSlug)
+        {
+            var userId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var offer = await _offerService.GetOfferByOfferImageSlug(imageSlug);
+
+            if (offer.UserId == Guid.Empty)
+            {
+                return NotFound("image didn't exist");
+            }
+
+            if (offer.UserId != userId)
+            {
+                return NotFound("permission denied");
+            }
+
+            if (!await _fileService.DeleteOfferImage(imageSlug))
+            {
+                return BadRequest("error while deleting file");
+            }
+
+            return Ok("image deleted");
         }
     }
 }

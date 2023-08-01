@@ -12,6 +12,7 @@ namespace ResellHub.Utilities.Mapings
             CreateMap<UserRegistrationDto, User>().ReverseMap();
             CreateMap<UserLoginDto, User>().ReverseMap();
             CreateMap<UserPublicDto, User>().ReverseMap();
+            CreateMap<UserDetalisDto, User>().ReverseMap();
         }
     }
 }

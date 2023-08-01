@@ -21,6 +21,7 @@ namespace ResellHub.Entities
         public virtual User User { get; set; }
         public virtual Category Category { get; set; }
         public virtual List<FollowOffer> FollowingOffers { get; set; }
+        public virtual List<OfferImage> OfferImages { get; set; }
 
         public void EncodeName() => Slug = $"{Regex.Replace(Title, @"[^a-zA-Z0-9]", "").ToLower()}-{Id.ToString().Substring(0, 4)}";
     }

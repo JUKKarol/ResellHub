@@ -57,6 +57,12 @@ namespace ResellHub.Data.Repositories.UserRepository
 
             return existUser;
         }
+        public async Task<User> GetUserBySlugIncludeAvatar(string userSlug)
+        {
+            var existUser = await _dbContext.Users.Include(u => u.AvatarImage).FirstOrDefaultAsync(u => u.Slug == userSlug);
+
+            return existUser;
+        }
 
         public async Task<User> AddUser(User user)
         {
@@ -244,6 +250,39 @@ namespace ResellHub.Data.Repositories.UserRepository
             await _dbContext.SaveChangesAsync();
 
             return existingFollowOffer;
+        }
+
+        //AvatarImage
+        public async Task<AvatarImage> AddAvatarImage(AvatarImage avatarImage)
+        {
+            await _dbContext.AvatarImages.AddAsync(avatarImage);
+            await _dbContext.SaveChangesAsync();
+
+            return avatarImage;
+        }
+
+        public async Task<AvatarImage> GetAvatarImageByUserId(Guid userId)
+        {
+            var avatarImage = await _dbContext.AvatarImages.FirstOrDefaultAsync(ai => ai.UserId == userId);
+
+            return avatarImage;
+        }
+
+        public async Task<AvatarImage> GetAvatarImageBySlug(string slug)
+        {
+            var avatarImage = await _dbContext.AvatarImages.FirstOrDefaultAsync(ai => ai.ImageSlug == slug);
+
+            return avatarImage;
+        }
+
+        public async Task<AvatarImage> DeleteAvatarImage(Guid userId)
+        {
+            var existingAvatarImage = await _dbContext.AvatarImages.FirstOrDefaultAsync(ai => ai.UserId == userId);
+
+            _dbContext.AvatarImages.Remove(existingAvatarImage);
+            await _dbContext.SaveChangesAsync();
+
+            return existingAvatarImage;
         }
     }
 }

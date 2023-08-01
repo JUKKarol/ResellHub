@@ -11,6 +11,7 @@ using ResellHub.DTOs.UserDTOs;
 using ResellHub.Entities;
 using ResellHub.Enums;
 using ResellHub.Services.EmailService;
+using ResellHub.Services.FileServices;
 using ResellHub.Utilities.UserUtilities;
 using System;
 using System.Collections.Generic;
@@ -22,15 +23,17 @@ namespace ResellHub.Services.UserServices
         private readonly IUserRepository _userRepository;
         private readonly IUserUtilities _userUtilities;
         private readonly IEmailService _emailService;
+        private readonly IFileService _fileService;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
         private readonly IValidator<UserRegistrationDto> _userValidator;
 
-        public UserService(IUserRepository userRepository, IUserUtilities userUtilities, IEmailService emailService, IConfiguration configuration, IMapper mapper, IValidator<UserRegistrationDto> userValidator)
+        public UserService(IUserRepository userRepository, IUserUtilities userUtilities, IEmailService emailService, IFileService fileService, IConfiguration configuration, IMapper mapper, IValidator<UserRegistrationDto> userValidator)
         {
             _userRepository = userRepository;
             _userUtilities = userUtilities;
             _emailService = emailService;
+            _fileService = fileService;
             _configuration = configuration;
             _mapper = mapper;
             _userValidator = userValidator;
@@ -53,10 +56,12 @@ namespace ResellHub.Services.UserServices
             return userDto;
         }
 
-        public async Task<UserPublicDto> GetUserBySlug(string userSlug)
+        public async Task<UserDetalisDto> GetUserBySlugIncludeAvatar(string userSlug)
         {
-            var user = await _userRepository.GetUserBySlug(userSlug);
-            var userDto = _mapper.Map<UserPublicDto>(user);
+            var user = await _userRepository.GetUserBySlugIncludeAvatar(userSlug);
+            var userDto = _mapper.Map<UserDetalisDto>(user);
+
+            userDto.Avatar = await _fileService.GetAvatar(user.AvatarImage.UserId);
 
             return userDto;
         }
@@ -373,6 +378,26 @@ namespace ResellHub.Services.UserServices
         public async Task RemoveOfferFromFollowing(Guid followingOfferId)
         {
             await _userRepository.DeleteFollowingOffer(followingOfferId);
+        }
+
+        //AvatarImage
+        public async Task<bool> CheckIsAvatarImageExistByUserId(Guid userId)
+        {
+            var avatarImage = await _userRepository.GetAvatarImageByUserId(userId);
+
+            if (avatarImage != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public async Task<AvatarImage> GetAvatarByUserId(Guid userId)
+        {
+            return await _userRepository.GetAvatarImageByUserId(userId);
         }
     }
 }
