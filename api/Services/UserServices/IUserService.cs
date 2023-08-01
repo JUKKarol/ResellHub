@@ -13,7 +13,7 @@ namespace ResellHub.Services.UserServices
         //User
         Task<List<UserPublicDto>> GetUsers(int page);
         Task<UserPublicDto> GetUserById(Guid userId);
-        Task<UserPublicDto> GetUserBySlug(string userSlug);
+        Task<UserDetalisDto> GetUserBySlugIncludeAvatar(string userSlug);
         Task<string> GetUserEmailById(Guid userId);
         Task<bool> CheckIsUserExistById(Guid userId);
         Task<bool> CheckIsUserExistBySlug(string userSlug);
@@ -48,5 +48,8 @@ namespace ResellHub.Services.UserServices
         Task<bool> CheckIsFollowingExistById(Guid followingOfferId);
         Task<string> AddOfferToFollowing(Guid userId, Guid offerId);
         Task<string> RemoveOfferFromFollowing(Guid followingOfferId);
+        //Avatar
+        Task<bool> CheckIsAvatarImageExistByUserId(Guid userId);
+        Task<AvatarImage> GetAvatarByUserId(Guid userId);
     }
 }

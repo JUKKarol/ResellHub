@@ -4,8 +4,10 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using ResellHub.Data.Repositories.OfferRepository;
 using ResellHub.Data.Repositories.UserRepository;
 using ResellHub.DTOs.OfferDTOs;
+using ResellHub.DTOs.OfferImageDTOs;
 using ResellHub.DTOs.UserDTOs;
 using ResellHub.Entities;
+using ResellHub.Services.FileServices;
 using ResellHub.Utilities.OfferUtilities;
 using ResellHub.Utilities.UserUtilities;
 using System;
@@ -16,21 +18,26 @@ namespace ResellHub.Services.OfferServices
     {
         private readonly IUserRepository _userRepository;
         private readonly IOfferRepository _offerRepository;
+        private readonly IFileService _fileService;
         private readonly IOfferUtilities _offerUtilities;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
-        private readonly IValidator<OfferCreateDto> _offerValidator;
+        private readonly IValidator<OfferCreateDto> _offerCreteValidator;
+        private readonly IValidator<OfferUpdateDto> _offerUpdateValidator;
 
-        public OfferService(IUserRepository userRepository, IOfferRepository offerRepository, IOfferUtilities offerUtilities, IConfiguration configuration, IMapper mapper, IValidator<OfferCreateDto> offerValidator)
+        public OfferService(IUserRepository userRepository, IOfferRepository offerRepository, IFileService fileService, IOfferUtilities offerUtilities, IConfiguration configuration, IMapper mapper, IValidator<OfferCreateDto> offerCreteValidator, IValidator<OfferUpdateDto> offerUpdateValidator)
         {
             _userRepository = userRepository;
             _offerRepository = offerRepository;
+            _fileService = fileService;
             _offerUtilities = offerUtilities;
             _configuration = configuration;
             _mapper = mapper;
-            _offerValidator = offerValidator;
+            _offerCreteValidator = offerCreteValidator;
+            _offerUpdateValidator = offerUpdateValidator;
         }
 
+        //Offer
         public async Task<List<OfferPublicDto>> GetOffers(int page, Guid loggedUserId)
         {
             var offers = await _offerRepository.GetOffers(page, 40);
@@ -41,9 +48,10 @@ namespace ResellHub.Services.OfferServices
                 .Select(offer => offer.Slug)
                 .ToList();
 
-            foreach (var offerDto in offersDto)
+            for (int i = 0; i < offersDto.Count; i++)
             {
-                offerDto.IsUserFollowing = followedOfferSlugs.Contains(offerDto.Slug);
+                offersDto[i].IsUserFollowing = followedOfferSlugs.Contains(offersDto[i].Slug);
+                offersDto[i].OfferPrimaryImage = await _fileService.GetOfferPrimaryImage(offers[i].Id);
             }
 
             return await _offerUtilities.ChangeCategoryIdToCategoryName(offersDto);
@@ -59,9 +67,10 @@ namespace ResellHub.Services.OfferServices
                 .Select(offer => offer.Slug)
                 .ToList();
 
-            foreach (var offerDto in offersDto)
+            for (int i = 0; i < offersDto.Count; i++)
             {
-                offerDto.IsUserFollowing = followedOfferSlugs.Contains(offerDto.Slug);
+                offersDto[i].IsUserFollowing = followedOfferSlugs.Contains(offersDto[i].Slug);
+                offersDto[i].OfferPrimaryImage = await _fileService.GetOfferPrimaryImage(offers[i].Id);
             }
 
             return await _offerUtilities.ChangeCategoryIdToCategoryName(offersDto);
@@ -78,14 +87,21 @@ namespace ResellHub.Services.OfferServices
                 .ToList();
 
             offerDto.IsUserFollowing = followedOfferSlugs.Contains(offerDto.Slug);
+            offerDto.OfferImages = await _fileService.GetOfferImagesByOfferId(offerId);
 
             return await _offerUtilities.ChangeCategoryIdToCategoryName(offerDto);
         }
 
 
-        public async Task<OfferDetalisDto> GetOfferBySlug(string slug, Guid loggedUserId)
+        public async Task<OfferDetalisDto> GetOfferBySlug(string offerSlug, Guid loggedUserId)
         {
-            var offer = await _offerRepository.GetOfferBySlug(slug);
+            var offer = await _offerRepository.GetOfferBySlug(offerSlug);
+
+            if (offer == null)
+            { 
+                return null;
+            }
+
             var offerDto = _mapper.Map<OfferDetalisDto>(offer);
 
             var followedOfferSlugs = offer.FollowingOffers
@@ -94,10 +110,44 @@ namespace ResellHub.Services.OfferServices
                 .ToList();
 
             offerDto.IsUserFollowing = followedOfferSlugs.Contains(offerDto.Slug);
+            offerDto.OfferImages = await _fileService.GetOfferImagesByOfferSlug(offerSlug);
 
             return await _offerUtilities.ChangeCategoryIdToCategoryName(offerDto);
         }
 
+        public async Task<Guid> GetOfferIdByOfferSlug(string offerSlug)
+        {
+            var offer = await _offerRepository.GetOfferBySlug(offerSlug);
+
+            return offer.Id;
+        }
+
+        public async Task<OfferDetalisDto> GetOfferByOfferImageSlug(string offerImageSlug)
+        {
+            var offerImage = await _offerRepository.GetOfferImageBySlug(offerImageSlug);
+
+            if (offerImage == null)
+            {
+                return new OfferDetalisDto();
+            }
+
+            var offer = await _offerRepository.GetOfferById(offerImage.OfferId);
+            var offerDto = _mapper.Map<OfferDetalisDto>(offer);
+
+            return offerDto;
+        }
+
+        public async Task<Guid> GetOfferIdByOfferImageSlug(string offerImageSlug)
+        {
+            var offerImage = await _offerRepository.GetOfferImageBySlug(offerImageSlug);
+
+            if (offerImage == null)
+            {
+                return Guid.Empty;
+            }
+
+            return offerImage.OfferId;
+        }
 
         public async Task<bool> CheckIsOfferExistById(Guid offerId)
         {
@@ -130,7 +180,7 @@ namespace ResellHub.Services.OfferServices
 
         public async Task<string> AddOffer(OfferCreateDto offerDto, string userEmail)
         {
-            var validationResult = await _offerValidator.ValidateAsync(offerDto);
+            var validationResult = await _offerCreteValidator.ValidateAsync(offerDto);
             if (!validationResult.IsValid)
             {
                 var validationErrors = validationResult.Errors.Select(error => error.ErrorMessage);
@@ -155,12 +205,12 @@ namespace ResellHub.Services.OfferServices
 
             await _offerRepository.AddOffer(offer);
 
-            return "Offer ceated successful";
+            return "Offer created successfull";
         }
 
-        public async Task<string> UpdateOffer(Guid offerId, OfferCreateDto offerDto)
+        public async Task<string> UpdateOffer(Guid offerId, OfferUpdateDto offerDto)
         {
-            var validationResult = await _offerValidator.ValidateAsync(offerDto);
+            var validationResult = await _offerUpdateValidator.ValidateAsync(offerDto);
             if (!validationResult.IsValid)
             {
                 var validationErrors = validationResult.Errors.Select(error => error.ErrorMessage);
@@ -177,6 +227,14 @@ namespace ResellHub.Services.OfferServices
         {
             await _offerRepository.DeleteOffer(offerId);
             return "Offer deleted successful";
+        }
+
+        //Image
+        public async Task<string> SetOfferImageAsPrimaryBySlug(string offerImageSlug)
+        {
+            await _offerRepository.SetOfferImageAsPrimaryBySlug(offerImageSlug);
+
+            return offerImageSlug;
         }
     }
 }

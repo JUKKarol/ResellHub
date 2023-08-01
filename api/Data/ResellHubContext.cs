@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ResellHub.Entities;
+using System.Linq;
 
 namespace ResellHub.Data
 {
@@ -19,6 +20,8 @@ namespace ResellHub.Data
         public DbSet<FollowOffer> FollowingOffers { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<AvatarImage> AvatarImages { get; set; }
+        public DbSet<OfferImage> OfferImages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -39,6 +42,7 @@ namespace ResellHub.Data
                 entity.HasMany(u => u.SentMessages).WithOne(m => m.Sender);
                 entity.HasMany(u => u.ReceivedMessages).WithOne(m => m.Reciver);
                 entity.HasMany(u => u.FollowingOffers).WithOne(m => m.User);
+                entity.HasOne(u => u.AvatarImage).WithOne(ai => ai.User).HasForeignKey<AvatarImage>(ai => ai.UserId);
             });
 
             modelBuilder.Entity<Offer>(entity =>
@@ -51,6 +55,8 @@ namespace ResellHub.Data
                     .WithMany(c => c.Offers)
                     .HasForeignKey(o => o.CategoryId)
                     .OnDelete(DeleteBehavior.SetNull);
+                entity.HasMany(o => o.OfferImages).WithOne(oi => oi.Offer);
+
                 entity.Property(o => o.Title).IsRequired().HasMaxLength(40);
                 entity.Property(o => o.Description).HasMaxLength(200);
                 entity.Property(o => o.ProductionYear).HasAnnotation("Range", new[] { 1950, DateTime.UtcNow.Year });
@@ -127,6 +133,31 @@ namespace ResellHub.Data
                     .WithOne(o => o.Category)
                     .HasForeignKey(o => o.CategoryId)
                     .OnDelete(DeleteBehavior.SetNull);
+            });
+
+            modelBuilder.Entity<AvatarImage>(entity =>
+            {
+                entity.HasKey(ai => ai.Id);
+
+                entity.HasOne(ai => ai.User)
+                    .WithOne(u => u.AvatarImage)
+                    .OnDelete(DeleteBehavior.SetNull);
+
+                entity.Property(ai => ai.ImageSlug).IsRequired();
+                entity.Property(ai => ai.UserId).IsRequired();
+            });
+
+            modelBuilder.Entity<OfferImage>(entity =>
+            {
+                entity.HasKey(oi => oi.Id);
+
+                entity.HasOne(oi => oi.Offer)
+                    .WithMany(o => o.OfferImages)
+                    .HasForeignKey(oi => oi.OfferId)
+                    .OnDelete(DeleteBehavior.SetNull);
+
+                entity.Property(oi => oi.ImageSlug).IsRequired();
+                entity.Property(oi => oi.OfferId).IsRequired();
             });
 
             base.OnModelCreating(modelBuilder);

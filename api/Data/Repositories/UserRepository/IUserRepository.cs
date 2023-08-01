@@ -12,6 +12,7 @@ namespace ResellHub.Data.Repositories.UserRepository
         Task<User> GetUserByVeryficationToken(string userToken);
         Task<User> GetUserByResetToken(string userToken);
         Task<User> GetUserBySlug(string userSlug);
+        Task<User> GetUserBySlugIncludeAvatar(string userSlug);
         Task<User> AddUser(User user);
         Task<User> UpdateUser(Guid userId, User user);
         Task<User> DeleteUser(Guid userId);
@@ -36,5 +37,10 @@ namespace ResellHub.Data.Repositories.UserRepository
         Task<FollowOffer> GetFollowingOfferByUserAndOfferId(Guid followingOfferId, Guid userId);
         Task<FollowOffer> AddFollowingOffer(FollowOffer followOffer);
         Task<FollowOffer> DeleteFollowingOffer(Guid followOfferId);
+        //AvatarImage
+        Task<AvatarImage> AddAvatarImage(AvatarImage avatarImage);
+        Task<AvatarImage> GetAvatarImageByUserId(Guid userId);
+        Task<AvatarImage> GetAvatarImageBySlug(string slug);
+        Task<AvatarImage> DeleteAvatarImage(Guid userId);
     }
 }

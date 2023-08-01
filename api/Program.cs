@@ -10,11 +10,14 @@ using ResellHub.Data.Seeders;
 using ResellHub.DTOs.OfferDTOs;
 using ResellHub.DTOs.UserDTOs;
 using ResellHub.Services.EmailService;
+using ResellHub.Services.FileService;
+using ResellHub.Services.FileServices;
 using ResellHub.Services.OfferServices;
 using ResellHub.Services.UserServices;
 using ResellHub.Utilities.OfferUtilities;
 using ResellHub.Utilities.UserUtilities;
 using ResellHub.Utilities.Validation.Offer;
+using ResellHub.Utilities.Validation.OfferValidation;
 using ResellHub.Utilities.Validation.UserValidation;
 using Swashbuckle.AspNetCore.Filters;
 using System;
@@ -66,6 +69,7 @@ namespace ResellHub
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             builder.Services.AddScoped<IValidator<OfferCreateDto>, OfferCreateValidator>();
+            builder.Services.AddScoped<IValidator<OfferUpdateDto>, OfferUpdateValidator>();
             builder.Services.AddScoped<IValidator<UserRegistrationDto>, UserRegistrationValidation>();
 
             builder.Services.AddScoped<IUserRepository, UserRepository>();
@@ -74,6 +78,7 @@ namespace ResellHub
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IOfferService, OfferService>();
             builder.Services.AddScoped<IEmailService, EmailService>();
+            builder.Services.AddScoped<IFileService, FileService>();
 
             builder.Services.AddScoped<IUserUtilities, UserUtilities>();
             builder.Services.AddScoped<IOfferUtilities, OfferUtilities>();

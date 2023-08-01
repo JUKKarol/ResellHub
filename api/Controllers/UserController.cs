@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using ResellHub.DTOs.UserDTOs;
 using ResellHub.Entities;
 using ResellHub.Enums;
+using ResellHub.Services.FileServices;
 using ResellHub.Services.OfferServices;
 using ResellHub.Services.UserServices;
 using System.Security.Claims;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ResellHub.Controllers
 {
@@ -15,11 +17,13 @@ namespace ResellHub.Controllers
     {
         private readonly IUserService _userService;
         private readonly IOfferService _offerService;
+        private readonly IFileService _fileService;
 
-        public UserController(IUserService userService, IOfferService offerService)
+        public UserController(IUserService userService, IOfferService offerService, IFileService fileService)
         {
             _userService = userService;
             _offerService = offerService;
+            _fileService = fileService;
         }
 
         [HttpGet, Authorize(Roles = "User")]
@@ -36,7 +40,7 @@ namespace ResellHub.Controllers
                 return BadRequest("user doesn't exist");
             }
 
-            return Ok(await _userService.GetUserBySlug(userSlug));
+            return Ok(await _userService.GetUserBySlugIncludeAvatar(userSlug));
         }
 
         [HttpGet("{userSlug}/offers"), Authorize(Roles = "User"), AllowAnonymous]
@@ -104,6 +108,73 @@ namespace ResellHub.Controllers
         public async Task<IActionResult> DeleteAccount()
         {
             return Ok(await _userService.DeleteUser(await _userService.GetUserIdByEmail(HttpContext.User.FindFirstValue(ClaimTypes.Email))));
+        }
+
+        //images
+        [HttpGet("avatar"), Authorize(Roles = "User")]
+        public async Task<IActionResult> GetMyAvatar()
+        {
+            Guid userId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if (!await _userService.CheckIsAvatarImageExistByUserId(userId))
+            {
+                return NotFound("user didn't uploaded avatar yet");
+            }
+
+            byte[] myAvatar = await _fileService.GetAvatar(userId);
+
+            if (myAvatar.Length < 1)
+            {
+                return BadRequest("error while uploading file");
+            }
+
+            return Ok(myAvatar);
+        }
+
+        [HttpPost("avatar"), Authorize(Roles = "User")]
+        public async Task<IActionResult> UploadAvatar(IFormFile image)
+        {
+            Guid userId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            if (await _userService.CheckIsAvatarImageExistByUserId(userId))
+            {
+                return NotFound("user have avatar alredy");
+            }
+
+            if (image == null)
+            {
+                return BadRequest("image can't be empty");
+            }
+
+            if (!_fileService.CheckIsAvatarSizeCorrect(image))
+            {
+                return BadRequest("image is to large");
+            }
+
+            if (!await _fileService.AddAvatar(image, userId))
+            {
+                return BadRequest("error while uploading file");
+            }
+
+            return Ok("avatar uploaded");
+        }
+
+        [HttpDelete("avatar"), Authorize(Roles = "User")]
+        public async Task<IActionResult> DeleteAvatar()
+        {
+            var userAvatar = await _userService.GetAvatarByUserId(Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)));
+
+            if (userAvatar == null)
+            {
+                return NotFound("user didn't uploaded avatar yet");
+            }
+
+            if (!await _fileService.DeleteAvatar(userAvatar.UserId))
+            {
+                return BadRequest("error while deleting file");
+            }
+
+            return Ok("avatar deleted");
         }
     }
 }
