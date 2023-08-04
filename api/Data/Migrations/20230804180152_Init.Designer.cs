@@ -12,7 +12,7 @@ using ResellHub.Data;
 namespace ResellHub.Migrations
 {
     [DbContext(typeof(ResellHubContext))]
-    [Migration("20230624152653_Init")]
+    [Migration("20230804180152_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -27,6 +27,27 @@ namespace ResellHub.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("ResellHub.Entities.AvatarImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ImageSlug")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("AvatarImages");
+                });
 
             modelBuilder.Entity("ResellHub.Entities.Category", b =>
                 {
@@ -175,6 +196,29 @@ namespace ResellHub.Migrations
                     b.ToTable("Offers");
                 });
 
+            modelBuilder.Entity("ResellHub.Entities.OfferImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ImageSlug")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<Guid>("OfferId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OfferId");
+
+                    b.ToTable("OfferImages");
+                });
+
             modelBuilder.Entity("ResellHub.Entities.Role", b =>
                 {
                     b.Property<Guid>("Id")
@@ -246,6 +290,17 @@ namespace ResellHub.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("ResellHub.Entities.AvatarImage", b =>
+                {
+                    b.HasOne("ResellHub.Entities.User", "User")
+                        .WithOne("AvatarImage")
+                        .HasForeignKey("ResellHub.Entities.AvatarImage", "UserId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("ResellHub.Entities.Chat", b =>
@@ -332,6 +387,17 @@ namespace ResellHub.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ResellHub.Entities.OfferImage", b =>
+                {
+                    b.HasOne("ResellHub.Entities.Offer", "Offer")
+                        .WithMany("OfferImages")
+                        .HasForeignKey("OfferId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .IsRequired();
+
+                    b.Navigation("Offer");
+                });
+
             modelBuilder.Entity("ResellHub.Entities.Role", b =>
                 {
                     b.HasOne("ResellHub.Entities.User", "RoleOwner")
@@ -356,10 +422,14 @@ namespace ResellHub.Migrations
             modelBuilder.Entity("ResellHub.Entities.Offer", b =>
                 {
                     b.Navigation("FollowingOffers");
+
+                    b.Navigation("OfferImages");
                 });
 
             modelBuilder.Entity("ResellHub.Entities.User", b =>
                 {
+                    b.Navigation("AvatarImage");
+
                     b.Navigation("FollowingOffers");
 
                     b.Navigation("FromChats");

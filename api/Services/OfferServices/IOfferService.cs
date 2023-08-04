@@ -16,8 +16,8 @@ namespace ResellHub.Services.OfferServices
         Task<bool> CheckIsOfferExistById(Guid offerId);
         Task<bool> CheckIsOfferOwnerCorrectByEmail(Guid offerId, string userEmail);
         Task<bool> AddOffer(OfferCreateDto offerDto, Guid userId);
-        Task<string> UpdateOffer(Guid offerId, OfferUpdateDto offerDto);
-        Task<string> DeleteOffer(Guid offerId);
+        Task UpdateOffer(string offerSlug, OfferUpdateDto offerDto);
+        Task DeleteOffer(string offerSlug);
         //Image
         Task<string> SetOfferImageAsPrimaryBySlug(string offerImageSlug);
     }

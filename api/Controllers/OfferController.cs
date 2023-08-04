@@ -71,8 +71,8 @@ namespace ResellHub.Controllers
             return Ok("offer created");
         }
 
-        [HttpPut("{offerId}"), Authorize(Roles = "User")]
-        public async Task<IActionResult> UpdateOffer(Guid offerId, OfferUpdateDto offerDto)
+        [HttpPut("{offerSlug}"), Authorize(Roles = "User")]
+        public async Task<IActionResult> UpdateOffer(string offerSlug, OfferUpdateDto offerDto)
         {
             var validationResult = await _offerUpdateValidator.ValidateAsync(offerDto);
             if (!validationResult.IsValid)
@@ -81,33 +81,39 @@ namespace ResellHub.Controllers
                 return BadRequest(string.Join(Environment.NewLine, validationErrors));
             }
 
-            if (!await _offerService.CheckIsOfferExistById(offerId))
+            var offer = await _offerService.GetOfferBySlug(offerSlug, Guid.Empty);
+
+            if (offer == null)
             {
                 return BadRequest("offer doesn't exist");
             }
 
-            if (!await _offerService.CheckIsOfferOwnerCorrectByEmail(offerId, HttpContext.User.FindFirstValue(ClaimTypes.Email)))
+            if (offer.UserId != Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)))
             {
                 return BadRequest("you aren't offer owner");
             }
 
-            return Ok(await _offerService.UpdateOffer(offerId, offerDto));
+            await _offerService.UpdateOffer(offerSlug, offerDto);
+
+            return Ok("offer updated");
         }
 
-        [HttpDelete("{offerId}"), Authorize(Roles = "User")]
-        public async Task<IActionResult> DeleteOffer(Guid offerId)
+        [HttpDelete("{offerSlug}"), Authorize(Roles = "User")]
+        public async Task<IActionResult> DeleteOffer(string offerSlug)
         {
-            if (!await _offerService.CheckIsOfferExistById(offerId))
+            var offer = await _offerService.GetOfferBySlug(offerSlug, Guid.Empty);
+
+            if (offer == null)
             {
                 return BadRequest("offer doesn't exist");
             }
 
-            if (!await _offerService.CheckIsOfferOwnerCorrectByEmail(offerId, HttpContext.User.FindFirstValue(ClaimTypes.Email)))
+            if (offer.UserId != Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)))
             {
                 return BadRequest("you aren't offer owner");
             }
 
-            return Ok(await _offerService.DeleteOffer(offerId));
+            return Ok("offer delted");
         }
 
         //images

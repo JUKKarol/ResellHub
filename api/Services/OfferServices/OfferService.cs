@@ -200,25 +200,16 @@ namespace ResellHub.Services.OfferServices
             return true;
         }
 
-        public async Task<string> UpdateOffer(Guid offerId, OfferUpdateDto offerDto)
+        public async Task UpdateOffer(string offerSlug, OfferUpdateDto offerDto)
         {
-            var validationResult = await _offerUpdateValidator.ValidateAsync(offerDto);
-            if (!validationResult.IsValid)
-            {
-                var validationErrors = validationResult.Errors.Select(error => error.ErrorMessage);
-                return string.Join(Environment.NewLine, validationErrors);
-            }
-
             var updatedOffer = _mapper.Map<Offer>(offerDto);
 
-            await _offerRepository.UpdateOffer(offerId, updatedOffer);
-            return "User updated successful";
+            await _offerRepository.UpdateOffer(offerSlug, updatedOffer);
         }
 
-        public async Task<string> DeleteOffer(Guid offerId)
+        public async Task DeleteOffer(string offerSlug)
         {
-            await _offerRepository.DeleteOffer(offerId);
-            return "Offer deleted successful";
+            await _offerRepository.DeleteOffer(offerSlug);
         }
 
         //Image

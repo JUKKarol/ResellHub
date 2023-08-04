@@ -10,8 +10,8 @@ namespace ResellHub.Data.Repositories.OfferRepository
         Task<Offer> GetOfferById(Guid offerId);
         Task<Offer> GetOfferBySlug(string offerSlug);
         Task<Offer> AddOffer(Offer offer);
-        Task<Offer> UpdateOffer(Guid offerId, Offer offer);
-        Task<Offer> DeleteOffer(Guid offerId);
+        Task<Offer> UpdateOffer(string offerSlug, Offer offer);
+        Task<Offer> DeleteOffer(string offerSlug);
 
         //Category
         Task<string> GetCategoryNameById(int categoryId);

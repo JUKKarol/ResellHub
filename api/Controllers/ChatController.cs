@@ -18,25 +18,15 @@ namespace ResellHub.Controllers
             _userService = userService;
         }
 
-        [HttpGet("{userId}"), Authorize(Roles = "User")]
-        public async Task<IActionResult> GetUserChats(Guid userId, int page = 1)
+        [HttpGet, Authorize(Roles = "User")]
+        public async Task<IActionResult> GetMyChats(int page = 1)
         {
             if (page <= 0)
             {
                 return BadRequest("page must be greater than 0");
             }
 
-            if (!await _userService.CheckIsUserExistById(userId))
-            {
-                return BadRequest("user doesn't exist");
-            }
-
-            if (Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)) != userId)
-            { 
-                return BadRequest("permission dennied");
-            }
-
-            return Ok(await _userService.GetUserChats(userId, page));
+            return Ok(await _userService.GetUserChats(Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)), page));
         }
 
         [HttpPost, Authorize(Roles = "User")]

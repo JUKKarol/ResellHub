@@ -59,9 +59,9 @@ namespace ResellHub.Data.Repositories.OfferRepository
             return offer;
         }
 
-        public async Task<Offer> UpdateOffer(Guid offerId, Offer offer)
+        public async Task<Offer> UpdateOffer(string offerSlug, Offer offer)
         {
-            var existOffer = await _dbContext.Offers.FirstOrDefaultAsync(u => u.Id == offerId);
+            var existOffer = await _dbContext.Offers.FirstOrDefaultAsync(u => u.Slug == offerSlug);
 
             existOffer = offer;
             await _dbContext.SaveChangesAsync();
@@ -69,9 +69,9 @@ namespace ResellHub.Data.Repositories.OfferRepository
             return offer;
         }
 
-        public async Task<Offer> DeleteOffer(Guid offerId)
+        public async Task<Offer> DeleteOffer(string offerSlug)
         {
-            var existOffer = await _dbContext.Offers.FirstOrDefaultAsync(u => u.Id == offerId);
+            var existOffer = await _dbContext.Offers.FirstOrDefaultAsync(u => u.Slug == offerSlug);
 
             _dbContext.Offers.Remove(existOffer);
             await _dbContext.SaveChangesAsync();
