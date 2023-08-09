@@ -43,6 +43,8 @@ namespace ResellHub.Data
                 entity.HasMany(u => u.ReceivedMessages).WithOne(m => m.Reciver);
                 entity.HasMany(u => u.FollowingOffers).WithOne(m => m.User);
                 entity.HasOne(u => u.AvatarImage).WithOne(ai => ai.User).HasForeignKey<AvatarImage>(ai => ai.UserId);
+
+                entity.HasIndex(u => u.Slug);
             });
 
             modelBuilder.Entity<Offer>(entity =>
@@ -62,6 +64,8 @@ namespace ResellHub.Data
                 entity.Property(o => o.ProductionYear).HasAnnotation("Range", new[] { 1950, DateTime.UtcNow.Year });
                 entity.Property(o => o.Slug).IsRequired();
                 entity.HasMany(u => u.FollowingOffers).WithOne(m => m.Offer);
+
+                entity.HasIndex(o => o.Slug);
             });
 
             modelBuilder.Entity<Message>(entity =>
