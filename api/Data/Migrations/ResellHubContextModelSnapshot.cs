@@ -188,6 +188,8 @@ namespace ResellHub.Migrations
 
                     b.HasIndex("CategoryId");
 
+                    b.HasIndex("Slug");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Offers");
@@ -285,6 +287,8 @@ namespace ResellHub.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Slug");
 
                     b.ToTable("Users");
                 });

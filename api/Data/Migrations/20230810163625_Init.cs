@@ -275,6 +275,11 @@ namespace ResellHub.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Offers_Slug",
+                table: "Offers",
+                column: "Slug");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Offers_UserId",
                 table: "Offers",
                 column: "UserId");
@@ -283,6 +288,11 @@ namespace ResellHub.Migrations
                 name: "IX_Roles_UserId",
                 table: "Roles",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Slug",
+                table: "Users",
+                column: "Slug");
         }
 
         /// <inheritdoc />
