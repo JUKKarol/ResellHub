@@ -178,19 +178,11 @@ namespace ResellHub.Services.OfferServices
             }
         }
 
-        public async Task<string> AddOffer(OfferCreateDto offerDto, string userEmail)
+        public async Task<bool> AddOffer(OfferCreateDto offerDto, Guid userId)
         {
-            var validationResult = await _offerCreteValidator.ValidateAsync(offerDto);
-            if (!validationResult.IsValid)
-            {
-                var validationErrors = validationResult.Errors.Select(error => error.ErrorMessage);
-                return string.Join(Environment.NewLine, validationErrors);
-            }
-
             var offer = _mapper.Map<Offer>(offerDto);
             offer.EncodeName();
-            var user = await _userRepository.GetUserByEmail(userEmail);
-            offer.UserId = user.Id;
+            offer.UserId = userId;
 
             if (await _offerRepository.GetOfferBySlug(offer.Slug) != null)
             {
@@ -200,33 +192,24 @@ namespace ResellHub.Services.OfferServices
 
             if (await _offerRepository.GetOfferBySlug(offer.Slug) != null)
             {
-                return "Name is already in use";
+                return false;
             }
 
             await _offerRepository.AddOffer(offer);
 
-            return "Offer created successfull";
+            return true;
         }
 
-        public async Task<string> UpdateOffer(Guid offerId, OfferUpdateDto offerDto)
+        public async Task UpdateOffer(string offerSlug, OfferUpdateDto offerDto)
         {
-            var validationResult = await _offerUpdateValidator.ValidateAsync(offerDto);
-            if (!validationResult.IsValid)
-            {
-                var validationErrors = validationResult.Errors.Select(error => error.ErrorMessage);
-                return string.Join(Environment.NewLine, validationErrors);
-            }
-
             var updatedOffer = _mapper.Map<Offer>(offerDto);
 
-            await _offerRepository.UpdateOffer(offerId, updatedOffer);
-            return "User updated successful";
+            await _offerRepository.UpdateOffer(offerSlug, updatedOffer);
         }
 
-        public async Task<string> DeleteOffer(Guid offerId)
+        public async Task DeleteOffer(string offerSlug)
         {
-            await _offerRepository.DeleteOffer(offerId);
-            return "Offer deleted successful";
+            await _offerRepository.DeleteOffer(offerSlug);
         }
 
         //Image

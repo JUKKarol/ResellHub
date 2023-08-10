@@ -42,7 +42,10 @@ namespace ResellHub.Data
                 entity.HasMany(u => u.SentMessages).WithOne(m => m.Sender);
                 entity.HasMany(u => u.ReceivedMessages).WithOne(m => m.Reciver);
                 entity.HasMany(u => u.FollowingOffers).WithOne(m => m.User);
-                entity.HasOne(u => u.AvatarImage).WithOne(ai => ai.User).HasForeignKey<AvatarImage>(ai => ai.UserId);
+                entity.HasOne(u => u.AvatarImage)
+                    .WithOne(ai => ai.User)
+                    .HasForeignKey<AvatarImage>(ai => ai.UserId)
+                    .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasIndex(u => u.Slug);
             });
@@ -57,7 +60,9 @@ namespace ResellHub.Data
                     .WithMany(c => c.Offers)
                     .HasForeignKey(o => o.CategoryId)
                     .OnDelete(DeleteBehavior.SetNull);
-                entity.HasMany(o => o.OfferImages).WithOne(oi => oi.Offer);
+                entity.HasMany(o => o.OfferImages)
+                    .WithOne(oi => oi.Offer)
+                    .OnDelete(DeleteBehavior.Cascade);
 
                 entity.Property(o => o.Title).IsRequired().HasMaxLength(40);
                 entity.Property(o => o.Description).HasMaxLength(200);

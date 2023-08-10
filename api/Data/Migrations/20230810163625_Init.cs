@@ -49,6 +49,25 @@ namespace ResellHub.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AvatarImages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ImageSlug = table.Column<string>(type: "text", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AvatarImages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AvatarImages_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Chats",
                 columns: table => new
                 {
@@ -184,6 +203,32 @@ namespace ResellHub.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "OfferImages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ImageSlug = table.Column<string>(type: "text", nullable: false),
+                    OfferId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OfferImages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OfferImages_Offers_OfferId",
+                        column: x => x.OfferId,
+                        principalTable: "Offers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AvatarImages_UserId",
+                table: "AvatarImages",
+                column: "UserId",
+                unique: true);
+
             migrationBuilder.CreateIndex(
                 name: "IX_Chats_ReciverId",
                 table: "Chats",
@@ -220,9 +265,19 @@ namespace ResellHub.Migrations
                 column: "SenderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OfferImages_OfferId",
+                table: "OfferImages",
+                column: "OfferId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Offers_CategoryId",
                 table: "Offers",
                 column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Offers_Slug",
+                table: "Offers",
+                column: "Slug");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Offers_UserId",
@@ -233,11 +288,19 @@ namespace ResellHub.Migrations
                 name: "IX_Roles_UserId",
                 table: "Roles",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Slug",
+                table: "Users",
+                column: "Slug");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AvatarImages");
+
             migrationBuilder.DropTable(
                 name: "FollowingOffers");
 
@@ -245,13 +308,16 @@ namespace ResellHub.Migrations
                 name: "Messages");
 
             migrationBuilder.DropTable(
+                name: "OfferImages");
+
+            migrationBuilder.DropTable(
                 name: "Roles");
 
             migrationBuilder.DropTable(
-                name: "Offers");
+                name: "Chats");
 
             migrationBuilder.DropTable(
-                name: "Chats");
+                name: "Offers");
 
             migrationBuilder.DropTable(
                 name: "Categories");
