@@ -19,14 +19,13 @@ namespace ResellHub.Services.UserServices
         Task<bool> CheckIsUserExistBySlug(string userSlug);
         Task<bool> CheckIsUserExistByEmail(string userEmail);
         Task<Guid> GetUserIdByEmail(string userEmail);
-        Task<string> CreateUser(UserRegistrationDto user);
+        Task<bool> CreateUser(UserRegistrationDto user);
         Task<string> LoginUser(UserLoginDto userDto);
-        Task<string> VerifyUser(string token);
-        Task<string> ForgotPassword(string userEmail);
-        Task<string> ResetPassword(UserResetPasswordDto userDto);
-        Task<string> UpdatePhoneNumber(Guid userId, string phoneNumber);
-        Task<string> UpdateCity(Guid userId, string city);
-        Task<string> DeleteUser(Guid userId);
+        Task VerifyUser(string token);
+        Task ForgotPassword(string userEmail);
+        Task ResetPassword(UserResetPasswordDto userDto);
+        Task UpdateUser(Guid userId, UserUpdateDto userDto);
+        Task DeleteUser(Guid userId);
         //Chat
         Task<List<ChatDto>> GetUserChats(Guid userId, int page);
         Task<bool> CheckIsChatExistsById(Guid chatId);
@@ -46,8 +45,8 @@ namespace ResellHub.Services.UserServices
         Task<List<FollowOfferDto>> GetUserFollowingOffers(Guid userId, int page);
         Task<FollowOfferDto> GetFollowingOfferByUserAndOfferId(Guid userId, Guid offerId);
         Task<bool> CheckIsFollowingExistById(Guid followingOfferId);
-        Task<string> AddOfferToFollowing(Guid userId, Guid offerId);
-        Task<string> RemoveOfferFromFollowing(Guid followingOfferId);
+        Task AddOfferToFollowing(Guid userId, Guid offerId);
+        Task RemoveOfferFromFollowing(Guid followingOfferId);
         //Avatar
         Task<bool> CheckIsAvatarImageExistByUserId(Guid userId);
         Task<AvatarImage> GetAvatarByUserId(Guid userId);

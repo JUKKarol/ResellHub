@@ -19,21 +19,32 @@ namespace ResellHub.Controllers
             _offerService = offerService;
         }
 
-        [HttpGet("{userId}"), Authorize(Roles = "User")]
+        [HttpGet(), Authorize(Roles = "User")]
         public async Task<IActionResult> GetMyFollowingOffers(int page = 1)
         {
-            return Ok(await _userService.GetUserFollowingOffers(await _userService.GetUserIdByEmail(HttpContext.User.FindFirstValue(ClaimTypes.Email)), page));
+            return Ok(await _userService.GetUserFollowingOffers(Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)), page));
         }
 
-        [HttpPost("{offerId}"), Authorize(Roles = "User")]
-        public async Task<IActionResult> AddOfferToFollowing(Guid offerId)
+        [HttpPost("{offerSlug}"), Authorize(Roles = "User")]
+        public async Task<IActionResult> AddOfferToFollowing(string offerSlug)
         {
-            return Ok(await _userService.AddOfferToFollowing(await _userService.GetUserIdByEmail(HttpContext.User.FindFirstValue(ClaimTypes.Email)), offerId));
+            var offerId = await _offerService.GetOfferIdByOfferSlug(offerSlug);
+
+            if (offerId == Guid.Empty)
+            {
+                return NotFound("offer not found");
+            }
+
+            await _userService.AddOfferToFollowing(Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)), offerId);
+
+            return Ok("Offer is following from now");
         }
 
-        [HttpDelete("{offerId}"), Authorize(Roles = "User")]
-        public async Task<IActionResult> RemoveOfferFromFollowing(Guid offerId)
+        [HttpDelete("{offerslug}"), Authorize(Roles = "User")]
+        public async Task<IActionResult> RemoveOfferFromFollowing(string offerSlug)
         {
+            var offerId = await _offerService.GetOfferIdByOfferSlug(offerSlug);
+
             if (!await _offerService.CheckIsOfferExistById(offerId))
             {
                 return BadRequest("following offer doesn't exist");
@@ -42,7 +53,9 @@ namespace ResellHub.Controllers
             var followingOfferId = 
                 await _userService.GetFollowingOfferByUserAndOfferId(await _userService.GetUserIdByEmail(HttpContext.User.FindFirstValue(ClaimTypes.Email)), offerId);
 
-            return Ok(await _userService.RemoveOfferFromFollowing(followingOfferId.Id));
+            await _userService.RemoveOfferFromFollowing(followingOfferId.Id);
+
+            return Ok("Offer is not following anymore");
         }
     }
 }
