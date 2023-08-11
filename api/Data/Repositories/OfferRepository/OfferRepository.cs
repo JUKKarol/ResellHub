@@ -115,37 +115,42 @@ namespace ResellHub.Data.Repositories.OfferRepository
 
         public async Task<OfferImage> GetOfferImageById(Guid offerImageId)
         {
-            var offerImage = await _dbContext.OfferImages.FirstOrDefaultAsync(oi => oi.Id == offerImageId);
-
-            return offerImage;
+            return await _dbContext.OfferImages
+                .AsNoTracking()
+                .FirstOrDefaultAsync(oi => oi.Id == offerImageId);
         }
 
         public async Task<List<OfferImage>> GetAllOfferImagesByOfferId(Guid offerId)
         {
-            var offerImages = await _dbContext.OfferImages.Where(oi => oi.OfferId == offerId).OrderByDescending(oi => oi.CreatedDate).ToListAsync();
-
-            return offerImages;
+            return await _dbContext.OfferImages
+                .Where(oi => oi.OfferId == offerId)
+                .OrderByDescending(oi => oi.CreatedDate)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<List<OfferImage>> GetAllOfferImagesByOfferslug(string offerSlug)
         {
-            var offerImages = await _dbContext.OfferImages.Where(oi => oi.Offer.Slug == offerSlug).OrderByDescending(oi => oi.CreatedDate).ToListAsync();
-
-            return offerImages;
+            return await _dbContext.OfferImages
+                .Where(oi => oi.Offer.Slug == offerSlug)
+                .OrderByDescending(oi => oi.CreatedDate)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<OfferImage> GetPrimaryOfferImageByOfferId(Guid offerId)
         {
-            var offerImage = await _dbContext.OfferImages.OrderByDescending(oi => oi.CreatedDate).FirstOrDefaultAsync(oi => oi.OfferId == offerId);
-
-            return offerImage;
+            return await _dbContext.OfferImages
+                .OrderByDescending(oi => oi.CreatedDate)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(oi => oi.OfferId == offerId);
         }
 
         public async Task<OfferImage> GetOfferImageBySlug(string offerImageSlug)
         {
-            var offerImage = await _dbContext.OfferImages.FirstOrDefaultAsync(oi => oi.ImageSlug == offerImageSlug);
-
-            return offerImage;
+            return await _dbContext.OfferImages
+                .AsNoTracking()
+                .FirstOrDefaultAsync(oi => oi.ImageSlug == offerImageSlug);
         }
 
         public async Task<OfferImage> SetOfferImageAsPrimaryBySlug(string offerImageSlug)
