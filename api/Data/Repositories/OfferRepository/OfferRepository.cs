@@ -22,6 +22,7 @@ namespace ResellHub.Data.Repositories.OfferRepository
                 .Take(pageSize)
                 .Include(o => o.FollowingOffers)
                 .Include(o => o.OfferImages)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -34,19 +35,26 @@ namespace ResellHub.Data.Repositories.OfferRepository
                 .Take(pageSize)
                 .Include(o => o.FollowingOffers)
                 .Include(o => o.OfferImages)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
         public async Task<Offer> GetOfferById(Guid offerId)
         {
-            var existOffer = await _dbContext.Offers.Include(o => o.FollowingOffers).Include(o => o.OfferImages).FirstOrDefaultAsync(u => u.Id == offerId);
-
-            return existOffer;
+            return await _dbContext.Offers
+                .Include(o => o.FollowingOffers)
+                .Include(o => o.OfferImages)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == offerId);
         }
 
         public async Task<Offer> GetOfferBySlug(string offerSlug)
         {
-            var existOffer = await _dbContext.Offers.Include(o => o.FollowingOffers).Include(o => o.OfferImages).FirstOrDefaultAsync(o => o.Slug == offerSlug);
+            var existOffer = await _dbContext.Offers
+                .Include(o => o.FollowingOffers)
+                .Include(o => o.OfferImages)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(o => o.Slug == offerSlug);
 
             return existOffer;
         }
@@ -82,16 +90,18 @@ namespace ResellHub.Data.Repositories.OfferRepository
         //Category
         public async Task<string> GetCategoryNameById(int categoryId)
         {
-            var offerCategory = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == categoryId);
+            var offerCategory = await _dbContext.Categories
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.Id == categoryId);
 
             return offerCategory.CategoryName;
         }
 
         public async Task<List<Category>> GetCategories()
         {
-            var categories = await _dbContext.Categories.ToListAsync();
-
-            return categories;
+            return await _dbContext.Categories
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         //OfferImages
