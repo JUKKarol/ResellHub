@@ -120,7 +120,7 @@ namespace ResellHub.Services.FileService
 
         public async Task<List<OfferImageDisplayDTO>> GetOfferImagesByOfferSlug(string offerSlug)
         {
-            var offerImages = await _offerRepository.GetAllOfferImagesByOfferslug(offerSlug);
+            var offerImages = await _offerRepository.GetAllOfferImagesByOfferSlug(offerSlug);
             var offerImagesDto = _mapper.Map<List<OfferImageDisplayDTO>>(offerImages);
 
             if (offerImages == null)

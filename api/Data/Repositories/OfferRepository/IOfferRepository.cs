@@ -20,7 +20,7 @@ namespace ResellHub.Data.Repositories.OfferRepository
         Task<OfferImage> AddOfferImageImage(OfferImage offerImage);
         Task<OfferImage> GetOfferImageById(Guid offerImageId);
         Task<List<OfferImage>> GetAllOfferImagesByOfferId(Guid offerId);
-        Task<List<OfferImage>> GetAllOfferImagesByOfferslug(string offerSlug);
+        Task<List<OfferImage>> GetAllOfferImagesByOfferSlug(string offerSlug);
         Task<OfferImage> GetPrimaryOfferImageByOfferId(Guid offerId);
         Task<OfferImage> GetOfferImageBySlug(string offerImageSlug);
         Task<OfferImage> SetOfferImageAsPrimaryBySlug(string offerImageSlug);

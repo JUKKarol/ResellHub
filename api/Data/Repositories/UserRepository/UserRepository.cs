@@ -20,6 +20,7 @@ namespace ResellHub.Data.Repositories.UserRepository
             return await _dbContext.Users
                 .Skip(pageSize * (page - 1))
                 .Take(pageSize)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -32,23 +33,23 @@ namespace ResellHub.Data.Repositories.UserRepository
 
         public async Task<User> GetUserByEmail(string userEmail)
         {
-            var existUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == userEmail);
-
-            return existUser;
+            return await _dbContext.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Email == userEmail);
         }
 
         public async Task<User> GetUserByVeryficationToken(string userToken)
         {
-            var existUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.VeryficationToken == userToken);
-
-            return existUser;
+            return await _dbContext.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.VeryficationToken == userToken);
         }
 
         public async Task<User> GetUserByResetToken(string userToken)
         {
-            var existUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.PasswordResetToken == userToken);
-
-            return existUser;
+            return await _dbContext.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.PasswordResetToken == userToken);
         }
 
         public async Task<User> GetUserBySlug(string userSlug)
@@ -59,9 +60,10 @@ namespace ResellHub.Data.Repositories.UserRepository
         }
         public async Task<User> GetUserBySlugIncludeAvatar(string userSlug)
         {
-            var existUser = await _dbContext.Users.Include(u => u.AvatarImage).FirstOrDefaultAsync(u => u.Slug == userSlug);
-
-            return existUser;
+            return await _dbContext.Users
+                .Include(u => u.AvatarImage)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Slug == userSlug);
         }
 
         public async Task<User> AddUser(User user)
@@ -103,16 +105,17 @@ namespace ResellHub.Data.Repositories.UserRepository
 
         public async Task<List<Role>> GetUserRoles(Guid userId)
         {
-            var userRoles = await _dbContext.Roles.Where(r => r.UserId == userId).ToListAsync();
-
-            return userRoles;
+            return await _dbContext.Roles
+                .Where(r => r.UserId == userId)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<Role> GetRoleById(Guid roleId)
         {
-            var role = await _dbContext.Roles.FirstOrDefaultAsync(r => r.Id == roleId);
-
-            return role;
+            return await _dbContext.Roles
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.Id == roleId);
         }
 
         public async Task<Role> ChangeRole(Guid roleId, UserRoles role)
@@ -138,30 +141,27 @@ namespace ResellHub.Data.Repositories.UserRepository
         //Chats
         public async Task<List<Chat>> GetUserChats(Guid userId, int page, int pageSize)
         {
-            var usersChats = await _dbContext.Chats
+            return await _dbContext.Chats
                 .Where(c => (c.SenderId == userId) || (c.ReciverId == userId))
                 .OrderBy(c => c.LastMessageAt)
                 .Skip(pageSize * (page - 1))
                 .Take(pageSize)
+                .AsNoTracking()
                 .ToListAsync();
-
-            return usersChats;
         }
 
         public async Task<Chat> GetChatById(Guid chatId)
         {
-            var chat = await _dbContext.Chats
+            return await _dbContext.Chats
+                .AsNoTracking()
                 .FirstOrDefaultAsync(c => (c.Id == chatId));
-
-            return chat;
         }
 
         public async Task<Chat> GetChatByUsersId(Guid firstUserId, Guid secondUserId)
         {
-            var usersChats = await _dbContext.Chats
+            return await _dbContext.Chats
+                .AsNoTracking()
                 .FirstOrDefaultAsync(c => (c.SenderId == firstUserId) || (c.ReciverId == firstUserId) && (c.SenderId == secondUserId) || (c.ReciverId == secondUserId));
-
-            return usersChats;
         }
 
         public async Task<Chat> CreateChat(Guid formUserId, Guid reciverId)
@@ -191,14 +191,13 @@ namespace ResellHub.Data.Repositories.UserRepository
         //Messages
         public async Task<List<Message>> GetChatMessagesById(Guid ChatId, int page, int pageSize)
         {
-            var chatMessages = await _dbContext.Messages
+            return await _dbContext.Messages
                 .Where(m => m.ChatId == ChatId)
                 .OrderBy(c => c.CreatedDate)
                 .Skip(pageSize * (page - 1))
                 .Take(pageSize)
+                .AsNoTracking()
                 .ToListAsync();
-
-            return chatMessages;
         }
 
         public async Task<Message> AddMessage(Message message)
@@ -212,26 +211,26 @@ namespace ResellHub.Data.Repositories.UserRepository
         //FollowingOffers
         public async Task<List<FollowOffer>> GetUserFollowingOffers(Guid userId, int page, int pageSize)
         {
-            var userFolowingOffers = await _dbContext.FollowingOffers
+            return await _dbContext.FollowingOffers
                 .Where(fo => fo.UserId == userId)
                 .Skip(pageSize * (page - 1))
-                .Take(pageSize).ToListAsync();
-
-            return userFolowingOffers;
+                .Take(pageSize)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<FollowOffer> GetUserFollowingOfferById(Guid followingOfferId)
         {
-            var followingOffer = await _dbContext.FollowingOffers.FirstOrDefaultAsync(fo => fo.Id == followingOfferId);
-
-            return followingOffer;
+            return await _dbContext.FollowingOffers
+                .AsNoTracking()
+                .FirstOrDefaultAsync(fo => fo.Id == followingOfferId);
         }
 
         public async Task<FollowOffer> GetFollowingOfferByUserAndOfferId(Guid followingOfferId, Guid userId)
         {
-            var followingOffer = await _dbContext.FollowingOffers.FirstOrDefaultAsync(fo => (fo.Id == followingOfferId) && (fo.UserId == userId));
-
-            return followingOffer;
+            return await _dbContext.FollowingOffers
+                .AsNoTracking()
+                .FirstOrDefaultAsync(fo => (fo.Id == followingOfferId) && (fo.UserId == userId));
         }
 
         public async Task<FollowOffer> AddFollowingOffer(FollowOffer followOffer)
@@ -242,9 +241,9 @@ namespace ResellHub.Data.Repositories.UserRepository
             return followOffer;
         }
 
-        public async Task<FollowOffer> DeleteFollowingOffer(Guid folowOfferId)
+        public async Task<FollowOffer> DeleteFollowingOffer(Guid followOfferId)
         {
-            var existingFollowOffer = await _dbContext.FollowingOffers.FirstOrDefaultAsync(u => u.Id == folowOfferId);
+            var existingFollowOffer = await _dbContext.FollowingOffers.FirstOrDefaultAsync(u => u.Id == followOfferId);
 
             _dbContext.FollowingOffers.Remove(existingFollowOffer);
             await _dbContext.SaveChangesAsync();
@@ -263,16 +262,16 @@ namespace ResellHub.Data.Repositories.UserRepository
 
         public async Task<AvatarImage> GetAvatarImageByUserId(Guid userId)
         {
-            var avatarImage = await _dbContext.AvatarImages.FirstOrDefaultAsync(ai => ai.UserId == userId);
-
-            return avatarImage;
+            return await _dbContext.AvatarImages
+                .AsNoTracking()
+                .FirstOrDefaultAsync(ai => ai.UserId == userId);
         }
 
         public async Task<AvatarImage> GetAvatarImageBySlug(string slug)
         {
-            var avatarImage = await _dbContext.AvatarImages.FirstOrDefaultAsync(ai => ai.ImageSlug == slug);
-
-            return avatarImage;
+            return await _dbContext.AvatarImages
+                .AsNoTracking()
+                .FirstOrDefaultAsync(ai => ai.ImageSlug == slug);
         }
 
         public async Task<AvatarImage> DeleteAvatarImage(Guid userId)
