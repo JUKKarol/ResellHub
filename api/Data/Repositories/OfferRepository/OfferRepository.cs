@@ -50,13 +50,11 @@ namespace ResellHub.Data.Repositories.OfferRepository
 
         public async Task<Offer> GetOfferBySlug(string offerSlug)
         {
-            var existOffer = await _dbContext.Offers
+            return await _dbContext.Offers
                 .Include(o => o.FollowingOffers)
                 .Include(o => o.OfferImages)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(o => o.Slug == offerSlug);
-
-            return existOffer;
         }
 
         public async Task<Offer> AddOffer(Offer offer)
@@ -129,7 +127,7 @@ namespace ResellHub.Data.Repositories.OfferRepository
                 .ToListAsync();
         }
 
-        public async Task<List<OfferImage>> GetAllOfferImagesByOfferslug(string offerSlug)
+        public async Task<List<OfferImage>> GetAllOfferImagesByOfferSlug(string offerSlug)
         {
             return await _dbContext.OfferImages
                 .Where(oi => oi.Offer.Slug == offerSlug)
