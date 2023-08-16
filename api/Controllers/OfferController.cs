@@ -22,7 +22,12 @@ namespace ResellHub.Controllers
         private readonly IValidator<OfferUpdateDto> _offerUpdateValidator;
         private readonly IFileService _fileService;
 
-        public OfferController(IOfferService offerService, IUserService userService, IValidator<OfferCreateDto> offerCreateValidator, IValidator<OfferUpdateDto> offerUpdateValidator, IFileService fileService)
+        public OfferController(
+            IOfferService offerService,
+            IUserService userService,
+            IValidator<OfferCreateDto> offerCreateValidator,
+            IValidator<OfferUpdateDto> offerUpdateValidator,
+            IFileService fileService)
         {
             _offerService = offerService;
             _userService = userService;
@@ -113,14 +118,14 @@ namespace ResellHub.Controllers
                 return BadRequest("you aren't offer owner");
             }
 
-            return Ok("offer delted");
+            return Ok("offer deleted");
         }
 
         //images
-        [HttpGet("{offerslug}/image"), Authorize(Roles = "User")]
-        public async Task<IActionResult> GetOfferImages(string offerslug)
+        [HttpGet("{offerSlug}/image"), Authorize(Roles = "User")]
+        public async Task<IActionResult> GetOfferImages(string offerSlug)
         {
-            var offer = await _offerService.GetOfferBySlug(offerslug, Guid.Empty);
+            var offer = await _offerService.GetOfferBySlug(offerSlug, Guid.Empty);
 
             if (offer == null)
             {
@@ -132,7 +137,7 @@ namespace ResellHub.Controllers
                 return NotFound("offer didn't have uploaded images yet");
             }
 
-            var offerImages = await _fileService.GetOfferImagesByOfferSlug(offerslug);
+            var offerImages = await _fileService.GetOfferImagesByOfferSlug(offerSlug);
 
             foreach (var offerImage in offerImages)
             {

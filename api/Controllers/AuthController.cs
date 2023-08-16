@@ -20,7 +20,12 @@ namespace ResellHub.Controllers
         private readonly IValidator<UserRegistrationDto> _userRegistrationValidator;
         private readonly IValidator<UserResetPasswordDto> _userResetPasswordValidator;
 
-        public AuthController(IUserService userService, IUserRepository userRepository, IUserUtilities userUtilities, IValidator<UserRegistrationDto> userRegistrationValidator, IValidator<UserResetPasswordDto> userResetPasswordValidator)
+        public AuthController(
+            IUserService userService,
+            IUserRepository userRepository,
+            IUserUtilities userUtilities,
+            IValidator<UserRegistrationDto> userRegistrationValidator,
+            IValidator<UserResetPasswordDto> userResetPasswordValidator)
         {
             _userService = userService;
             _userRepository = userRepository;
@@ -59,7 +64,7 @@ namespace ResellHub.Controllers
 
             if (!_userUtilities.VerifyPasswordHash(userDto.Password, user.PasswordHash, user.PasswordSalt))
             {
-                return BadRequest("Password incorect");
+                return BadRequest("Password incorrect");
             }
 
             if (user.VerifiedAt == null)
@@ -120,7 +125,7 @@ namespace ResellHub.Controllers
             }
 
             await _userService.ResetPassword(userDto);
-            return Ok("passsword reset successfully");
+            return Ok("password reset successfully");
         }
     }
 }
