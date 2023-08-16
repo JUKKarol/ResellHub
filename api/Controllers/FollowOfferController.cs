@@ -40,7 +40,7 @@ namespace ResellHub.Controllers
             return Ok("Offer is following from now");
         }
 
-        [HttpDelete("{offerslug}"), Authorize(Roles = "User")]
+        [HttpDelete("{offerSlug}"), Authorize(Roles = "User")]
         public async Task<IActionResult> RemoveOfferFromFollowing(string offerSlug)
         {
             var offerId = await _offerService.GetOfferIdByOfferSlug(offerSlug);

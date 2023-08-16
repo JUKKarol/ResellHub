@@ -41,7 +41,7 @@ namespace ResellHub.Controllers
 
             if (chatDto.SenderId != loggedUserId && chatDto.ReciverId != loggedUserId)
             {
-                return BadRequest("permission dennied");
+                return BadRequest("permission denied");
             }
 
             return Ok(await _userService.CreateChat(chatDto.SenderId, chatDto.ReciverId));

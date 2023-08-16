@@ -22,7 +22,12 @@ namespace ResellHub.Controllers
         private readonly IValidator<UserUpdateDto> _userUpdateValidator;
         private readonly IFileService _fileService;
 
-        public UserController(IUserService userService, IOfferService offerService, IFileService fileService, IValidator<UserRegistrationDto> userRegistrationValidator, IValidator<UserUpdateDto> userUpdateValidator)
+        public UserController(
+            IUserService userService, 
+            IOfferService offerService, 
+            IFileService fileService,
+            IValidator<UserRegistrationDto> userRegistrationValidator, 
+            IValidator<UserUpdateDto> userUpdateValidator)
         {
             _userService = userService;
             _offerService = offerService;
@@ -148,7 +153,7 @@ namespace ResellHub.Controllers
 
             if (await _userService.CheckIsAvatarImageExistByUserId(userId))
             {
-                return NotFound("user have avatar alredy");
+                return NotFound("user have avatar already");
             }
 
             if (image == null)

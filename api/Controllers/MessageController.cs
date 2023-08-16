@@ -37,7 +37,7 @@ namespace ResellHub.Controllers
 
             if (chat.ReciverId != loggedUserId && chat.SenderId != loggedUserId)
             { 
-                return BadRequest("permission dennied");
+                return BadRequest("permission denied");
             }
 
             var messages = await _userService.GetMessagesByChatId(chatId, page);
@@ -59,7 +59,7 @@ namespace ResellHub.Controllers
 
             if (chat.SenderId != loggedUserId)
             {
-                return BadRequest("permission dennied");
+                return BadRequest("permission denied");
             }
 
             return Ok(await _userService.SendMessage(chatId, loggedUserId, content));
