@@ -38,9 +38,9 @@ namespace ResellHub.Services.UserServices
         //Role
         Task<List<RoleDto>> GetUserRoles(Guid userId);
         Task<bool> CheckIsRoleExistById(Guid roleId);
-        Task<string> AddRole(Guid userId, UserRoles userRole);
-        Task<string> UpdateRole(Guid roleId, UserRoles userNewRole);
-        Task<string> DeleteRole(Guid roleId);
+        Task AddRole(Guid userId, UserRoles userRole);
+        Task UpdateRole(Guid roleId, UserRoles userNewRole);
+        Task DeleteRole(Guid roleId);
         //FollowOffer
         Task<List<FollowOfferDto>> GetUserFollowingOffers(Guid userId, int page);
         Task<FollowOfferDto> GetFollowingOfferByUserAndOfferId(Guid userId, Guid offerId);

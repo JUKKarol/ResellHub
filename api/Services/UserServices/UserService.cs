@@ -316,26 +316,21 @@ namespace ResellHub.Services.UserServices
             }
         }
 
-        public async Task<string> AddRole(Guid userId, UserRoles userRole)
+        public async Task AddRole(Guid userId, UserRoles userRole)
         {
             var role = new Role { UserId = userId, UserRole = userRole };
 
             await _userRepository.CreateRole(role);
-
-            return "Role created successfuly";
         }
 
-        public async Task<string> UpdateRole(Guid roleId, UserRoles userNewRole)
+        public async Task UpdateRole(Guid roleId, UserRoles userNewRole)
         {
             await _userRepository.ChangeRole(roleId, userNewRole);
-
-            return "Role changed successful";
         }
 
-        public async Task<string> DeleteRole(Guid roleId)
+        public async Task DeleteRole(Guid roleId)
         {
             await _userRepository.DeleteRole(roleId);
-            return "Role deleted successful";
         }
 
         //FollowOffer
