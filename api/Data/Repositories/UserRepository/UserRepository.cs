@@ -24,6 +24,11 @@ namespace ResellHub.Data.Repositories.UserRepository
                 .ToListAsync();
         }
 
+        public async Task<int> GetUsersCount()
+        {
+            return await _dbContext.Users.CountAsync();
+        }
+
         public async Task<User> GetUserById(Guid userId)
         {
             var existUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);

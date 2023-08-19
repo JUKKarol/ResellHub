@@ -7,6 +7,7 @@ namespace ResellHub.Data.Repositories.UserRepository
     {
         //User
         Task<List<User>> GetUsers(int page, int pageSize);
+        Task<int> GetUsersCount();
         Task<User> GetUserById(Guid userId);
         Task<User> GetUserByEmail(string userEmail);
         Task<User> GetUserByVeryficationToken(string userToken);

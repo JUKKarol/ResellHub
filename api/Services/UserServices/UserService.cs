@@ -40,12 +40,19 @@ namespace ResellHub.Services.UserServices
         }
 
         //User
-        public async Task<List<UserPublicDto>> GetUsers(int page)
+        public async Task<UserRespondListDto> GetUsers(int page)
         {
-            var users = await _userRepository.GetUsers(page, 15);
+            int pageSize = 15;
+            var users = await _userRepository.GetUsers(page, pageSize);
             var usersDto = _mapper.Map<List<UserPublicDto>>(users);
 
-            return usersDto;
+            UserRespondListDto userRespondListDto = new UserRespondListDto();
+            userRespondListDto.Users = usersDto;
+            userRespondListDto.UsersCount = await _userRepository.GetUsersCount();
+            userRespondListDto.CurrentPage = page;
+            userRespondListDto.PagesCount = (int)Math.Ceiling((double)userRespondListDto.UsersCount / pageSize);
+
+            return userRespondListDto;
         }
 
         public async Task<UserPublicDto> GetUserById(Guid userId)

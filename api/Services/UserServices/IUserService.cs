@@ -11,7 +11,7 @@ namespace ResellHub.Services.UserServices
     public interface IUserService
     {
         //User
-        Task<List<UserPublicDto>> GetUsers(int page);
+        Task<UserRespondListDto> GetUsers(int page);
         Task<UserPublicDto> GetUserById(Guid userId);
         Task<UserDetalisDto> GetUserBySlugIncludeAvatar(string userSlug);
         Task<string> GetUserEmailById(Guid userId);
