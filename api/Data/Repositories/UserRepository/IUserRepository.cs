@@ -31,6 +31,7 @@ namespace ResellHub.Data.Repositories.UserRepository
         Task<Chat> RefreshChatLastMessageAt(Guid chatId);
         //Messages
         Task<List<Message>> GetChatMessagesById(Guid ChatId, int page, int pageSize);
+        Task<int> GetMessagesInChatCount(Guid ChatId);
         Task<Message> AddMessage(Message message);   
         //FollowingOffers
         Task<List<FollowOffer>> GetUserFollowingOffers(Guid userId, int page, int pageSize);

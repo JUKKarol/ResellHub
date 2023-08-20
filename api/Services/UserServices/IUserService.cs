@@ -33,7 +33,7 @@ namespace ResellHub.Services.UserServices
         Task<Chat> GetChatById(Guid chatId);
         Task<Chat> CreateChat(Guid senderId, Guid ReciverId);
         //Message
-        Task<List<MessageDisplayDto>> GetMessagesByChatId(Guid ChatId, int page);
+        Task<MessageRespondListDto> GetMessagesByChatId(Guid ChatId, int page);
         Task<string> SendMessage(Guid senderId, Guid ReciverId, string content);
         //Role
         Task<List<RoleDto>> GetUserRoles(Guid userId);

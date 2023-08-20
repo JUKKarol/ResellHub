@@ -205,6 +205,13 @@ namespace ResellHub.Data.Repositories.UserRepository
                 .ToListAsync();
         }
 
+        public async Task<int> GetMessagesInChatCount(Guid ChatId)
+        {
+            return await _dbContext.Messages
+                .Where(m => m.ChatId == ChatId)
+                .CountAsync();
+        }
+
         public async Task<Message> AddMessage(Message message)
         {
             await _dbContext.Messages.AddAsync(message);

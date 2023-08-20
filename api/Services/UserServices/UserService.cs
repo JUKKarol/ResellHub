@@ -269,12 +269,18 @@ namespace ResellHub.Services.UserServices
         }
 
         //Message
-        public async Task<List<MessageDisplayDto>> GetMessagesByChatId(Guid ChatId, int page)
+        public async Task<MessageRespondListDto> GetMessagesByChatId(Guid ChatId, int page)
         {
-            var messages = await _userRepository.GetChatMessagesById(ChatId, page, 15);
+            int pageSize = 15;
+            var messages = await _userRepository.GetChatMessagesById(ChatId, page, pageSize);
             var messagesDto = _mapper.Map<List<MessageDisplayDto>>(messages);
 
-            return messagesDto;
+            MessageRespondListDto messageRespondListDto = new MessageRespondListDto();
+            messageRespondListDto.Items = messagesDto;
+            messageRespondListDto.ItemsCount = await _userRepository.GetMessagesInChatCount(ChatId);
+            messageRespondListDto.PagesCount = (int)Math.Ceiling((double)messageRespondListDto.ItemsCount / pageSize);
+
+            return messageRespondListDto;
         }
 
         public async Task<string> SendMessage(Guid chatId, Guid senderId, string content)
