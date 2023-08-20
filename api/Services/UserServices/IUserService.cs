@@ -11,7 +11,7 @@ namespace ResellHub.Services.UserServices
     public interface IUserService
     {
         //User
-        Task<List<UserPublicDto>> GetUsers(int page);
+        Task<UserRespondListDto> GetUsers(int page);
         Task<UserPublicDto> GetUserById(Guid userId);
         Task<UserDetalisDto> GetUserBySlugIncludeAvatar(string userSlug);
         Task<string> GetUserEmailById(Guid userId);
@@ -27,22 +27,22 @@ namespace ResellHub.Services.UserServices
         Task UpdateUser(Guid userId, UserUpdateDto userDto);
         Task DeleteUser(Guid userId);
         //Chat
-        Task<List<ChatDto>> GetUserChats(Guid userId, int page);
+        Task<ChatRespondList> GetUserChats(Guid userId, int page);
         Task<bool> CheckIsChatExistsById(Guid chatId);
         Task<bool> CheckIsChatExistsByUsersId(Guid firstUserId, Guid secondUserId);
         Task<Chat> GetChatById(Guid chatId);
         Task<Chat> CreateChat(Guid senderId, Guid ReciverId);
         //Message
-        Task<List<MessageDisplayDto>> GetMessagesByChatId(Guid ChatId, int page);
+        Task<MessageRespondListDto> GetMessagesByChatId(Guid ChatId, int page);
         Task<string> SendMessage(Guid senderId, Guid ReciverId, string content);
         //Role
         Task<List<RoleDto>> GetUserRoles(Guid userId);
         Task<bool> CheckIsRoleExistById(Guid roleId);
-        Task<string> AddRole(Guid userId, UserRoles userRole);
-        Task<string> UpdateRole(Guid roleId, UserRoles userNewRole);
-        Task<string> DeleteRole(Guid roleId);
+        Task AddRole(Guid userId, UserRoles userRole);
+        Task UpdateRole(Guid roleId, UserRoles userNewRole);
+        Task DeleteRole(Guid roleId);
         //FollowOffer
-        Task<List<FollowOfferDto>> GetUserFollowingOffers(Guid userId, int page);
+        Task<FollowOfferRespondListDto> GetUserFollowingOffers(Guid userId, int page);
         Task<FollowOfferDto> GetFollowingOfferByUserAndOfferId(Guid userId, Guid offerId);
         Task<bool> CheckIsFollowingExistById(Guid followingOfferId);
         Task AddOfferToFollowing(Guid userId, Guid offerId);

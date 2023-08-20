@@ -40,12 +40,18 @@ namespace ResellHub.Services.UserServices
         }
 
         //User
-        public async Task<List<UserPublicDto>> GetUsers(int page)
+        public async Task<UserRespondListDto> GetUsers(int page)
         {
-            var users = await _userRepository.GetUsers(page, 15);
+            int pageSize = 15;
+            var users = await _userRepository.GetUsers(page, pageSize);
             var usersDto = _mapper.Map<List<UserPublicDto>>(users);
 
-            return usersDto;
+            UserRespondListDto userRespondListDto = new UserRespondListDto();
+            userRespondListDto.Items = usersDto;
+            userRespondListDto.ItemsCount = await _userRepository.GetUsersCount();
+            userRespondListDto.PagesCount = (int)Math.Ceiling((double)userRespondListDto.ItemsCount / pageSize);
+
+            return userRespondListDto;
         }
 
         public async Task<UserPublicDto> GetUserById(Guid userId)
@@ -226,12 +232,18 @@ namespace ResellHub.Services.UserServices
         }
 
         //Chat
-        public async Task<List<ChatDto>> GetUserChats(Guid userId, int page)
+        public async Task<ChatRespondList> GetUserChats(Guid userId, int page)
         {
-            var chats = await _userRepository.GetUserChats(userId, page, 15);
-            var chatsDto = _mapper.Map<List<ChatDto>>(chats);
+            int pageSize = 15;
+            var chats = await _userRepository.GetUserChats(userId, page, pageSize);
+            var chatsDto = _mapper.Map<List<ChatDisplayDto>>(chats);
 
-            return chatsDto;
+            ChatRespondList chatRespondList = new ChatRespondList();
+            chatRespondList.Items = chatsDto;
+            chatRespondList.ItemsCount = await _userRepository.GetUserChatsCount(userId);
+            chatRespondList.PagesCount = (int)Math.Ceiling((double)chatRespondList.ItemsCount / pageSize);
+
+            return chatRespondList;
         }
 
         public async Task<bool> CheckIsChatExistsById(Guid chatId)
@@ -263,12 +275,18 @@ namespace ResellHub.Services.UserServices
         }
 
         //Message
-        public async Task<List<MessageDisplayDto>> GetMessagesByChatId(Guid ChatId, int page)
+        public async Task<MessageRespondListDto> GetMessagesByChatId(Guid ChatId, int page)
         {
-            var messages = await _userRepository.GetChatMessagesById(ChatId, page, 15);
+            int pageSize = 15;
+            var messages = await _userRepository.GetChatMessagesById(ChatId, page, pageSize);
             var messagesDto = _mapper.Map<List<MessageDisplayDto>>(messages);
 
-            return messagesDto;
+            MessageRespondListDto messageRespondListDto = new MessageRespondListDto();
+            messageRespondListDto.Items = messagesDto;
+            messageRespondListDto.ItemsCount = await _userRepository.GetMessagesInChatCount(ChatId);
+            messageRespondListDto.PagesCount = (int)Math.Ceiling((double)messageRespondListDto.ItemsCount / pageSize);
+
+            return messageRespondListDto;
         }
 
         public async Task<string> SendMessage(Guid chatId, Guid senderId, string content)
@@ -316,35 +334,36 @@ namespace ResellHub.Services.UserServices
             }
         }
 
-        public async Task<string> AddRole(Guid userId, UserRoles userRole)
+        public async Task AddRole(Guid userId, UserRoles userRole)
         {
             var role = new Role { UserId = userId, UserRole = userRole };
 
             await _userRepository.CreateRole(role);
-
-            return "Role created successfuly";
         }
 
-        public async Task<string> UpdateRole(Guid roleId, UserRoles userNewRole)
+        public async Task UpdateRole(Guid roleId, UserRoles userNewRole)
         {
             await _userRepository.ChangeRole(roleId, userNewRole);
-
-            return "Role changed successful";
         }
 
-        public async Task<string> DeleteRole(Guid roleId)
+        public async Task DeleteRole(Guid roleId)
         {
             await _userRepository.DeleteRole(roleId);
-            return "Role deleted successful";
         }
 
         //FollowOffer
-        public async Task<List<FollowOfferDto>> GetUserFollowingOffers(Guid userId, int page)
+        public async Task<FollowOfferRespondListDto> GetUserFollowingOffers(Guid userId, int page)
         {
-            var followingOffers = await _userRepository.GetUserFollowingOffers(userId, page, 40);
+            int pageSize = 40;
+            var followingOffers = await _userRepository.GetUserFollowingOffers(userId, page, pageSize);
             var followingOffersDto = _mapper.Map<List<FollowOfferDto>>(followingOffers);
 
-            return followingOffersDto;
+            FollowOfferRespondListDto followOfferRespondListDto = new FollowOfferRespondListDto();
+            followOfferRespondListDto.Items = followingOffersDto;
+            followOfferRespondListDto.ItemsCount = await _userRepository.GetUserFollowingOffersCount(userId);
+            followOfferRespondListDto.PagesCount = (int)Math.Ceiling((double)followOfferRespondListDto.ItemsCount / pageSize);
+
+            return followOfferRespondListDto;
         }
 
         public async Task<FollowOfferDto> GetFollowingOfferByUserAndOfferId(Guid userId, Guid offerId)

@@ -8,7 +8,7 @@ namespace ResellHub.Utilities.Mapings
     {
         public ChatMappingProfile()
         {
-            CreateMap<ChatDto, Chat>().ReverseMap();
+            CreateMap<ChatDisplayDto, Chat>().ReverseMap();
         }
     }
 }

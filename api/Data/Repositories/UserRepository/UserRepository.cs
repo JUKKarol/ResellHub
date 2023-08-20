@@ -24,6 +24,11 @@ namespace ResellHub.Data.Repositories.UserRepository
                 .ToListAsync();
         }
 
+        public async Task<int> GetUsersCount()
+        {
+            return await _dbContext.Users.CountAsync();
+        }
+
         public async Task<User> GetUserById(Guid userId)
         {
             var existUser = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
@@ -150,6 +155,13 @@ namespace ResellHub.Data.Repositories.UserRepository
                 .ToListAsync();
         }
 
+        public async Task<int> GetUserChatsCount(Guid userId)
+        {
+            return await _dbContext.Chats
+                .Where(c => (c.SenderId == userId) || (c.ReciverId == userId))
+                .CountAsync();
+        }
+
         public async Task<Chat> GetChatById(Guid chatId)
         {
             return await _dbContext.Chats
@@ -200,6 +212,13 @@ namespace ResellHub.Data.Repositories.UserRepository
                 .ToListAsync();
         }
 
+        public async Task<int> GetMessagesInChatCount(Guid ChatId)
+        {
+            return await _dbContext.Messages
+                .Where(m => m.ChatId == ChatId)
+                .CountAsync();
+        }
+
         public async Task<Message> AddMessage(Message message)
         {
             await _dbContext.Messages.AddAsync(message);
@@ -217,6 +236,11 @@ namespace ResellHub.Data.Repositories.UserRepository
                 .Take(pageSize)
                 .AsNoTracking()
                 .ToListAsync();
+        }
+
+        public async Task<int> GetUserFollowingOffersCount(Guid userId)
+        {
+            return await _dbContext.FollowingOffers.Where(fo => fo.UserId == userId).CountAsync();
         }
 
         public async Task<FollowOffer> GetUserFollowingOfferById(Guid followingOfferId)

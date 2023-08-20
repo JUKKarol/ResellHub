@@ -37,7 +37,8 @@ namespace ResellHub.Controllers
                 return BadRequest("user doesn't exist");
             }
 
-            return Ok(await _userService.AddRole(userId, userRole));
+            await _userService.AddRole(userId, userRole);
+            return Ok("role created successfully");
         }
 
         [HttpPut("{roleId}"), Authorize(Roles = "Administrator")]
@@ -48,7 +49,8 @@ namespace ResellHub.Controllers
                 return BadRequest("role doesn't exist");
             }
 
-            return Ok(await _userService.UpdateRole(roleId, userNewRole));
+            await _userService.UpdateRole(roleId, userNewRole);
+            return Ok("role changed successfully");
         }
 
         [HttpDelete("{roleId}"), Authorize(Roles = "Administrator")]
@@ -59,7 +61,8 @@ namespace ResellHub.Controllers
                 return BadRequest("role doesn't exist");
             }
 
-            return Ok(await _userService.DeleteRole(roleId));
+            await _userService.DeleteRole(roleId);
+            return Ok("role deleted successfully");
         }
     }
 }
