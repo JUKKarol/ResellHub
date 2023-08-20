@@ -346,12 +346,18 @@ namespace ResellHub.Services.UserServices
         }
 
         //FollowOffer
-        public async Task<List<FollowOfferDto>> GetUserFollowingOffers(Guid userId, int page)
+        public async Task<FollowOfferRespondListDto> GetUserFollowingOffers(Guid userId, int page)
         {
-            var followingOffers = await _userRepository.GetUserFollowingOffers(userId, page, 40);
+            int pageSize = 40;
+            var followingOffers = await _userRepository.GetUserFollowingOffers(userId, page, pageSize);
             var followingOffersDto = _mapper.Map<List<FollowOfferDto>>(followingOffers);
 
-            return followingOffersDto;
+            FollowOfferRespondListDto followOfferRespondListDto = new FollowOfferRespondListDto();
+            followOfferRespondListDto.Items = followingOffersDto;
+            followOfferRespondListDto.ItemsCount = await _userRepository.GetUserFollowingOffersCount(userId);
+            followOfferRespondListDto.PagesCount = (int)Math.Ceiling((double)followOfferRespondListDto.ItemsCount / pageSize);
+
+            return followOfferRespondListDto;
         }
 
         public async Task<FollowOfferDto> GetFollowingOfferByUserAndOfferId(Guid userId, Guid offerId)

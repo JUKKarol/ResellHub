@@ -231,6 +231,11 @@ namespace ResellHub.Data.Repositories.UserRepository
                 .ToListAsync();
         }
 
+        public async Task<int> GetUserFollowingOffersCount(Guid userId)
+        {
+            return await _dbContext.FollowingOffers.Where(fo => fo.UserId == userId).CountAsync();
+        }
+
         public async Task<FollowOffer> GetUserFollowingOfferById(Guid followingOfferId)
         {
             return await _dbContext.FollowingOffers

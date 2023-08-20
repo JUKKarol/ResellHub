@@ -42,7 +42,7 @@ namespace ResellHub.Services.UserServices
         Task UpdateRole(Guid roleId, UserRoles userNewRole);
         Task DeleteRole(Guid roleId);
         //FollowOffer
-        Task<List<FollowOfferDto>> GetUserFollowingOffers(Guid userId, int page);
+        Task<FollowOfferRespondListDto> GetUserFollowingOffers(Guid userId, int page);
         Task<FollowOfferDto> GetFollowingOfferByUserAndOfferId(Guid userId, Guid offerId);
         Task<bool> CheckIsFollowingExistById(Guid followingOfferId);
         Task AddOfferToFollowing(Guid userId, Guid offerId);
