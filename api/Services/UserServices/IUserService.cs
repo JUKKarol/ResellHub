@@ -27,7 +27,7 @@ namespace ResellHub.Services.UserServices
         Task UpdateUser(Guid userId, UserUpdateDto userDto);
         Task DeleteUser(Guid userId);
         //Chat
-        Task<List<ChatDto>> GetUserChats(Guid userId, int page);
+        Task<ChatRespondList> GetUserChats(Guid userId, int page);
         Task<bool> CheckIsChatExistsById(Guid chatId);
         Task<bool> CheckIsChatExistsByUsersId(Guid firstUserId, Guid secondUserId);
         Task<Chat> GetChatById(Guid chatId);

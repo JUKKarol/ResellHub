@@ -1,6 +1,6 @@
 ﻿namespace ResellHub.DTOs.ChatDTOs
 {
-    public class ChatDto
+    public class ChatDisplayDto
     {
         public Guid Id { get; set; }
         public Guid SenderId { get; set; }

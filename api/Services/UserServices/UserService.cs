@@ -232,12 +232,18 @@ namespace ResellHub.Services.UserServices
         }
 
         //Chat
-        public async Task<List<ChatDto>> GetUserChats(Guid userId, int page)
+        public async Task<ChatRespondList> GetUserChats(Guid userId, int page)
         {
-            var chats = await _userRepository.GetUserChats(userId, page, 15);
-            var chatsDto = _mapper.Map<List<ChatDto>>(chats);
+            int pageSize = 15;
+            var chats = await _userRepository.GetUserChats(userId, page, pageSize);
+            var chatsDto = _mapper.Map<List<ChatDisplayDto>>(chats);
 
-            return chatsDto;
+            ChatRespondList chatRespondList = new ChatRespondList();
+            chatRespondList.Items = chatsDto;
+            chatRespondList.ItemsCount = await _userRepository.GetUserChatsCount(userId);
+            chatRespondList.PagesCount = (int)Math.Ceiling((double)chatRespondList.ItemsCount / pageSize);
+
+            return chatRespondList;
         }
 
         public async Task<bool> CheckIsChatExistsById(Guid chatId)
