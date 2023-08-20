@@ -2,9 +2,8 @@
 {
     public class UserRespondListDto
     {
-        public int CurrentPage { get; set; }
         public int PagesCount { get; set; }
-        public int UsersCount { get; set; }
-        public List<UserPublicDto> Users { get; set; }
+        public int ItemsCount { get; set; }
+        public List<UserPublicDto> Items { get; set; }
     }
 }

@@ -47,10 +47,9 @@ namespace ResellHub.Services.UserServices
             var usersDto = _mapper.Map<List<UserPublicDto>>(users);
 
             UserRespondListDto userRespondListDto = new UserRespondListDto();
-            userRespondListDto.Users = usersDto;
-            userRespondListDto.UsersCount = await _userRepository.GetUsersCount();
-            userRespondListDto.CurrentPage = page;
-            userRespondListDto.PagesCount = (int)Math.Ceiling((double)userRespondListDto.UsersCount / pageSize);
+            userRespondListDto.Items = usersDto;
+            userRespondListDto.ItemsCount = await _userRepository.GetUsersCount();
+            userRespondListDto.PagesCount = (int)Math.Ceiling((double)userRespondListDto.ItemsCount / pageSize);
 
             return userRespondListDto;
         }
