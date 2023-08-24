@@ -1,29 +1,39 @@
 ﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using ResellHub.Entities;
+using Sieve.Models;
+using Sieve.Services;
 
 namespace ResellHub.Data.Repositories.OfferRepository
 {
     public class OfferRepository : IOfferRepository
     {
         private readonly ResellHubContext _dbContext;
+        private readonly ISieveProcessor _sieveProcessor;
 
-        public OfferRepository(ResellHubContext dbContext)
+        public OfferRepository(ResellHubContext dbContext, ISieveProcessor sieveProcessor)
         {
             _dbContext = dbContext;
+            _sieveProcessor = sieveProcessor;
         }
 
         //Offer
-        public async Task<List<Offer>> GetOffers(int page, int pageSize)
+        public async Task<List<Offer>> GetOffers(SieveModel query)
         {
-            return await _dbContext.Offers
-                .OrderBy(o => o.CreatedDate)
-                .Skip(pageSize * (page - 1))
-                .Take(pageSize)
+            var offers = _dbContext.Offers
                 .Include(o => o.FollowingOffers)
                 .Include(o => o.OfferImages)
+                .AsQueryable();
+
+            return await _sieveProcessor
+                .Apply(query, offers)
                 .AsNoTracking()
                 .ToListAsync();
+        }
+
+        public async Task<int> GetOffersCount()
+        {
+            return await _dbContext.Offers.CountAsync();
         }
 
         public async Task<List<Offer>> GetUserOffers(string userSlug, int page, int pageSize)

@@ -8,6 +8,7 @@ using ResellHub.Entities;
 using ResellHub.Services.FileServices;
 using ResellHub.Services.OfferServices;
 using ResellHub.Services.UserServices;
+using Sieve.Models;
 using System.Security.Claims;
 
 namespace ResellHub.Controllers
@@ -36,11 +37,11 @@ namespace ResellHub.Controllers
             _fileService = fileService;
         }
 
-        [HttpGet, Authorize(Roles = "User"), AllowAnonymous]
-        public async Task<IActionResult> GetOffers(int page = 1)
+        [HttpPost, Authorize(Roles = "User"), AllowAnonymous]
+        public async Task<IActionResult> GetOffers([FromBody]SieveModel query)
         {
             Guid loggedUserId = User.Identity.IsAuthenticated ? Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)) : Guid.Empty;
-            var offers = await _offerService.GetOffers(page, loggedUserId);
+            var offers = await _offerService.GetOffers(query, loggedUserId);
 
             return Ok(offers);
         }
@@ -59,7 +60,7 @@ namespace ResellHub.Controllers
             return Ok(offer);
         }
 
-        [HttpPost, Authorize(Roles = "User")]
+        [HttpPost("create"), Authorize(Roles = "User")]
         public async Task<IActionResult> CreateOffer(OfferCreateDto offerDto)
         {
             var validationResult = await _offerCreateValidator.ValidateAsync(offerDto);

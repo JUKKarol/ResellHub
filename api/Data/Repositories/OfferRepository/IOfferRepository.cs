@@ -1,11 +1,13 @@
 ﻿using ResellHub.Entities;
+using Sieve.Models;
 
 namespace ResellHub.Data.Repositories.OfferRepository
 {
     public interface IOfferRepository
     {
         //Offer
-        Task<List<Offer>> GetOffers(int page, int pageSize);
+        Task<List<Offer>> GetOffers(SieveModel query);
+        Task<int> GetOffersCount();
         Task<List<Offer>> GetUserOffers(string userSlug, int page, int pageSize);
         Task<Offer> GetOfferById(Guid offerId);
         Task<Offer> GetOfferBySlug(string offerSlug);
