@@ -20,6 +20,7 @@ using ResellHub.Utilities.UserUtilities;
 using ResellHub.Utilities.Validation.Offer;
 using ResellHub.Utilities.Validation.OfferValidation;
 using ResellHub.Utilities.Validation.UserValidation;
+using Sieve.Models;
 using Sieve.Services;
 using Swashbuckle.AspNetCore.Filters;
 using System;
@@ -66,6 +67,8 @@ namespace ResellHub
                             builder.Configuration.GetSection("AppSettings:Token").Value!))
                 };
             });
+
+            builder.Services.Configure<SieveOptions>(builder.Configuration.GetSection("Sieve"));
 
             builder.Services.AddDbContext<ResellHubContext>();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

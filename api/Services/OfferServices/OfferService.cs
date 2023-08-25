@@ -41,7 +41,7 @@ namespace ResellHub.Services.OfferServices
         //Offer
         public async Task<OfferRespondListDto> GetOffers(SieveModel query, Guid loggedUserId)
         {
-            int pageSize = 40;
+            int pageSize = query.PageSize != null ? (int)query.PageSize : 40;
             var offers = await _offerRepository.GetOffers(query);
             var offersDto = _mapper.Map<List<OfferPublicDto>>(offers);
 
