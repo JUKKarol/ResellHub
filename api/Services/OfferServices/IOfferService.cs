@@ -1,4 +1,5 @@
 ﻿using ResellHub.DTOs.OfferDTOs;
+using ResellHub.DTOs.SharedDTOs;
 using ResellHub.Entities;
 using Sieve.Models;
 
@@ -7,7 +8,7 @@ namespace ResellHub.Services.OfferServices
     public interface IOfferService
     {
         //Offer
-        Task<OfferRespondListDto> GetOffers(SieveModel query, Guid loggedUserId);
+        Task<PagedRespondListDto<OfferPublicDto>> GetOffers(SieveModel query, Guid loggedUserId);
         Task<List<OfferPublicDto>> GetUserOffers(string userSlug, int page, Guid loggedUserId);
         Task<OfferDetalisDto> GetOfferById(Guid offerId, Guid loggedUserId);
         Task<OfferDetalisDto> GetOfferBySlug(string offerSlug, Guid loggedUserId);

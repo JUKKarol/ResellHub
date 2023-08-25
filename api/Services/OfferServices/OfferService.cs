@@ -5,6 +5,7 @@ using ResellHub.Data.Repositories.OfferRepository;
 using ResellHub.Data.Repositories.UserRepository;
 using ResellHub.DTOs.OfferDTOs;
 using ResellHub.DTOs.OfferImageDTOs;
+using ResellHub.DTOs.SharedDTOs;
 using ResellHub.DTOs.UserDTOs;
 using ResellHub.Entities;
 using ResellHub.Services.FileServices;
@@ -39,7 +40,7 @@ namespace ResellHub.Services.OfferServices
         }
 
         //Offer
-        public async Task<OfferRespondListDto> GetOffers(SieveModel query, Guid loggedUserId)
+        public async Task<PagedRespondListDto<OfferPublicDto>> GetOffers(SieveModel query, Guid loggedUserId)
         {
             int pageSize = query.PageSize != null ? (int)query.PageSize : 40;
             var offers = await _offerRepository.GetOffers(query);
@@ -59,12 +60,12 @@ namespace ResellHub.Services.OfferServices
 
             var offerDtoWithCategoryName = await _offerUtilities.ChangeCategoryIdToCategoryName(offersDto);
 
-            OfferRespondListDto offerRespondListDto = new OfferRespondListDto();
-            offerRespondListDto.Items = offerDtoWithCategoryName;
-            offerRespondListDto.ItemsCount = await _offerRepository.GetOffersCount();
-            offerRespondListDto.PagesCount = (int)Math.Ceiling((double)offerRespondListDto.ItemsCount / pageSize);
+            PagedRespondListDto<OfferPublicDto> pagedRespondListDto = new PagedRespondListDto<OfferPublicDto>();
+            pagedRespondListDto.Items = offerDtoWithCategoryName;
+            pagedRespondListDto.ItemsCount = await _offerRepository.GetOffersCount();
+            pagedRespondListDto.PagesCount = (int)Math.Ceiling((double)pagedRespondListDto.ItemsCount / pageSize);
 
-            return offerRespondListDto;
+            return pagedRespondListDto;
         }
 
         public async Task<List<OfferPublicDto>> GetUserOffers(string userSlug, int page, Guid loggedUserId)
