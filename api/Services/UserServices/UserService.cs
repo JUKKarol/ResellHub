@@ -67,7 +67,7 @@ namespace ResellHub.Services.UserServices
         {
             var user = await _userRepository.GetUserBySlugIncludeAvatar(userSlug);
             var userDto = _mapper.Map<UserDetalisDto>(user);
-            userDto.Avatar = await _fileService.GetAvatar(user.AvatarImage.UserId);
+            userDto.Avatar = await _fileService.GetAvatar(user.Id);
 
             return userDto;
         }
