@@ -36,17 +36,24 @@ namespace ResellHub.Data.Repositories.OfferRepository
             return await _dbContext.Offers.CountAsync();
         }
 
-        public async Task<List<Offer>> GetUserOffers(string userSlug, int page, int pageSize)
+        public async Task<List<Offer>> GetUserOffers(string userSlug, SieveModel query)
+        {
+            var offers = _dbContext.Offers
+                .Where(o => o.User.Slug == userSlug)
+                .Include(o => o.FollowingOffers)
+                .Include(o => o.OfferImages)
+                .AsQueryable();
+
+            return await _sieveProcessor
+                .Apply(query, offers)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+        public async Task<int> GetUserOffersCount(string userSlug)
         {
             return await _dbContext.Offers
                 .Where(o => o.User.Slug == userSlug)
-                .OrderBy(o => o.CreatedDate)
-                .Skip(pageSize * (page - 1))
-                .Take(pageSize)
-                .Include(o => o.FollowingOffers)
-                .Include(o => o.OfferImages)
-                .AsNoTracking()
-                .ToListAsync();
+                .CountAsync();
         }
 
         public async Task<Offer> GetOfferById(Guid offerId)

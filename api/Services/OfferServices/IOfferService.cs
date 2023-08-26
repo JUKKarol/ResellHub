@@ -9,7 +9,7 @@ namespace ResellHub.Services.OfferServices
     {
         //Offer
         Task<PagedRespondListDto<OfferPublicDto>> GetOffers(SieveModel query, Guid loggedUserId);
-        Task<List<OfferPublicDto>> GetUserOffers(string userSlug, int page, Guid loggedUserId);
+        Task<PagedRespondListDto<OfferPublicDto>> GetUserOffers(string userSlug, SieveModel query, Guid loggedUserId);
         Task<OfferDetalisDto> GetOfferById(Guid offerId, Guid loggedUserId);
         Task<OfferDetalisDto> GetOfferBySlug(string offerSlug, Guid loggedUserId);
         Task<OfferDetalisDto> GetOfferByOfferImageSlug(string offerImageSlug);

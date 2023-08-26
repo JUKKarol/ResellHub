@@ -8,7 +8,8 @@ namespace ResellHub.Data.Repositories.OfferRepository
         //Offer
         Task<List<Offer>> GetOffers(SieveModel query);
         Task<int> GetOffersCount();
-        Task<List<Offer>> GetUserOffers(string userSlug, int page, int pageSize);
+        Task<List<Offer>> GetUserOffers(string userSlug, SieveModel query);
+        Task<int> GetUserOffersCount(string userSlug);
         Task<Offer> GetOfferById(Guid offerId);
         Task<Offer> GetOfferBySlug(string offerSlug);
         Task<Offer> AddOffer(Offer offer);
