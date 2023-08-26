@@ -7,6 +7,7 @@ using ResellHub.Enums;
 using ResellHub.Services.FileServices;
 using ResellHub.Services.OfferServices;
 using ResellHub.Services.UserServices;
+using Sieve.Models;
 using System.Security.Claims;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -53,17 +54,17 @@ namespace ResellHub.Controllers
             return Ok(await _userService.GetUserBySlugIncludeAvatar(userSlug));
         }
 
-        [HttpGet("{userSlug}/offers"), Authorize(Roles = "User"), AllowAnonymous]
-        public async Task<IActionResult> GetUserOffersBySlug(string userSlug, int page = 1)
+        [HttpPost("{userSlug}/offers"), Authorize(Roles = "User"), AllowAnonymous]
+        public async Task<IActionResult> GetUserOffersBySlug(string userSlug, [FromBody] SieveModel query)
         {
             if (!await _userService.CheckIsUserExistBySlug(userSlug))
             {
-                return BadRequest("user doesn't exist");
+                return BadRequest("user doesn't exist"); 
             }
 
             Guid loggedUserId = User.Identity.IsAuthenticated ? Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)) : Guid.Empty;
 
-            return Ok(await _offerService.GetUserOffers(userSlug, page, loggedUserId));
+            return Ok(await _offerService.GetUserOffers(userSlug, query, loggedUserId));
         }
 
         [HttpPost, Authorize(Roles = "Moderator")]

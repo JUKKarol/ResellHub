@@ -15,10 +15,13 @@ using ResellHub.Services.FileServices;
 using ResellHub.Services.OfferServices;
 using ResellHub.Services.UserServices;
 using ResellHub.Utilities.OfferUtilities;
+using ResellHub.Utilities.Sieve;
 using ResellHub.Utilities.UserUtilities;
 using ResellHub.Utilities.Validation.Offer;
 using ResellHub.Utilities.Validation.OfferValidation;
 using ResellHub.Utilities.Validation.UserValidation;
+using Sieve.Models;
+using Sieve.Services;
 using Swashbuckle.AspNetCore.Filters;
 using System;
 using System.Text;
@@ -65,6 +68,8 @@ namespace ResellHub
                 };
             });
 
+            builder.Services.Configure<SieveOptions>(builder.Configuration.GetSection("Sieve"));
+
             builder.Services.AddDbContext<ResellHubContext>();
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -84,6 +89,8 @@ namespace ResellHub
 
             builder.Services.AddScoped<IUserUtilities, UserUtilities>();
             builder.Services.AddScoped<IOfferUtilities, OfferUtilities>();
+
+            builder.Services.AddScoped<ISieveProcessor, ApplicationSieveProcessor>();
 
             var app = builder.Build();
             var scope = app.Services.CreateScope();

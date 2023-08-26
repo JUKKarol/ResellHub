@@ -5,11 +5,13 @@ using ResellHub.Data.Repositories.OfferRepository;
 using ResellHub.Data.Repositories.UserRepository;
 using ResellHub.DTOs.OfferDTOs;
 using ResellHub.DTOs.OfferImageDTOs;
+using ResellHub.DTOs.SharedDTOs;
 using ResellHub.DTOs.UserDTOs;
 using ResellHub.Entities;
 using ResellHub.Services.FileServices;
 using ResellHub.Utilities.OfferUtilities;
 using ResellHub.Utilities.UserUtilities;
+using Sieve.Models;
 using System;
 
 namespace ResellHub.Services.OfferServices
@@ -38,9 +40,10 @@ namespace ResellHub.Services.OfferServices
         }
 
         //Offer
-        public async Task<List<OfferPublicDto>> GetOffers(int page, Guid loggedUserId)
+        public async Task<PagedRespondListDto<OfferPublicDto>> GetOffers(SieveModel query, Guid loggedUserId)
         {
-            var offers = await _offerRepository.GetOffers(page, 40);
+            int pageSize = query.PageSize != null ? (int)query.PageSize : 40;
+            var offers = await _offerRepository.GetOffers(query);
             var offersDto = _mapper.Map<List<OfferPublicDto>>(offers);
 
             var followedOfferSlugs = offers
@@ -54,12 +57,21 @@ namespace ResellHub.Services.OfferServices
                 offersDto[i].OfferPrimaryImage = await _fileService.GetOfferPrimaryImage(offers[i].Id);
             }
 
-            return await _offerUtilities.ChangeCategoryIdToCategoryName(offersDto);
+
+            var offerDtoWithCategoryName = await _offerUtilities.ChangeCategoryIdToCategoryName(offersDto);
+
+            PagedRespondListDto<OfferPublicDto> pagedRespondListDto = new PagedRespondListDto<OfferPublicDto>();
+            pagedRespondListDto.Items = offerDtoWithCategoryName;
+            pagedRespondListDto.ItemsCount = await _offerRepository.GetOffersCount();
+            pagedRespondListDto.PagesCount = (int)Math.Ceiling((double)pagedRespondListDto.ItemsCount / pageSize);
+
+            return pagedRespondListDto;
         }
 
-        public async Task<List<OfferPublicDto>> GetUserOffers(string userSlug, int page, Guid loggedUserId)
+        public async Task<PagedRespondListDto<OfferPublicDto>> GetUserOffers(string userSlug, SieveModel query, Guid loggedUserId)
         {
-            var offers = await _offerRepository.GetUserOffers(userSlug, page, 40);
+            int pageSize = query.PageSize != null ? (int)query.PageSize : 40;
+            var offers = await _offerRepository.GetUserOffers(userSlug, query);
             var offersDto = _mapper.Map<List<OfferPublicDto>>(offers);
 
             var followedOfferSlugs = offers
@@ -73,7 +85,14 @@ namespace ResellHub.Services.OfferServices
                 offersDto[i].OfferPrimaryImage = await _fileService.GetOfferPrimaryImage(offers[i].Id);
             }
 
-            return await _offerUtilities.ChangeCategoryIdToCategoryName(offersDto);
+            var offerDtoWithCategoryName = await _offerUtilities.ChangeCategoryIdToCategoryName(offersDto);
+
+            PagedRespondListDto<OfferPublicDto> pagedRespondListDto = new PagedRespondListDto<OfferPublicDto>();
+            pagedRespondListDto.Items = offerDtoWithCategoryName;
+            pagedRespondListDto.ItemsCount = await _offerRepository.GetUserOffersCount(userSlug);
+            pagedRespondListDto.PagesCount = (int)Math.Ceiling((double)pagedRespondListDto.ItemsCount / pageSize);
+
+            return pagedRespondListDto;
         }
 
         public async Task<OfferDetalisDto> GetOfferById(Guid offerId, Guid loggedUserId)

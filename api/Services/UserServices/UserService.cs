@@ -7,6 +7,7 @@ using ResellHub.DTOs.FollowOfferDTOs;
 using ResellHub.DTOs.MessageDTOs;
 using ResellHub.DTOs.OfferDTOs;
 using ResellHub.DTOs.RoleDTOs;
+using ResellHub.DTOs.SharedDTOs;
 using ResellHub.DTOs.UserDTOs;
 using ResellHub.Entities;
 using ResellHub.Enums;
@@ -40,18 +41,18 @@ namespace ResellHub.Services.UserServices
         }
 
         //User
-        public async Task<UserRespondListDto> GetUsers(int page)
+        public async Task<PagedRespondListDto<UserPublicDto>> GetUsers(int page)
         {
             int pageSize = 15;
             var users = await _userRepository.GetUsers(page, pageSize);
             var usersDto = _mapper.Map<List<UserPublicDto>>(users);
 
-            UserRespondListDto userRespondListDto = new UserRespondListDto();
-            userRespondListDto.Items = usersDto;
-            userRespondListDto.ItemsCount = await _userRepository.GetUsersCount();
-            userRespondListDto.PagesCount = (int)Math.Ceiling((double)userRespondListDto.ItemsCount / pageSize);
+            PagedRespondListDto<UserPublicDto> pagedRespondListDto = new PagedRespondListDto<UserPublicDto>();
+            pagedRespondListDto.Items = usersDto;
+            pagedRespondListDto.ItemsCount = await _userRepository.GetUsersCount();
+            pagedRespondListDto.PagesCount = (int)Math.Ceiling((double)pagedRespondListDto.ItemsCount / pageSize);
 
-            return userRespondListDto;
+            return pagedRespondListDto;
         }
 
         public async Task<UserPublicDto> GetUserById(Guid userId)
@@ -66,8 +67,7 @@ namespace ResellHub.Services.UserServices
         {
             var user = await _userRepository.GetUserBySlugIncludeAvatar(userSlug);
             var userDto = _mapper.Map<UserDetalisDto>(user);
-
-            userDto.Avatar = await _fileService.GetAvatar(user.AvatarImage.UserId);
+            userDto.Avatar = await _fileService.GetAvatar(user.Id);
 
             return userDto;
         }
@@ -232,18 +232,18 @@ namespace ResellHub.Services.UserServices
         }
 
         //Chat
-        public async Task<ChatRespondList> GetUserChats(Guid userId, int page)
+        public async Task<PagedRespondListDto<ChatDisplayDto>> GetUserChats(Guid userId, int page)
         {
             int pageSize = 15;
             var chats = await _userRepository.GetUserChats(userId, page, pageSize);
             var chatsDto = _mapper.Map<List<ChatDisplayDto>>(chats);
 
-            ChatRespondList chatRespondList = new ChatRespondList();
-            chatRespondList.Items = chatsDto;
-            chatRespondList.ItemsCount = await _userRepository.GetUserChatsCount(userId);
-            chatRespondList.PagesCount = (int)Math.Ceiling((double)chatRespondList.ItemsCount / pageSize);
+            PagedRespondListDto<ChatDisplayDto> pagedRespondListDto = new PagedRespondListDto<ChatDisplayDto>();
+            pagedRespondListDto.Items = chatsDto;
+            pagedRespondListDto.ItemsCount = await _userRepository.GetUserChatsCount(userId);
+            pagedRespondListDto.PagesCount = (int)Math.Ceiling((double)pagedRespondListDto.ItemsCount / pageSize);
 
-            return chatRespondList;
+            return pagedRespondListDto;
         }
 
         public async Task<bool> CheckIsChatExistsById(Guid chatId)
@@ -275,18 +275,18 @@ namespace ResellHub.Services.UserServices
         }
 
         //Message
-        public async Task<MessageRespondListDto> GetMessagesByChatId(Guid ChatId, int page)
+        public async Task<PagedRespondListDto<MessageDisplayDto>> GetMessagesByChatId(Guid ChatId, int page)
         {
             int pageSize = 15;
             var messages = await _userRepository.GetChatMessagesById(ChatId, page, pageSize);
             var messagesDto = _mapper.Map<List<MessageDisplayDto>>(messages);
 
-            MessageRespondListDto messageRespondListDto = new MessageRespondListDto();
-            messageRespondListDto.Items = messagesDto;
-            messageRespondListDto.ItemsCount = await _userRepository.GetMessagesInChatCount(ChatId);
-            messageRespondListDto.PagesCount = (int)Math.Ceiling((double)messageRespondListDto.ItemsCount / pageSize);
+            PagedRespondListDto<MessageDisplayDto> pagedRespondListDto = new PagedRespondListDto<MessageDisplayDto>();
+            pagedRespondListDto.Items = messagesDto;
+            pagedRespondListDto.ItemsCount = await _userRepository.GetMessagesInChatCount(ChatId);
+            pagedRespondListDto.PagesCount = (int)Math.Ceiling((double)pagedRespondListDto.ItemsCount / pageSize);
 
-            return messageRespondListDto;
+            return pagedRespondListDto;
         }
 
         public async Task<string> SendMessage(Guid chatId, Guid senderId, string content)
@@ -352,18 +352,18 @@ namespace ResellHub.Services.UserServices
         }
 
         //FollowOffer
-        public async Task<FollowOfferRespondListDto> GetUserFollowingOffers(Guid userId, int page)
+        public async Task<PagedRespondListDto<FollowOfferDto>> GetUserFollowingOffers(Guid userId, int page)
         {
             int pageSize = 40;
             var followingOffers = await _userRepository.GetUserFollowingOffers(userId, page, pageSize);
             var followingOffersDto = _mapper.Map<List<FollowOfferDto>>(followingOffers);
 
-            FollowOfferRespondListDto followOfferRespondListDto = new FollowOfferRespondListDto();
-            followOfferRespondListDto.Items = followingOffersDto;
-            followOfferRespondListDto.ItemsCount = await _userRepository.GetUserFollowingOffersCount(userId);
-            followOfferRespondListDto.PagesCount = (int)Math.Ceiling((double)followOfferRespondListDto.ItemsCount / pageSize);
+            PagedRespondListDto<FollowOfferDto> pagedRespondListDto = new PagedRespondListDto<FollowOfferDto>();
+            pagedRespondListDto.Items = followingOffersDto;
+            pagedRespondListDto.ItemsCount = await _userRepository.GetUserFollowingOffersCount(userId);
+            pagedRespondListDto.PagesCount = (int)Math.Ceiling((double)pagedRespondListDto.ItemsCount / pageSize);
 
-            return followOfferRespondListDto;
+            return pagedRespondListDto;
         }
 
         public async Task<FollowOfferDto> GetFollowingOfferByUserAndOfferId(Guid userId, Guid offerId)
