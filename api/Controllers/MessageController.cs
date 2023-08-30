@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ResellHub.Entities;
 using ResellHub.Services.UserServices;
 using System.Security.Claims;
 
@@ -36,7 +34,7 @@ namespace ResellHub.Controllers
             var loggedUserId = Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             if (chat.ReciverId != loggedUserId && chat.SenderId != loggedUserId)
-            { 
+            {
                 return BadRequest("permission denied");
             }
 

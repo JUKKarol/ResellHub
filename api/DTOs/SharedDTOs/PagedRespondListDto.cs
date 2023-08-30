@@ -1,6 +1,4 @@
-﻿using ResellHub.DTOs.ChatDTOs;
-
-namespace ResellHub.DTOs.SharedDTOs
+﻿namespace ResellHub.DTOs.SharedDTOs
 {
     public class PagedRespondListDto<T>
     {

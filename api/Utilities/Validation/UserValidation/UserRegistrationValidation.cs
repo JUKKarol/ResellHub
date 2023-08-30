@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using ResellHub.DTOs.OfferDTOs;
 using ResellHub.DTOs.UserDTOs;
 
 namespace ResellHub.Utilities.Validation.UserValidation

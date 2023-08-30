@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ResellHub.Entities;
 using ResellHub.Enums;
 using ResellHub.Services.UserServices;
 

@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
-using ResellHub.Entities;
+﻿using ResellHub.Entities;
 using ResellHub.Enums;
-using ResellHub.Services.OfferServices;
-using ResellHub.Services.UserServices;
 using ResellHub.Utilities.UserUtilities;
 
 namespace ResellHub.Data.Seeders
@@ -132,7 +129,7 @@ namespace ResellHub.Data.Seeders
                 _context.SaveChanges();
 
                 Category category1 = new Category()
-                { 
+                {
                     Id = 1,
                     CategoryName = "Clothes",
                 };

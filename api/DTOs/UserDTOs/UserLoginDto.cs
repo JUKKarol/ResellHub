@@ -7,6 +7,7 @@ namespace ResellHub.DTOs.UserDTOs
         [Required]
         [EmailAddress(ErrorMessage = "it is not correct form for e-mail")]
         public string Email { get; set; }
+
         [Required]
         public string Password { get; set; }
     }

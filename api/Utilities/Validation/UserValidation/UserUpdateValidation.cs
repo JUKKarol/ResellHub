@@ -19,7 +19,6 @@ namespace ResellHub.Utilities.Validation.UserValidation
             RuleFor(u => u.Email)
                 .EmailAddress().WithMessage("Invalid email format.")
                 .When(u => !string.IsNullOrEmpty(u.Email));
-
         }
     }
 }

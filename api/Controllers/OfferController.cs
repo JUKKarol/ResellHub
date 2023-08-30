@@ -1,10 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ResellHub.DTOs.OfferDTOs;
-using ResellHub.DTOs.UserDTOs;
-using ResellHub.Entities;
 using ResellHub.Services.FileServices;
 using ResellHub.Services.OfferServices;
 using ResellHub.Services.UserServices;
@@ -38,7 +35,7 @@ namespace ResellHub.Controllers
         }
 
         [HttpPost, Authorize(Roles = "User"), AllowAnonymous]
-        public async Task<IActionResult> GetOffers([FromBody]SieveModel query)
+        public async Task<IActionResult> GetOffers([FromBody] SieveModel query)
         {
             Guid loggedUserId = User.Identity.IsAuthenticated ? Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)) : Guid.Empty;
             var offers = await _offerService.GetOffers(query, loggedUserId);
@@ -173,10 +170,10 @@ namespace ResellHub.Controllers
             }
 
             if (offer.OfferImages.Count > _fileService.MaxImagesForOffer)
-            { 
+            {
                 return BadRequest("offer images are full");
             }
-            
+
             foreach (var image in images)
             {
                 if (!_fileService.CheckIsOfferImageSizeCorrect(image))

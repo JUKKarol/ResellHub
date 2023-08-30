@@ -16,5 +16,5 @@ namespace ResellHub.Utilities.Mapings
             CreateMap<OfferDetalisDto, Offer>().ReverseMap()
                 .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.CategoryId));
         }
-}
+    }
 }

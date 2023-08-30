@@ -1,5 +1,4 @@
 ﻿using ResellHub.Enums;
-using System.ComponentModel.DataAnnotations;
 
 namespace ResellHub.DTOs.OfferDTOs
 {

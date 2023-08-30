@@ -1,5 +1,4 @@
-﻿using ResellHub.Enums;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace ResellHub.Entities
 {

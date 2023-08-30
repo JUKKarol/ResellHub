@@ -1,10 +1,7 @@
 ﻿using FluentValidation;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using ResellHub.Data.Repositories.UserRepository;
 using ResellHub.DTOs.UserDTOs;
-using ResellHub.Entities;
 using ResellHub.Services.UserServices;
 using ResellHub.Utilities.UserUtilities;
 
@@ -87,12 +84,11 @@ namespace ResellHub.Controllers
 
             if (user.VerifiedAt == null)
             {
-                return NotFound("account is already verified");   
+                return NotFound("account is already verified");
             }
 
             await _userService.VerifyUser(token);
             return Ok("account verified");
-
         }
 
         [HttpPost("forgot-password")]

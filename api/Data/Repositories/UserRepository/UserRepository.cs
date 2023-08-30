@@ -63,6 +63,7 @@ namespace ResellHub.Data.Repositories.UserRepository
 
             return existUser;
         }
+
         public async Task<User> GetUserBySlugIncludeAvatar(string userSlug)
         {
             return await _dbContext.Users

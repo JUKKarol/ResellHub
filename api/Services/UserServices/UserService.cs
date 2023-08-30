@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using FluentValidation;
-using Microsoft.EntityFrameworkCore;
 using ResellHub.Data.Repositories.UserRepository;
 using ResellHub.DTOs.ChatDTOs;
 using ResellHub.DTOs.FollowOfferDTOs;
 using ResellHub.DTOs.MessageDTOs;
-using ResellHub.DTOs.OfferDTOs;
 using ResellHub.DTOs.RoleDTOs;
 using ResellHub.DTOs.SharedDTOs;
 using ResellHub.DTOs.UserDTOs;
@@ -14,8 +12,6 @@ using ResellHub.Enums;
 using ResellHub.Services.EmailService;
 using ResellHub.Services.FileServices;
 using ResellHub.Utilities.UserUtilities;
-using System;
-using System.Collections.Generic;
 
 namespace ResellHub.Services.UserServices
 {

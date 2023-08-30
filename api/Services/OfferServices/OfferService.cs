@@ -1,18 +1,13 @@
 ﻿using AutoMapper;
 using FluentValidation;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using ResellHub.Data.Repositories.OfferRepository;
 using ResellHub.Data.Repositories.UserRepository;
 using ResellHub.DTOs.OfferDTOs;
-using ResellHub.DTOs.OfferImageDTOs;
 using ResellHub.DTOs.SharedDTOs;
-using ResellHub.DTOs.UserDTOs;
 using ResellHub.Entities;
 using ResellHub.Services.FileServices;
 using ResellHub.Utilities.OfferUtilities;
-using ResellHub.Utilities.UserUtilities;
 using Sieve.Models;
-using System;
 
 namespace ResellHub.Services.OfferServices
 {
@@ -56,7 +51,6 @@ namespace ResellHub.Services.OfferServices
                 offersDto[i].IsUserFollowing = followedOfferSlugs.Contains(offersDto[i].Slug);
                 offersDto[i].OfferPrimaryImage = await _fileService.GetOfferPrimaryImage(offers[i].Id);
             }
-
 
             var offerDtoWithCategoryName = await _offerUtilities.ChangeCategoryIdToCategoryName(offersDto);
 
@@ -111,13 +105,12 @@ namespace ResellHub.Services.OfferServices
             return await _offerUtilities.ChangeCategoryIdToCategoryName(offerDto);
         }
 
-
         public async Task<OfferDetalisDto> GetOfferBySlug(string offerSlug, Guid loggedUserId)
         {
             var offer = await _offerRepository.GetOfferBySlug(offerSlug);
 
             if (offer == null)
-            { 
+            {
                 return null;
             }
 

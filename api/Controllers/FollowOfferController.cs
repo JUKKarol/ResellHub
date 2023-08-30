@@ -50,7 +50,7 @@ namespace ResellHub.Controllers
                 return BadRequest("following offer doesn't exist");
             }
 
-            var followingOfferId = 
+            var followingOfferId =
                 await _userService.GetFollowingOfferByUserAndOfferId(await _userService.GetUserIdByEmail(HttpContext.User.FindFirstValue(ClaimTypes.Email)), offerId);
 
             await _userService.RemoveOfferFromFollowing(followingOfferId.Id);

@@ -2,14 +2,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ResellHub.DTOs.UserDTOs;
-using ResellHub.Entities;
-using ResellHub.Enums;
 using ResellHub.Services.FileServices;
 using ResellHub.Services.OfferServices;
 using ResellHub.Services.UserServices;
 using Sieve.Models;
 using System.Security.Claims;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace ResellHub.Controllers
 {
@@ -24,10 +21,10 @@ namespace ResellHub.Controllers
         private readonly IFileService _fileService;
 
         public UserController(
-            IUserService userService, 
-            IOfferService offerService, 
+            IUserService userService,
+            IOfferService offerService,
             IFileService fileService,
-            IValidator<UserRegistrationDto> userRegistrationValidator, 
+            IValidator<UserRegistrationDto> userRegistrationValidator,
             IValidator<UserUpdateDto> userUpdateValidator)
         {
             _userService = userService;
@@ -59,7 +56,7 @@ namespace ResellHub.Controllers
         {
             if (!await _userService.CheckIsUserExistBySlug(userSlug))
             {
-                return BadRequest("user doesn't exist"); 
+                return BadRequest("user doesn't exist");
             }
 
             Guid loggedUserId = User.Identity.IsAuthenticated ? Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)) : Guid.Empty;

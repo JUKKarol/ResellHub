@@ -1,6 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.IdentityModel.Tokens;
 using ResellHub.Data.Repositories.UserRepository;
 using ResellHub.DTOs.UserDTOs;
 using ResellHub.Enums;
