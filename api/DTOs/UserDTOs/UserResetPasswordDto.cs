@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace ResellHub.DTOs.UserDTOs
+﻿namespace ResellHub.DTOs.UserDTOs
 {
     public class UserResetPasswordDto
     {

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ResellHub.Entities;
 using Sieve.Models;
 using Sieve.Services;
@@ -49,6 +48,7 @@ namespace ResellHub.Data.Repositories.OfferRepository
                 .AsNoTracking()
                 .ToListAsync();
         }
+
         public async Task<int> GetUserOffersCount(string userSlug)
         {
             return await _dbContext.Offers

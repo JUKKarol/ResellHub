@@ -4,8 +4,6 @@ using ResellHub.Data.Repositories.UserRepository;
 using ResellHub.DTOs.OfferImageDTOs;
 using ResellHub.Entities;
 using ResellHub.Services.FileServices;
-using ResellHub.Services.UserServices;
-using System.IO;
 
 namespace ResellHub.Services.FileService
 {
@@ -142,7 +140,7 @@ namespace ResellHub.Services.FileService
             int maxSizeInBytes = MaxsizeInMegaBytes * 1024 * 1024;
 
             if (image.Length > maxSizeInBytes)
-            { 
+            {
                 return false;
             }
             else

@@ -23,9 +23,7 @@ using ResellHub.Utilities.Validation.UserValidation;
 using Sieve.Models;
 using Sieve.Services;
 using Swashbuckle.AspNetCore.Filters;
-using System;
 using System.Text;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace ResellHub
@@ -116,7 +114,6 @@ namespace ResellHub
 
             app.UseAuthentication();
             app.UseAuthorization();
-
 
             app.MapControllers();
 

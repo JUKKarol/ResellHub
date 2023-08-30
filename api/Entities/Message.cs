@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace ResellHub.Entities
+﻿namespace ResellHub.Entities
 {
     public class Message
     {
@@ -8,7 +6,7 @@ namespace ResellHub.Entities
         public Guid ChatId { get; set; }
         public Guid SenderId { get; set; }
         public Guid ReciverId { get; set; }
-        
+
         public string Content { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using ResellHub.DTOs.UserDTOs;
 using ResellHub.Entities;
-using ResellHub.Services.UserServices;
 
 namespace ResellHub.Utilities.Mapings
 {

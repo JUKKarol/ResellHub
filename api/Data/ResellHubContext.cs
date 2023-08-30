@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ResellHub.Entities;
-using System.Linq;
 
 namespace ResellHub.Data
 {
