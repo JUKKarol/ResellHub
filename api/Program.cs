@@ -34,6 +34,18 @@ namespace ResellHub
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddCors(options =>
+            {
+                var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins:Localhost").Value!;
+
+                options.AddPolicy("FrontEndClient", builder =>
+
+                builder.AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .WithOrigins(allowedOrigins)
+                );
+            });
+
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.Configure<JsonOptions>(options =>
@@ -111,6 +123,10 @@ namespace ResellHub
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseRouting();
+
+            app.UseCors("FrontEndClient");
 
             app.UseAuthentication();
             app.UseAuthorization();
