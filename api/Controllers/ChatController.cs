@@ -18,7 +18,7 @@ namespace ResellHub.Controllers
         }
 
         [HttpGet, Authorize(Roles = "User")]
-        public async Task<IActionResult> GetMyChats(int page = 1)
+        public async Task<IActionResult> GetMyChats([FromQuery] int page = 1)
         {
             if (page <= 0)
             {
