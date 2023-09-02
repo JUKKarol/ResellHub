@@ -34,12 +34,9 @@ namespace ResellHub.Controllers
             _fileService = fileService;
         }
 
-        [HttpPost, Authorize(Roles = "User"), AllowAnonymous]
-        public async Task<IActionResult> GetOffers([FromBody] SieveModel query)
+        [HttpGet, Authorize(Roles = "User"), AllowAnonymous]
+        public async Task<IActionResult> GetOffers([FromQuery] SieveModel query)
         {
-            //query.
-
-
             Guid loggedUserId = User.Identity.IsAuthenticated ? Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)) : Guid.Empty;
             var offers = await _offerService.GetOffers(query, loggedUserId);
 

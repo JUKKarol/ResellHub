@@ -51,8 +51,8 @@ namespace ResellHub.Controllers
             return Ok(await _userService.GetUserBySlugIncludeAvatar(userSlug));
         }
 
-        [HttpPost("{userSlug}/offers"), Authorize(Roles = "User"), AllowAnonymous]
-        public async Task<IActionResult> GetUserOffersBySlug(string userSlug, [FromBody] SieveModel query)
+        [HttpGet("{userSlug}/offers"), Authorize(Roles = "User"), AllowAnonymous]
+        public async Task<IActionResult> GetUserOffersBySlug(string userSlug, [FromQuery] SieveModel query)
         {
             if (!await _userService.CheckIsUserExistBySlug(userSlug))
             {
