@@ -20,7 +20,7 @@ namespace ResellHub.Controllers
         }
 
         [HttpGet(), Authorize(Roles = "User")]
-        public async Task<IActionResult> GetMyFollowingOffers(int page = 1)
+        public async Task<IActionResult> GetMyFollowingOffers([FromQuery] int page = 1)
         {
             return Ok(await _userService.GetUserFollowingOffers(Guid.Parse(HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)), page));
         }

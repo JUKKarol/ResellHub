@@ -35,7 +35,7 @@ namespace ResellHub.Controllers
         }
 
         [HttpGet, Authorize(Roles = "User")]
-        public async Task<IActionResult> GetUsers(int page = 1)
+        public async Task<IActionResult> GetUsers([FromQuery] int page = 1)
         {
             return Ok(await _userService.GetUsers(page));
         }
@@ -51,8 +51,8 @@ namespace ResellHub.Controllers
             return Ok(await _userService.GetUserBySlugIncludeAvatar(userSlug));
         }
 
-        [HttpPost("{userSlug}/offers"), Authorize(Roles = "User"), AllowAnonymous]
-        public async Task<IActionResult> GetUserOffersBySlug(string userSlug, [FromBody] SieveModel query)
+        [HttpGet("{userSlug}/offers"), Authorize(Roles = "User"), AllowAnonymous]
+        public async Task<IActionResult> GetUserOffersBySlug(string userSlug, [FromQuery] SieveModel query)
         {
             if (!await _userService.CheckIsUserExistBySlug(userSlug))
             {
