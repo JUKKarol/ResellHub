@@ -5,6 +5,7 @@ using ResellHub.DTOs.UserDTOs;
 using ResellHub.Services.FileServices;
 using ResellHub.Services.OfferServices;
 using ResellHub.Services.UserServices;
+using Serilog;
 using Sieve.Models;
 using System.Security.Claims;
 
@@ -34,7 +35,7 @@ namespace ResellHub.Controllers
             _userUpdateValidator = userUpdateValidator;
         }
 
-        [HttpGet, Authorize(Roles = "User")]
+        [HttpGet]
         public async Task<IActionResult> GetUsers([FromQuery] int page = 1)
         {
             return Ok(await _userService.GetUsers(page));
