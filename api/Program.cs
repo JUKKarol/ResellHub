@@ -9,6 +9,7 @@ using ResellHub.Data.Repositories.UserRepository;
 using ResellHub.Data.Seeders;
 using ResellHub.DTOs.OfferDTOs;
 using ResellHub.DTOs.UserDTOs;
+using ResellHub.Middleware;
 using ResellHub.Services.EmailService;
 using ResellHub.Services.FileService;
 using ResellHub.Services.FileServices;
@@ -108,6 +109,8 @@ namespace ResellHub
 
             builder.Services.AddScoped<ISieveProcessor, ApplicationSieveProcessor>();
 
+            builder.Services.AddScoped<ErrorHandlingMiddleware>();
+
             var app = builder.Build();
             var scope = app.Services.CreateScope();
             var dbContext = scope.ServiceProvider.GetService<ResellHubContext>();
@@ -128,6 +131,7 @@ namespace ResellHub
                 app.UseSwaggerUI();
             }
 
+            app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseSerilogRequestLogging();
 
             app.UseHttpsRedirection();
