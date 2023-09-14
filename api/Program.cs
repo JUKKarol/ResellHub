@@ -9,6 +9,7 @@ using ResellHub.Data.Repositories.UserRepository;
 using ResellHub.Data.Seeders;
 using ResellHub.DTOs.OfferDTOs;
 using ResellHub.DTOs.UserDTOs;
+using ResellHub.Middleware;
 using ResellHub.Services.EmailService;
 using ResellHub.Services.FileService;
 using ResellHub.Services.FileServices;
@@ -20,6 +21,7 @@ using ResellHub.Utilities.UserUtilities;
 using ResellHub.Utilities.Validation.Offer;
 using ResellHub.Utilities.Validation.OfferValidation;
 using ResellHub.Utilities.Validation.UserValidation;
+using Serilog;
 using Sieve.Models;
 using Sieve.Services;
 using Swashbuckle.AspNetCore.Filters;
@@ -78,6 +80,12 @@ namespace ResellHub
                 };
             });
 
+            Log.Logger = new LoggerConfiguration()
+                .ReadFrom.Configuration(builder.Configuration)
+                .CreateLogger();
+
+            builder.Host.UseSerilog();
+
             builder.Services.Configure<SieveOptions>(builder.Configuration.GetSection("Sieve"));
 
             builder.Services.AddDbContext<ResellHubContext>();
@@ -102,6 +110,8 @@ namespace ResellHub
 
             builder.Services.AddScoped<ISieveProcessor, ApplicationSieveProcessor>();
 
+            builder.Services.AddScoped<ErrorHandlingMiddleware>();
+
             var app = builder.Build();
             var scope = app.Services.CreateScope();
             var dbContext = scope.ServiceProvider.GetService<ResellHubContext>();
@@ -121,6 +131,9 @@ namespace ResellHub
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseMiddleware<ErrorHandlingMiddleware>();
+            app.UseSerilogRequestLogging();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
