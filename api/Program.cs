@@ -81,7 +81,8 @@ namespace ResellHub
             });
 
             Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(builder.Configuration).CreateLogger();
+                .ReadFrom.Configuration(builder.Configuration)
+                .CreateLogger();
 
             builder.Host.UseSerilog();
 
