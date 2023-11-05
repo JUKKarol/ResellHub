@@ -50,18 +50,18 @@ namespace ResellHub.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> LoginOwner(UserLoginDto userDto)
+        public async Task<IActionResult> LoginUser(UserLoginDto userDto)
         {
             var user = await _userRepository.GetUserByEmail(userDto.Email);
 
             if (user == null)
             {
-                return NotFound("user not found");
+                return BadRequest("incorrect login or password");
             }
 
             if (!_userUtilities.VerifyPasswordHash(userDto.Password, user.PasswordHash, user.PasswordSalt))
             {
-                return BadRequest("Password incorrect");
+                return BadRequest("incorrect login or password");
             }
 
             if (user.VerifiedAt == null)
